@@ -1,7 +1,7 @@
 define(['event_bus'], function(eventBus) {
     
     var container = $('<div id="eventsList"></div>');
-    $('body').append(container);
+    $('#game_container').append(container);
     
     eventBus.on('new event listener', function () {
         var s = '<ul>';

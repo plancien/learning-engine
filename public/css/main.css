@@ -1,3 +1,14 @@
 #main_canvas{
   border: 1px solid #333;
 }
+
+
+body{
+  background: url(tree_bark.png);
+}
+
+.bad, .good{
+  display: block;
+  position: absolute;
+  width: 80px;
+}
