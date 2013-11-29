@@ -1,0 +1,12 @@
+!!! 5
+html
+  head
+    title Serious Game
+    link(type="text/css", rel="stylesheet", href="/css/main.css")
+    script(type="text/javascript", src="/scripts/ext_libs/jquery.js")
+    script(type="text/javascript", src="/socket.io/socket.io.js")
+    script(type="text/javascript", src="/scripts/ext_libs/require.js", data-main="/scripts/main")
+  body
+    h1 Hello !
+    
+    canvas#main_canvas(width=500, height=300)

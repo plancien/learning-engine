@@ -1,0 +1,18 @@
+{
+  "name": "Learning-engine",
+  "version": "1.0.0",
+  "author": "Isart students and Toxicode",
+  "main": "server",
+  "engines": {
+    "node": "0.8.14"
+  },
+  "scripts": {
+      "start": "server.js"
+  },
+  "dependencies": {
+      "express": "3.4.5",
+      "connect": "2.11.1",
+      "jade": "0.35.0",
+      "socket.io": "0.9.14"
+  }
+}
