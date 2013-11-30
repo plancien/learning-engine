@@ -2,6 +2,7 @@
 // available modules
 //    'modules/frames',
 //    'modules/key_listener',
+//    'modules/canvas',
 
 define([
     'event_bus',
@@ -17,7 +18,6 @@ define([
     
     game.init = function () {
         var container = $('<div id="game_container"></div>');
-        container.append('<canvas id="main_canvas" width="500" height="300"></canvas>');
         $('body').append(container);
         eventBus.emit('init', container);
     };
