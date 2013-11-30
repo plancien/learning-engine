@@ -5,6 +5,9 @@ define([
     'modules/bonus_fader'
 ], function (eventBus) {
     
+    eventBus.emit('init bonus', false, 'images/homer.png');
+    eventBus.emit('init bonus', true,  'images/burns.png');
+
     eventBus.on('add bonus', function (good, url) {
         var htmlClass = good ? 'good' : 'bad';        
         var bonus = $('<img class="' + htmlClass + '" src="' + url + '" />');
