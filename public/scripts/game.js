@@ -8,7 +8,7 @@ define([
     'event_bus',
     'connector',
     'modules/events_list',
-    'modules/simpsons'
+    'games/simpsons'
 ], function (eventBus, socket) {
     
     var game = {};
