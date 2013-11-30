@@ -1,6 +1,8 @@
 var express = require('express');
 var app     = express();
 
+var fs      = require('fs');
+
 var server  = require('http').createServer(app);
 var io      = require('socket.io').listen(server);
 io.set('log level', 1);
@@ -23,6 +25,11 @@ io.sockets.on('connection', function(socket) {
     
     io.sockets.emit('welcome', 'hello');
     
+    socket.on("ask gameNames", function() {
+        var files = fs.readdirSync("./public/scripts/games");
+        socket.emit('send gameNames', files);    
+    });
+
     socket.on('coords', function(data){
        io.sockets.emit('coords', data);
 	});
