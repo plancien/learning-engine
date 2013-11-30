@@ -3,10 +3,6 @@
 }
 
 
-body{
-  background: url(tree_bark.png);
-}
-
 .bad, .good{
   display: block;
   position: absolute;
