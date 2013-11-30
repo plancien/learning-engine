@@ -8,3 +8,8 @@
   position: absolute;
   width: 80px;
 }
+
+#eventsList {
+    position: absolute;
+    right : 0;
+}
