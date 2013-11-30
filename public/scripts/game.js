@@ -13,8 +13,8 @@ define([
     
     var game = {};
     
-    eventBus.emit('init bad bonus',  'images/homer.png');
-    eventBus.emit('init good bonus', 'images/burns.png');
+    eventBus.emit('init bonus', false, 'images/homer.png');
+    eventBus.emit('init bonus', true,  'images/burns.png');
     
     game.init = function () {
         var container = $('<div id="game_container"></div>');

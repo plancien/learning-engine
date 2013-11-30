@@ -3,12 +3,12 @@ define(['event_bus'], function (eventBus) {
     var badUrl;
     var goodUrl;
     
-    eventBus.on('init bad bonus', function (url) {
-        badUrl  = url;
-    });
-    
-    eventBus.on('init good bonus', function (url) {
-        goodUrl = url;
+    eventBus.on('init bonus', function (isGood, url) {
+        if (isGood) {
+            goodUrl = url;
+        } else {
+            badUrl  = url;
+        }
     });
     
 
