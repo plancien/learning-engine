@@ -27,7 +27,6 @@ define(['event_bus'], function(eventBus) {
             this.y = e.pageY;
             this.canvasX = e.pageX - totalOffsetX;
             this.canvasY = e.pageY - totalOffsetY;
-
             eventBus.emit('mouse', this);
         }
         object.prototype.keydown = function (event)
@@ -42,7 +41,7 @@ define(['event_bus'], function(eventBus) {
         }
     }
 
-    eventBus.on('init mouse', function () {
+    eventBus.on('init', function () {
         addMouseCapabilities(Mouse);
         var mouse = new Mouse();
         window.addEventListener("mousemove", mouse.update, false);
