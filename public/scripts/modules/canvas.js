@@ -1,10 +1,32 @@
 define(['event_bus'], function (eventBus) {
 
-    var canvas;
-    
-    eventBus.on('init', function (mainContainer) {
-        canvas = $('<canvas id="main_canvas" width="500" height="300"></canvas>');
-        mainContainer.append(canvas);
-    });
-    
+    var Canvas = function(){
+        this.defaultWidth = 500;
+        this.defaultHeight = 300;
+        this.defaultId = "main_canvas";
+    }
+
+    Canvas.prototype.create = function(params){
+        if(typeof params !== "object")
+            params = {};
+
+        var id = params.id || this.defaultId;
+        var width = params.width || this.defaultWidth;
+        var height = params.height || this.defaultHeight;
+
+        var canvas = $('<canvas id='+id+ ' width='+width+' height='+height+'></canvas>');
+
+        if(params.container)
+            params.container.append(canvas);
+        else
+            $('body').append(canvas);
+
+        return {
+            canvas : canvas[0],
+            $canvas : canvas,
+            context : canvas[0].getContext('2d'),
+        };  
+    };
+
+    return new Canvas();
 });
