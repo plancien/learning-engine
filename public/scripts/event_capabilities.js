@@ -4,7 +4,7 @@ define(function() {
 
         object.listenersFor = {};
 
-        object.on = function(eventName, callback) {
+        object.on = function(eventName, callback, instance) {
             if (!this.listenersFor[eventName]) {
                 this.listenersFor[eventName] = [];
             }
@@ -12,7 +12,8 @@ define(function() {
             var origin = e.stack ? e.stack.split("\n")[2] : undefined;
             this.listenersFor[eventName].push({
                 origin:   origin,
-                callback: callback
+                callback: callback,
+                instance : instance
             });
             
             object.emit('new event listener', eventName);
@@ -25,7 +26,7 @@ define(function() {
             
             for (var i = 0; i < listeners.length; i++) {
                 try {
-                    var newArgs = listeners[i].callback.apply(object, args);
+                    var newArgs = listeners[i].callback.apply(listeners[i].instance || object, args);
                     if (newArgs === false) {
                         break;
                     } else if (typeof newArgs !== 'undefined') {
