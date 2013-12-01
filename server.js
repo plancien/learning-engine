@@ -22,12 +22,18 @@ app.get('/', function(req, res){
 
 
 io.sockets.on('connection', function(socket) {
-    
     io.sockets.emit('welcome', 'hello');
     
     socket.on("ask gameNames", function() {
         var files = fs.readdirSync("./public/scripts/games");
         socket.emit('send gameNames', files);    
+    });
+
+    socket.on("ask css", function(data) {
+        var path = "css/" + data + ".css"
+        if(fs.existsSync("./public/"+path)) {
+            socket.emit("inject css", path);
+        }
     });
 
     socket.on('coords', function(data){

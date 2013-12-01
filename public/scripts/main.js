@@ -18,9 +18,15 @@ require(['connector'], function (socket) {
             $("#gameList div").click(function(e) {
                 $("#gameSelection").hide();
 
-                var gameSelected = "games/" + e.currentTarget.id;
+                var gameSelectedName = e.currentTarget.id;
+                var gameSelectedPath = "games/" + gameSelectedName;
 
-                require(['game', gameSelected], function (game) {
+                socket.emit('ask css', gameSelectedName);
+                socket.on('inject css', function(data) {
+                    $("head").append("<link rel='stylesheet' type='text/css' href='" + data + "'>");
+                });
+
+                require(['game', gameSelectedPath], function (game) {
                     game.init();            
                 });
             });
