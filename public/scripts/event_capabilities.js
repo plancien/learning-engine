@@ -26,7 +26,7 @@ define(function() {
             
             for (var i = 0; i < listeners.length; i++) {
                 try {
-                    var newArgs = listeners[i].callback.apply(listeners[i].instance || object, args);
+                    var newArgs = listeners[i].callback.apply(listeners[i].instance || object, args);
                     if (newArgs === false) {
                         break;
                     } else if (typeof newArgs !== 'undefined') {
