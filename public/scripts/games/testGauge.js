@@ -30,11 +30,6 @@ define([
         valueMax : 1000,
     });
 
-    eventBus.on('get stopwatch', function(data)
-        {
-           console.log(data.fullTime)
-        });
-
     eventBus.on("new frame", function(){
         gauge.currentValue--;
         gauge2.currentValue--;
