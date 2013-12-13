@@ -2,7 +2,8 @@ define([
     'event_bus',
     'modules/gauge',
     'modules/canvas',
-    'modules/frames'
+    'modules/frames',
+    'modules/chrono'
 ], function (eventBus, Gauge, Canvas, frames) {
 
     var canvas = Canvas.create();
@@ -29,6 +30,11 @@ define([
         valueMax : 1000,
     });
 
+    eventBus.on('get stopwatch', function(data)
+        {
+           console.log(data.fullTime)
+        });
+
     eventBus.on("new frame", function(){
         gauge.currentValue--;
         gauge2.currentValue--;
@@ -41,4 +47,6 @@ define([
     eventBus.on("gauge is empty"+gauge2.gaugeId, function(){
         this.currentValue = this.valueMax;
     }, gauge2)
+
+
 });
