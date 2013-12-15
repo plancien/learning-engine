@@ -32,12 +32,12 @@ define(['event_bus'], function(eventBus) {
         object.prototype.keydown = function (event)
         {
             this.isClicking = true;
-            eventBus.emit('mouse is clicking', this.isClicking);
+            eventBus.emit('clicking', this.isClicking);
         }
         object.prototype.keyUp = function (event)
         {
             this.isClicking = false;
-            eventBus.emit('mouse stop clicking', this.isClicking);
+            eventBus.emit('clicking', this.isClicking);
         }
     }
 
@@ -47,7 +47,7 @@ define(['event_bus'], function(eventBus) {
         window.addEventListener("mousemove", mouse.update, false);
         window.addEventListener("mousedown", mouse.keyDown, false);
         window.addEventListener("mouseup", mouse.keyUp, false);
-        eventBus.emit('mouse is created', mouse);
+        eventBus.emit('mouse', mouse);
     });   
 });
 
