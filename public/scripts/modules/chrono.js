@@ -1,6 +1,7 @@
 define(['event_bus'], function (eventBus) {
 
-    var timeStamp = new Date().getTime();
+    var stopWatchStart = false;
+    var timeStamp = null;
 	var giveTime = 
 	{
 		fullTime : 0,
@@ -9,24 +10,40 @@ define(['event_bus'], function (eventBus) {
 		seconds : 0
 	};
 
-		eventBus.on('new frame', function(){
-				var compareStamp = new Date().getTime();
-				giveTime.seconds = Math.round((compareStamp - timeStamp) / 1000);
+	eventBus.on('start stopwatch', function()
+	{
+		timeStamp = new Date().getTime();
+		stopWatchStart = true;
+	});
 
-				if(giveTime.seconds > 60){
-					giveTime.minutes++;
-					timeStamp = new Date().getTime();
-				}
+	eventBus.on('stop stopwatch', function()
+	{
+		timeStamp = null;
+		stopWatchStart = false;
+	});
 
-				if(giveTime.minutes > 60){
-					giveTime.hours++;
-					giveTime.minutes = 0;
-				}
+	eventBus.on('new frame', function()
+	{
+		if(stopWatchStart)
+		{
+			var compareStamp = new Date().getTime();
+			giveTime.seconds = Math.round((compareStamp - timeStamp) / 1000);
 
-				giveTime.fullTime = giveTime.hours + " : " + giveTime.minutes + " : " + giveTime.seconds;
+			if(giveTime.seconds > 60){
+				giveTime.minutes++;
+				timeStamp = new Date().getTime();
+			}
 
-				eventBus.emit('get stopwatch', giveTime);
-		});
+			if(giveTime.minutes > 60){
+				giveTime.hours++;
+				giveTime.minutes = 0;
+			}
+
+			giveTime.fullTime = giveTime.hours + " : " + giveTime.minutes + " : " + giveTime.seconds;
+			eventBus.emit('get stopwatch', giveTime);
+		}
+	});
+
 });
 
 
