@@ -33,7 +33,6 @@ define(['event_bus'], function(eventBus) {
     Mouse.prototype.clickDown = function (event)
     {
         this.isClicking[this.btns[event.button]] = true;
-        console.log(this.isClicking);
         eventBus.emit('mouse '+this.btns[event.button]+' is clicking', this.isClicking);
     }
    
@@ -50,7 +49,6 @@ define(['event_bus'], function(eventBus) {
         window.addEventListener("mouseup", mouse.clickUp.bind(mouse), false);
         eventBus.emit('mouse is created', mouse);
     });
-
 });
 
 

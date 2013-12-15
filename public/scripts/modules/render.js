@@ -7,9 +7,21 @@ define(['event_bus'], function(eventBus) {
     *******************************************************************************************************/
     function addRenderCapabilities (object,x,y,spritesheet,nb_of_frame,currentFrameX,currentFrameY,frameWidth,frameHeight,width,height)
     {
+        object.prototype.f = 0;
+        object.prototype.x = x;
+        object.prototype.y = y;
+        object.prototype.spritesheet = spritesheet;
+        object.prototype.nb_of_frame = nb_of_frame;
+        object.prototype.currentFrameX = currentFrameX;
+        object.prototype.currentFrameY = currentFrameY;
+        object.prototype.frameWidth = frameWidth;
+        object.prototype.frameHeight = frameHeight;
+        object.prototype.width = width;
+        object.prototype.height = height;
+        
         object.prototype.render = function ()
         {
-            context.drawImage(spritesheet,currentFrameX,currentFrameY,frameWidth,frameHeight,x,y,width,height);
+            context.drawImage(this.spritesheet,this.currentFrameX,this.currentFrameY,this.frameWidth,this.frameHeight,this.x,this.y,this.width,this.height);
         }
         object.prototype.animate = function ()
         {
@@ -17,10 +29,10 @@ define(['event_bus'], function(eventBus) {
             this.f++;
             if(this.f%6==0)
             {
-                currentFrameX+=frameWidth;
-                if(currentFrameX>=(nb_of_frame*frameWidth))
+                this.currentFrameX+=this.frameWidth;
+                if(this.currentFrameX>=(this.nb_of_frame*this.frameWidth))
                 {
-                    currentFrameX = 0;
+                    this.currentFrameX = 0;
                 }
             }
         }
@@ -59,5 +71,6 @@ define(['event_bus'], function(eventBus) {
         var height = params.height || frameHeight;
 
         addRenderCapabilities(object,x,y,spritesheet,nb_of_frame,currentFrameX,currentFrameY,frameWidth,frameHeight,width,height);
+        eventBus.emit('render', object);
     });   
 });
