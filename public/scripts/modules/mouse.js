@@ -51,7 +51,6 @@ define(['event_bus'], function(eventBus) {
         eventBus.emit('mouse is created', mouse);
     });
 
-    eventBus.on('mouse update', function (event) {console.log(event)});
 });
 
 
