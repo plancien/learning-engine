@@ -3,8 +3,9 @@ define([
     'modules/gauge',
     'modules/canvas',
     'modules/frames',
-    'modules/chrono'
-], function (eventBus, Gauge, Canvas, frames) {
+    'modules/chrono',
+    'modules/mouse'
+], function (eventBus, Gauge, Canvas, frames, Mouse) {
 
     var canvas = Canvas.create();
     var gauge = new Gauge({
@@ -16,7 +17,6 @@ define([
         valueMax : 100,
         displayMode : "horizontal"
     });
-
     var gauge2 = new Gauge({
         context : canvas.context,
         size : {
