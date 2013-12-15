@@ -38,11 +38,6 @@ define([
 
     eventBus.on("gauge is empty"+gauge.gaugeId, function(){
         this.currentValue = this.valueMax;
-
-        eventBus.emit('start stopwatch');
-        eventBus.on ('get stopwatch', function (stopwatch){
-               console.log(stopwatch.fullTime) // Si vous souhaitez le temps complet au format h:m:s
-                });
     }, gauge)
 
     eventBus.on("gauge is empty"+gauge2.gaugeId, function(){
