@@ -1,6 +1,6 @@
 define(['event_bus'], function (eventBus) {
 
-	function Player(x, y, width, height, life, hitboxDistance, damageDeal)
+	function Player(x, y, width, height, life, hitboxDistance, damageDeal, speed)
 	{
 		this.x = x;
 		this.y = y;
@@ -9,9 +9,10 @@ define(['event_bus'], function (eventBus) {
 		this.height	= height;
 		this.hitboxDistance = hitboxDistance;
 		this.damageDeal = damageDeal;
+		this.speed = speed;
 	}
 
-	eventBus.on('create a player', function (players, x, y, width, height, life, hitboxDistance, damageDeal) {
-		players.push(new Player(x, y, width, height, life, hitboxDistance, damageDeal));
+	eventBus.on('init player', function (object, x, y, width, height, life, hitboxDistance, damageDeal, speed) {
+		object.push(new Player(x, y, width, height, life, hitboxDistance, damageDeal, speed));
     });
 });
