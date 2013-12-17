@@ -1,6 +1,11 @@
-define(['event_bus'], function(eventBus){
+define(['event_bus','modules/frames'], function(eventBus){
 
 	var particleTable = [];
+	var context = null;
+
+	eventBus.on('newCanvas', function(canvas){
+		context = canvas.context;
+	});
 
 	var Particle = function(x, y, color, canvasWidth) {
 		this.x = x;
@@ -8,7 +13,7 @@ define(['event_bus'], function(eventBus){
 		var disapear = 0;
 		var fix=5;
 		var change=disapear;
-		this.speed = 5;
+		this.speed = 4;
 		this.angle = Math.random() *Math.PI *2;
 		this.color = color;
 
@@ -16,33 +21,28 @@ define(['event_bus'], function(eventBus){
 			//mouvements aleatoirs en angle
 			this.x += Math.cos(this.angle)* this.speed;
 			this.y -= Math.sin(this.angle)* this.speed;
-			disapear-=0.07;
+			disapear =-1;
 			change=disapear;
-			if(this.x > canvasWidth || this.x < 0)
-			{
-				particleTable.splice(this, 1);
-			}
 		}
 		this.draw = function() {	
 			context.fillStyle = this.color;
-			context.fillRect(this.x, this.y, 0.1 + change , 0.1 + change);
+			context.fillRect(this.x, this.y, 5 + change , 5 + change);
 		}
 	}
 
-	function runParticles() {
+	eventBus.on('new frame', function(){
 		for (var i = 0; i < particleTable.length ; i++)
 	    {
 	        particleTable[i].move();
 	        particleTable[i].draw();
 	    }
-	}
+	});
 
-	eventBus.on('CreateParticles', function(x, y, color, count, canvasWidth){
-		for (var i =0; i < count; i++)
+	eventBus.on('CreateParticles', function(x, y, color, count){
+		for (var i = 0; i < count; i++)
 		{
-			var star = new Particle(x, y, color, canvasWidth);
+			var star = new Particle(x, y, color);
 			particleTable.push(star);
 		}
-		eventBus.emit('newParticle', star);
 	});
 });
