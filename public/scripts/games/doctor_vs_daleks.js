@@ -2,9 +2,11 @@ define([
     'event_bus',
     'modules/score',
     'modules/bonus_chooser',
-    'modules/bonus_fader'
+    'modules/bonus_fader',
+    'modules/sound'
 ], function (eventBus) {
     
+	eventBus.emit("add sound" , true, 'sounds/playstation.mp3',true);
     eventBus.emit('init bonus', false, 'images/doctor.png');
     eventBus.emit('init bonus', true,  'images/dalek.png');
 
