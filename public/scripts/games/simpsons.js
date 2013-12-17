@@ -1,3 +1,15 @@
+/*
+
+@name 
+    Simpsons
+@endName
+
+@description
+    Jeu basique, il faut cliquer sur Mr Burns !
+@endDescription
+
+*/
+
 define([
     'event_bus',
     'modules/score',
