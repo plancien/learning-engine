@@ -1,3 +1,15 @@
+/*
+
+@name 
+    Doctor versus daleks 
+@endName
+
+@description
+    doctor who c'est génial !
+@endDescription
+
+*/
+
 define([
     'event_bus',
     'modules/score',

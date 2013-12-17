@@ -1,24 +1,30 @@
-
 require(['connector'], function (socket) {
     
     $(function() {
-        socket.emit("ask gameNames");
+        socket.emit("ask gamesInfos");
 
-        socket.on("send gameNames", function(data) {
-
-            for (var i in data)
+        socket.on("send gamesInfos", function(infos) {
+            for (var i = 0; i < infos.names.length; i++)
             {
-                var gameName = data[i].substr(0, data[i].length-3);
-                var elem = $(document.createElement('div'));
-                elem.attr("id", gameName);
-                elem.html(gameName.replace(/_/g, " "));
-                $("#gameList").append(elem);
+                var $elem = $(document.createElement('option'));
+                $elem.attr("id", infos.names[i]);
+                $elem.html(infos.names[i]);
+                $elem.data("description", infos.descriptions[i]);
+                $("#gameList").append($elem);
+
             }
 
-            $("#gameList div").click(function(e) {
-                $("#gameSelection").hide();
+            $("#gameDescription").html(infos.descriptions[0]);
 
-                var gameSelectedName = e.currentTarget.id;
+            $("#gameList").change(function(e) {
+                var description = $("#gameList option:selected").data("description");
+                $("#gameDescription").html(description);
+            });
+
+            $("#gameSelect button").click(function(e) {
+                $("#mainMenu").hide();
+
+                var gameSelectedName = $("#gameList option:selected")[0].id;
                 var gameSelectedPath = "games/" + gameSelectedName;
 
                 socket.emit('ask css', gameSelectedName);

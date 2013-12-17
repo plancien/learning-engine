@@ -20,13 +20,39 @@ app.get('/', function(req, res){
     res.render('home.jade');
 });
 
+function trim(myString)
+{
+    return myString.replace(/^\s+/g,'').replace(/\s+$/g,'');
+}
 
 io.sockets.on('connection', function(socket) {
     io.sockets.emit('welcome', 'hello');
     
-    socket.on("ask gameNames", function() {
-        var files = fs.readdirSync("./public/scripts/games");
-        socket.emit('send gameNames', files);    
+    socket.on("ask gamesInfos", function() {
+        var path  = "./public/scripts/games";
+        var games = fs.readdirSync(path);
+        var names = [];
+        var descriptions = [];
+
+        for (var i = 0; i < games.length; i++) 
+        {
+            var file = fs.readFileSync(path+"/"+games[i], "utf8");
+
+            var nameStart  = file.search("@name") + 6;
+            var nameLength = file.search("@endName") - nameStart;
+            var nameText   = file.substr(nameStart, nameLength);
+            if (nameText === "") {
+                nameText = games[i].substr(0, games[i].length-3).replace(/_/g, " ");
+            }
+            names.push(trim(nameText));
+
+            var descriptionStart  = file.search("@description") + 12;
+            var descriptionLength = file.search("@endDescription") - descriptionStart;
+            var descriptionText   = file.substr(descriptionStart, descriptionLength);
+            descriptions.push(trim(descriptionText));
+        }
+
+        socket.emit('send gamesInfos', { names : names, descriptions : descriptions });    
     });
 
     socket.on("ask css", function(data) {
@@ -38,10 +64,8 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('coords', function(data){
        io.sockets.emit('coords', data);
-	});
+    });
     
 });
 
 server.listen(8075);
-
-

@@ -7,6 +7,9 @@ html
     script(type="text/javascript", src="/socket.io/socket.io.js")
     script(type="text/javascript", src="/scripts/ext_libs/require.js", data-main="/scripts/main")
   body
-    div#gameSelection
+    div#mainMenu
         h1 Hello !
-        div#gameList
+        div#gameSelect
+            select#gameList
+            button.button Play !
+            div#gameDescription Description du jeu
