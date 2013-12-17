@@ -5,27 +5,28 @@ define(['event_bus','modules/playerTab'], function (eventBus) {
         for (var key in properties) {
             this[key] = properties[key]; //ie this.x = x;
         }
-    
-    // ****************** EMITERS ****************************
-        function doDamage(id){
-            eventBus.emit('damage' + id, this.damage);
-        }
 
+        function doDamage(id){
+            eventBus.emit('damage', this, this.damage);
+        }
+    }
+
+    
     // ****************** RECEIVERS ****************************
 
-        eventBus.on('init player', function (properties) {
-            playerTab.push(new Player(properties));
-        });
+    eventBus.on('init player', function (properties) { //New player :D
+        playerTab.push(new Player(properties));
+    });
 
-        eventBus.on('damage' + this.id, function(damage) {
-            this.hp -= damage;
-            if (this.hp<= 0){
-                eventBus.emit('player dead' + this.id);
-            }
-        }, this);
+    eventBus.on('player dead', function(player) { //Player dies :<
+            playerTab.splice(playerTab.indexOf(player),1);
+    });
 
-        eventBus.on('player dead' + this.id, function() {
-            playerTab.splice(playerTab.indexOf(this["id"]),1);
-        }, this);
-    }
+    eventBus.on('damage', function(player, damage) { //Player takes damages
+        player.hp -= damage;
+        if (player.hp<= 0){
+             eventBus.emit('player dead', player);
+        }
+    });
+
 });
