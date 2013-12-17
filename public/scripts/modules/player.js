@@ -1,18 +1,31 @@
-define(['event_bus'], function (eventBus) {
+define(['event_bus','modules/playerTab'], function (eventBus) {
 
-	function Player(x, y, width, height, life, hitboxDistance, damageDeal, speed)
-	{
-		this.x = x;
-		this.y = y;
-		this.life = life;
-		this.width = width;
-		this.height	= height;
-		this.hitboxDistance = hitboxDistance;
-		this.damageDeal = damageDeal;
-		this.speed = speed;
-	}
+    function Player(properties) //where properties is an associative array ie : new Player({speed : "45", life : "10", spritesheet : "skin.png"})
+    {
+        for (var key in properties) {
+            this[key] = properties[key]; //ie this.x = x;
+        }
+    
+    // ****************** EMITERS ****************************
+        function doDamage(id){
+            eventBus.emit('damage' + id, this.damage);
+        }
 
-	eventBus.on('init player', function (object, x, y, width, height, life, hitboxDistance, damageDeal, speed) {
-		object.push(new Player(x, y, width, height, life, hitboxDistance, damageDeal, speed));
-    });
+    // ****************** RECEIVERS ****************************
+
+        eventBus.on('init player', function (properties) {
+            playerTab.push(new Player(properties));
+        });
+
+        eventBus.on('damage' + this.id, function(damage) {
+            this.hp -= damage;
+            if (this.hp<= 0){
+                eventBus.emit('player dead' + this.id);
+            }
+        }, this);
+
+        eventBus.on('player dead' + this.id, function() {
+            playerTab.splice(playerTab.indexOf(this["id"]),1);
+        }, this);
+    }
 });

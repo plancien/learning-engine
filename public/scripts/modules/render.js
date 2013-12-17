@@ -5,25 +5,26 @@ define(['event_bus'], function(eventBus) {
         the currentFrameY has to be change by the user when he want the animation to change.
         For exemple on a mouvement, the y will be top, left, right or bottom, the x made the things move.
     *******************************************************************************************************/
-    function addRenderCapabilities (object,x,y,spritesheet,nb_of_frame,currentFrameX,currentFrameY,frameWidth,frameHeight,width,height)
+    function addRenderCapabilities (context,object,x,y,spritesheet,nb_of_frame,currentFrameX,currentFrameY,frameWidth,frameHeight,width,height)
     {
-        object.prototype.f = 0;
-        object.prototype.x = x;
-        object.prototype.y = y;
-        object.prototype.spritesheet = spritesheet;
-        object.prototype.nb_of_frame = nb_of_frame;
-        object.prototype.currentFrameX = currentFrameX;
-        object.prototype.currentFrameY = currentFrameY;
-        object.prototype.frameWidth = frameWidth;
-        object.prototype.frameHeight = frameHeight;
-        object.prototype.width = width;
-        object.prototype.height = height;
+        object.f = 0;
+        object.x = x;
+        object.y = y;
+        object.spritesheet = spritesheet;
+        object.nb_of_frame = nb_of_frame;
+        object.currentFrameX = currentFrameX;
+        object.currentFrameY = currentFrameY;
+        object.frameWidth = frameWidth;
+        object.frameHeight = frameHeight;
+        object.width = width;
+        object.height = height;
         
-        object.prototype.render = function ()
+        object.render = function ()
         {
+            context.clearRect(this.x,this.y,this.width,this.height);
             context.drawImage(this.spritesheet,this.currentFrameX,this.currentFrameY,this.frameWidth,this.frameHeight,this.x,this.y,this.width,this.height);
         }
-        object.prototype.animate = function ()
+        object.animate = function ()
         {
             //the f is time frame, to fluidify the animation
             this.f++;
@@ -51,13 +52,13 @@ define(['event_bus'], function(eventBus) {
         height          : 32
     }
     *************************************************************/
-    eventBus.on('init', function (object,params) {
+    eventBus.on('init render', function (context,object,params) {
         var object = object;
         //position of the sprite in the canvas
         var x = params.x || 0;
         var y = params.y || 0;
         //image file
-        var spritesheet = params.img;   //required
+        var spritesheet = params.spritesheet;   //required
         //total number of horizontal frames
         var nb_of_frame = params.nb_of_frame || 0;
         //the frame where the animation begin
@@ -70,7 +71,10 @@ define(['event_bus'], function(eventBus) {
         var width = params.widht || frameWidth;
         var height = params.height || frameHeight;
 
-        addRenderCapabilities(object,x,y,spritesheet,nb_of_frame,currentFrameX,currentFrameY,frameWidth,frameHeight,width,height);
+        var image = new Image();
+        image.src = spritesheet;
+
+        addRenderCapabilities(context,object,x,y,image,nb_of_frame,currentFrameX,currentFrameY,frameWidth,frameHeight,width,height);
         eventBus.emit('render', object);
     });   
 });
