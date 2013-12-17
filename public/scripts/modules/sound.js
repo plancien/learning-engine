@@ -3,6 +3,7 @@ define(['event_bus',
 		'modules/canvas',
 		'modules/frames',
 		'modules/chrono',
+		'modules/add_domElem',
 ],function(eventBus,Gauge,Canvas,frames){
 
     var canvas = Canvas.create({width:100,height:20});
@@ -41,17 +42,7 @@ define(['event_bus',
 		if(guiNeeded)
 			eventBus.emit('gui sound',music);
 	});
-	eventBus.on('createElement',function(params){
-		var elemCreated=document.createElement(params.elem);
-		elemCreated.style.cssText=params.stylesheet || "";
-		elemCreated.id= params.id || Math.floor(Math.random()*1000)+" ";
-		if(params.typeEvent)
-			elemCreated.addEventListener(params.typeEvent,params.event);
-		if(document.getElementById(params.parent))
-			document.getElementById(params.parent).appendChild(elemCreated);
-		else
-			document.body.appendChild(elemCreated);
-	});
+	
 	eventBus.on('gui sound', function(music)
 	{
 		var CancutSound=true;
