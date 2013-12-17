@@ -1,18 +1,15 @@
 define(['event_bus'], function (eventBus) {
 
-    function Player(x, y, width, height, life, hitboxDistance, damageDeal, speed)
+    function Player(properties)
     {
-        this.x = x;
-        this.y = y;
-        this.life = life;
-        this.width = width;
-        this.height = height;
-        this.hitboxDistance = hitboxDistance;
-        this.damageDeal = damageDeal;
-        this.speed = speed;
+        //All the properties of the player that will be pushed at its creation
+        for (var key in properties) {
+            this[key] = properties[key];
+            finalProperties.push(properties[key]);
+        }
     }
 
-    eventBus.on('init player', function (object, x, y, width, height, life, hitboxDistance, damageDeal, speed) {
-        object.push(new Player(x, y, width, height, life, hitboxDistance, damageDeal, speed));
+    eventBus.on('init player', function (properties) {
+        playerTab.push(new Player(properties));
     });
 });
