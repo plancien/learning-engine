@@ -21,11 +21,14 @@ define(['event_bus'], function (eventBus) {
         else
             $('body').append(canvas);
 
-        return {
+        var object = {
             canvas : canvas[0],
             $canvas : canvas,
             context : canvas[0].getContext('2d'),
-        };  
+        };
+
+        eventBus.emit('newCanvas', object)
+        return object;  
     };
 
     return new Canvas();
