@@ -1,4 +1,4 @@
-define(['event_bus',function(eventBus)
+define(['event_bus'],function(eventBus)
 {
 	eventBus.on('createElement',function(params){
 		var elemCreated=document.createElement(params.elem);
