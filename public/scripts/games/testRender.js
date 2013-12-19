@@ -9,13 +9,14 @@ define([
     var canvas = Canvas.create();
 
     //fake object who will obtain the render method
-    var Test = function(){};
+    var Test = function(){
+        this.x = 200;
+        this.y = 150;
+    };
 
     //all the params you will need to animate the sprite
     var params = 
     {   
-        x : 200,
-        y : 100,
         spritesheet     : 'images/pupil1.png',
         nb_of_frame     : 4,
         currentFrameX   : 0,
@@ -33,6 +34,8 @@ define([
 
     //game loop
     eventBus.on("new frame", function(){
+        //I clear the canvas here because we don't have a loop with a lot of things rendered
+        canvas.context.clearRect(player.x-(player.width/2),player.y-(player.height/2),player.width,player.height);
         player.animate();
         player.render();
     });
