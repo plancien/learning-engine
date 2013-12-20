@@ -38,7 +38,7 @@ io.sockets.on('connection', function(socket) {
         {
             var file = fs.readFileSync(path+"/"+games[i], "utf8");
 
-            var nameStart  = file.search("@name") + 6;
+            var nameStart  = file.search("@name") + 5;
             var nameLength = file.search("@endName") - nameStart;
             var nameText   = file.substr(nameStart, nameLength);
             if (nameText === "") {
