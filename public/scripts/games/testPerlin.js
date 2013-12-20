@@ -1,3 +1,15 @@
+/*
+
+@name 
+    [TEST] Perlin 
+@endName
+
+@description
+    Testing game for the perlin noise module.
+@endDescription
+
+*/
+
 define([
     'event_bus',
     'modules/tools',

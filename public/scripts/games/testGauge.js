@@ -1,3 +1,15 @@
+/*
+
+@name 
+    [TEST] Gauge 
+@endName
+
+@description
+    Testing game for the gauge module.
+@endDescription
+
+*/
+
 define([
     'event_bus',
     'modules/gauge',

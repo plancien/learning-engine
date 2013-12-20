@@ -1,3 +1,15 @@
+/*
+
+@name 
+    [TEST] Render 
+@endName
+
+@description
+    Testing game for the render module.
+@endDescription
+
+*/
+
 define([
     'event_bus',
     'modules/render',
