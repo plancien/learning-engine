@@ -26,7 +26,6 @@ require(['connector'], function (socket) {
                 $("#mainMenu").hide();
 
                 var gameSelectedName = $("#gameList option:selected").data("fileName");
-                console.log(gameSelectedName);
                 var gameSelectedPath = "games/" + gameSelectedName;
 
                 socket.emit('ask css', gameSelectedName);
