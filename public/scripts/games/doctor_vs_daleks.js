@@ -1,11 +1,11 @@
 /*
 
 @name 
-    Doctor versus daleks 
+    The Doctor versus daleks 
 @endName
 
 @description
-    doctor who c'est génial !
+    Save Math Smith by clicking on the nasty daleks !
 @endDescription
 
 */

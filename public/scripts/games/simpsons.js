@@ -5,7 +5,7 @@
 @endName
 
 @description
-    Jeu basique, il faut cliquer sur Mr Burns !
+    Basic game, just click on Mr Burns and take care of Homer !
 @endDescription
 
 */
