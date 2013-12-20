@@ -31,7 +31,8 @@ io.sockets.on('connection', function(socket) {
     socket.on("ask gamesInfos", function() {
         var path  = "./public/scripts/games";
         var games = fs.readdirSync(path);
-        var names = [];
+        var gameNames    = [];
+        var fileNames    = [];
         var descriptions = [];
 
         for (var i = 0; i < games.length; i++) 
@@ -41,10 +42,12 @@ io.sockets.on('connection', function(socket) {
             var nameStart  = file.search("@name") + 5;
             var nameLength = file.search("@endName") - nameStart;
             var nameText   = file.substr(nameStart, nameLength);
+            var fileName = games[i].substr(0, games[i].length-3);
             if (nameText === "") {
-                nameText = games[i].substr(0, games[i].length-3).replace(/_/g, " ");
+                nameText = fileName;
             }
-            names.push(trim(nameText));
+            gameNames.push(trim(nameText));
+            fileNames.push(fileName);
 
             var descriptionStart  = file.search("@description") + 12;
             var descriptionLength = file.search("@endDescription") - descriptionStart;
@@ -52,7 +55,7 @@ io.sockets.on('connection', function(socket) {
             descriptions.push(trim(descriptionText));
         }
 
-        socket.emit('send gamesInfos', { names : names, descriptions : descriptions });    
+        socket.emit('send gamesInfos', { gameNames : gameNames, fileNames : fileNames, descriptions : descriptions });    
     });
 
     socket.on("ask css", function(data) {
