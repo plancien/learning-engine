@@ -5,7 +5,7 @@ define(['event_bus',
 		'modules/chrono',
 		'modules/add_domElem',
 ],function(eventBus,Gauge,Canvas,frames){
-
+	var stockSound=[];
     var canvas = Canvas.create({width:100,height:20});
 	canvas.canvas.style.marginLeft="50%";
 	canvas.canvas.style.left="235px";
@@ -38,6 +38,8 @@ define(['event_bus',
 		music.setAttribute('loop', loop);
 		music.volume=0.5;
 		music.play();
+		stockSound.push(music);
+		console.log(stockSound);
 		eventBus.emit("gauge sound",music);
 		if(guiNeeded)
 			eventBus.emit('gui sound',music);
@@ -52,31 +54,46 @@ define(['event_bus',
 	
 		var clickPlus = function()
 		{
-			if(music.volume<1)
+			for(var i = 0; i<stockSound.length; i++)
 			{
-				music.volume+=0.1;
+				console.log(stockSound[i].volume);
+				if(stockSound[i].volume<1)
+				{
+					stockSound[i].volume+=0.1;
+				}
 			}
 		}
 		var clickLess = function()
 		{
-			if(music.volume>0)
+			for(var i = 0; i<stockSound.length; i++)
 			{
-				music.volume-=0.1;
+				if(stockSound[i].volume>0)
+				{
+					stockSound[i].volume-=0.1;
+				}
 			}
 		}
 		var clickCut=function()
 		{
-			if(CancutSound==true)
+			for(var i = 0; i<stockSound.length; i++)
 			{
-				music.volume=0;
-				cutSound.style.backgroundImage="url('../images/Off.png')";
-				CancutSound=false;
-			}
-			else
-			{
-				music.volume=0.5;	
-				cutSound.style.backgroundImage="url('../images/On.png')";
-				CancutSound=true;
+				if(CancutSound==true)
+				{
+					stockSound[i].volume=0;
+					cutSound.style.backgroundImage="url('../images/Off.png')";
+					if(i+1===stockSound.length)
+					{
+						console.log("toto");
+						CancutSound=false;
+					}
+				}
+				else
+				{
+					stockSound[i].volume=0.5;	
+					cutSound.style.backgroundImage="url('../images/On.png')";
+					if(i+1===stockSound.length)
+						CancutSound=true;
+				}
 			}
 		}
 		var ManageGauge = function()

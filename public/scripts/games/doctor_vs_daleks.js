@@ -19,6 +19,7 @@ define([
 ], function (eventBus) {
     
 	eventBus.emit("add sound" , true, 'sounds/playstation.mp3',true);
+	eventBus.emit("add sound" , true, 'sounds/daft_punk.mp3',false);
     eventBus.emit('init bonus', false, 'images/doctor.png');
     eventBus.emit('init bonus', true,  'images/dalek.png');
 
