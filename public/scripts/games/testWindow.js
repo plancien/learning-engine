@@ -12,11 +12,26 @@
 
 define([
     'event_bus',
-    'modules/window_size'
-], function (eventBus, window_size) {
+    'modules/window_size',
+    'modules/canvas'
+], function (eventBus, WindowSize, Canvas) {
 
-    eventBus.emit('get');
+    //var canvas = Canvas.create('canvasId');
+
+    var taille = WindowSize.getWindowSize();
+
+    var params = {
+        width: taille.width,
+        height: taille.height
+    }
+
+    var canvas = Canvas.create(params);
+    
     window.onresize = function () {
-        eventBus.emit('get');
+        taille = WindowSize.getWindowSize();
+        canvas.width = taille.width;
+        canvas.height = taille.height;
+
+        console.log(canvas.width);
     };
 });
