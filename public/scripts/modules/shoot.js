@@ -9,16 +9,15 @@ define(['event_bus','modules/frames'], function(eventBus, frames){
             this.Y = Y;
             this.direction = direction;
             this.speed = speed;
-            this.canvas = canvas;
             this.lifetime = 0
         }
 
     eventBus.on('missile', function (X,Y,direction, speed,canvas) {
         ArrayShoot.push(new Missile(X,Y,direction, speed,canvas))
 
-        eventBus.on("new frame", function()
+    });
+        eventBus.on("dat new frame", function(canvas)
         {
-            canvas.context.clearRect(0,0,1200,1200);
             for (var i = 0; i < ArrayShoot.length; i++)
             {
                 ArrayShoot[i].lifetime ++;
@@ -43,6 +42,5 @@ define(['event_bus','modules/frames'], function(eventBus, frames){
             }
 
         });
-    });
 
 });

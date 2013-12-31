@@ -14,10 +14,17 @@ define([
     'event_bus',
     'modules/canvas',
     'modules/shoot',
+    'modules/playerShooter',
+    'modules/frames'
 ], function (eventBus, Canvas, shoot) { 
+
+	eventBus.on("new frame", function()
+        {
+            canvas.context.clearRect(0,0,1200,1200);
+            eventBus.emit('dat new frame',canvas);
+        });
 
     var canvas = Canvas.create();
 
-    eventBus.emit('missile', 200,50,1,5,canvas);
-    eventBus.emit('missile', 250,100,1,5,canvas);
+    eventBus.emit('new player', 5, 5, 300, 100,canvas);
 });
