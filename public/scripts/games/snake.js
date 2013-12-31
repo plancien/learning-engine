@@ -1,11 +1,11 @@
 /*
 
 @name 
-    [TEST] Window 
+    Snake Game 
 @endName
 
 @description
-    Testing game for the window module.
+    The classic Snake game.
 @endDescription
 
 */
@@ -26,12 +26,19 @@ define([
     }
 
     var canvas = Canvas.create(params);
+    var context = canvas.context;
+    
+    context.fillStyle = "#000000";
+    context.fillRect(0, 0, taille.width-200, taille.height-200);
     
     window.onresize = function () {
+        context.clearRect(0, 0, taille.width, taille.height)
         taille = WindowSize.getWindowSize();
-        canvas.width = taille.width;
-        canvas.height = taille.height;
-
-        console.log(canvas.width);
+        context.fillStyle = "#000000";
+        context.fillRect(0, 0, taille.width-200, taille.height-200);
     };
+
+     function gameLoop () {
+        setTimeout(gameLoop, 200 + Math.random()*300);
+    }
 });
