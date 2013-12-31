@@ -1,33 +1,48 @@
 define(['event_bus','modules/frames'], function(eventBus, frames){
 
-    eventBus.on('missile', function (X,Y,direction, speed,canvas) {
         
-        var lifetime = 0;
+        var ArrayShoot = [];
 
-        eventBus.on("new frame", function(){
-        
-        canvas.context.clearRect(0,0,1200,1200);
-        lifetime ++;
-        if (direction == 1)
+        var Missile = function(X,Y,direction, speed,canvas)
         {
-            X-=speed;
+            this.X = X;
+            this.Y = Y;
+            this.direction = direction;
+            this.speed = speed;
+            this.canvas = canvas;
+            this.lifetime = 0
         }
-        else if (direction == 2)
+
+    eventBus.on('missile', function (X,Y,direction, speed,canvas) {
+        ArrayShoot.push(new Missile(X,Y,direction, speed,canvas))
+
+        eventBus.on("new frame", function()
         {
-            X+=speed;
-        }
-        else if (direction == 3)
-        {
-            Y-=speed;
-        }
-        else if (direction == 4)
-        {
-            Y+=speed;
-        }
-        canvas.context.fillStyle = "rgb(0,253,0)";
-        canvas.context.fillRect(X,Y, 5, 5);
+            canvas.context.clearRect(0,0,1200,1200);
+            for (var i = 0; i < ArrayShoot.length; i++)
+            {
+                ArrayShoot[i].lifetime ++;
+                if (ArrayShoot[i].direction == 1)
+                {
+                    ArrayShoot[i].X-=ArrayShoot[i].speed;
+                }
+                else if (ArrayShoot[i].direction == 2)
+                {
+                    ArrayShoot[i].X+=ArrayShoot[i].speed;
+                }
+                else if (ArrayShoot[i].direction == 3)
+                {
+                    ArrayShoot[i].Y-=ArrayShoot[i].speed;
+                }
+                else if (ArrayShoot[i].direction == 4)
+                {
+                    ArrayShoot[i].Y+=ArrayShoot[i].speed;
+                }
+                canvas.context.fillStyle = "rgb(0,253,0)";
+                canvas.context.fillRect(ArrayShoot[i].X,ArrayShoot[i].Y, 5, 5);
+            }
 
         });
-
     });
+
 });
