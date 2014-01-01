@@ -1,8 +1,6 @@
 var express = require('express');
 var app     = express();
 
-var id = 0;
-
 var fs      = require('fs');
 
 var server  = require('http').createServer(app);
@@ -28,36 +26,8 @@ function trim(myString)
 }
 
 io.sockets.on('connection', function(socket) {
-    
-    socket.set('id', id);
-
     io.sockets.emit('welcome', 'hello');
-
-    socket.on('nouveau_client', function(pseudo) {
-    id++;
-    socket.set('id', id);
-
-       // eventBus.emit('new player', 5, 5, 300, 100,canvas);
-        socket.broadcast.emit('nouveau_client');
-    });
-
-    socket.on('StoreXY', function (X, Y) {
-        
-        socket.emit('Update player', X, Y);
-        socket.broadcast.emit('Update player', X, Y);
-
-
-    });
-
-
-    socket.on('MyID', function () {
-        socket.get('id', function (error, id) {
-            console.log("myID is" + id);
-            socket.emit('create',id);
-        });
-    }); 
-
-
+    
     socket.on("ask gamesInfos", function() {
         var path  = "./public/scripts/games";
         var games = fs.readdirSync(path);
