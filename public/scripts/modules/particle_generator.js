@@ -22,7 +22,7 @@ define(['event_bus','modules/frames'], function(eventBus){
             this.y -= Math.sin(this.angle)* this.speed;
             if(this.duration <= 0)
             {
-                particleTable.splice(this, 1);
+                particleTable.splice(particleTable.indexOf(this),1);
             }
         }
         this.draw = function() {    
