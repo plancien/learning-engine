@@ -8,8 +8,34 @@ html
     script(type="text/javascript", src="/scripts/ext_libs/require.js", data-main="/scripts/main")
   body
     div#mainMenu
-        h1 Hello !
+        h1 Play an existant game !
         div#gameSelect
             select#gameList
             button.button Play !
-            div#gameDescription Description du jeu
+            div#gameDescription Game description.
+        h1 Create a custom game !
+        form#gameCreation
+            |Question : 
+            input#question
+            br
+            |Bonus image : 
+            //- input#bonusImg(type='file')
+            select#bonusImg
+                option(value="images/burns.png") Burns
+                option(value="images/dalek.png") Dalek
+                option(value="images/doctor.png") Doctor
+                option(value="images/homer.png") Homer
+            br
+            |Malus image : 
+            //- input#malusImg(type='file')
+            select#malusImg
+                option(value="images/homer.png") Homer
+                option(value="images/doctor.png") Doctor
+                option(value="images/burns.png") Burns
+                option(value="images/dalek.png") Dalek
+            br
+            |Game Model : 
+            select#modelList
+            br
+            div#modelDescription Model description.
+            input(type='submit', value='Create !')

@@ -27,6 +27,36 @@ function trim(myString)
     return myString.replace(/^\s+/g,'').replace(/\s+$/g,'');
 }
 
+function getFileInfos(path)
+{
+    var games = fs.readdirSync(path);
+    var gameNames    = [];
+    var fileNames    = [];
+    var descriptions = [];
+
+    for (var i = 0; i < games.length; i++) 
+    {
+        var file = fs.readFileSync(path+"/"+games[i], "utf8");
+
+        var nameStart  = file.search("@name") + 5;
+        var nameLength = file.search("@endName") - nameStart;
+        var nameText   = file.substr(nameStart, nameLength);
+        var fileName = games[i].substr(0, games[i].length-3);
+        if (nameText === "") {
+            nameText = fileName;
+        }
+        gameNames.push(trim(nameText));
+        fileNames.push(fileName);
+
+        var descriptionStart  = file.search("@description") + 12;
+        var descriptionLength = file.search("@endDescription") - descriptionStart;
+        var descriptionText   = file.substr(descriptionStart, descriptionLength);
+        descriptions.push(trim(descriptionText));
+    }
+
+    return { names : gameNames, fileNames : fileNames, descriptions : descriptions };
+}
+
 io.sockets.on('connection', function(socket) {
     
     socket.set('id', id);
@@ -52,40 +82,15 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('MyID', function () {
         socket.get('id', function (error, id) {
-            console.log("myID is" + id);
             socket.emit('create',id);
         });
     }); 
 
 
-    socket.on("ask gamesInfos", function() {
-        var path  = "./public/scripts/games";
-        var games = fs.readdirSync(path);
-        var gameNames    = [];
-        var fileNames    = [];
-        var descriptions = [];
-
-        for (var i = 0; i < games.length; i++) 
-        {
-            var file = fs.readFileSync(path+"/"+games[i], "utf8");
-
-            var nameStart  = file.search("@name") + 5;
-            var nameLength = file.search("@endName") - nameStart;
-            var nameText   = file.substr(nameStart, nameLength);
-            var fileName = games[i].substr(0, games[i].length-3);
-            if (nameText === "") {
-                nameText = fileName;
-            }
-            gameNames.push(trim(nameText));
-            fileNames.push(fileName);
-
-            var descriptionStart  = file.search("@description") + 12;
-            var descriptionLength = file.search("@endDescription") - descriptionStart;
-            var descriptionText   = file.substr(descriptionStart, descriptionLength);
-            descriptions.push(trim(descriptionText));
-        }
-
-        socket.emit('send gamesInfos', { gameNames : gameNames, fileNames : fileNames, descriptions : descriptions });    
+    socket.on("ask gamesInfos", function() {        
+        var games  = getFileInfos("./public/scripts/games");
+        var models = getFileInfos("./public/scripts/game_models");
+        socket.emit('send gamesInfos', { games : games, models : models });    
     });
 
     socket.on("ask css", function(data) {
