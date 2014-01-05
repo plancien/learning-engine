@@ -1,6 +1,16 @@
 require(['connector'], function (socket) {
     
     $(function() {
+        socket.on("send images names", function(names) {
+            loadImages(names);
+        })
+        socket.emit("ask images names");
+    });
+
+
+    function postImageLoad (images){
+
+        var images = images;
         socket.emit("ask gamesInfos");
 
         socket.on("send gamesInfos", function(infos) {
@@ -48,8 +58,8 @@ require(['connector'], function (socket) {
                     $("head").append("<link rel='stylesheet' type='text/css' href='" + data + "'>");
                 });
 
-                require(['game', gameSelectedPath], function (game) {
-                    game.init();            
+                require(['game', gameSelectedPath], function (game, gameSelectedPath) {
+                    game.init(undefined, images);
                 });
             });
 
@@ -74,10 +84,46 @@ require(['connector'], function (socket) {
 
                 require(['game', modelSelectedPath], function (game, setGame) {
                     setGame(params);            
-                    game.init(question);
+                    game.init(question, images);
                 });
             });
         });
-    });
+    }
+
+
+    function loadImages(names){
+
+        var Images = function(){
+            this.imagesLoaded = 0;
+            this.files = {};
+            this.names = names;
+        }
+        var images = new Images();
+        for(var i = 0; i < names.length; i++){
+            var smallName = names[i].split(".")[0];
+            images.files[smallName] = new Image();
+            images.files[smallName].src = "./images/"+names[i];
+            images.files[smallName].onload = function(){images.imagesLoaded++};
+        }
+
+        loading(images);
+    }
+
+    function loading(images){
+        if(images.imagesLoaded >= images.names.length-1){
+            postImageLoad(images.files);
+        }else{
+            requestAnimFrame(function(){loading(images)});
+        }
+    }
+
+    window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+        };
+    })()
 
 });

@@ -93,6 +93,11 @@ io.sockets.on('connection', function(socket) {
         socket.emit('send gamesInfos', { games : games, models : models });    
     });
 
+    socket.on("ask images names", function() {
+        var names = fs.readdirSync("./public/images");
+        socket.emit('send images names', names)
+    });
+
     socket.on("ask css", function(data) {
         var path = "css/" + data + ".css"
         if(fs.existsSync("./public/"+path)) {
