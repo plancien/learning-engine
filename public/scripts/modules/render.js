@@ -144,7 +144,7 @@ define(['event_bus'], function(eventBus) {
     })
 
     eventBus.on('render object', function (object, context) {
-        if(params.object !== undefined || context !== undefined){
+        if(object !== undefined || context !== undefined){
             if(object.render !== undefined){
                 object.render(context);
             }
@@ -152,7 +152,7 @@ define(['event_bus'], function(eventBus) {
     })
 
     eventBus.on('animate object', function (object) {
-        if(params.object !== undefined || context !== undefined){
+        if(object !== undefined){
             if(object.animate !== undefined){
                 object.animate();
             }
