@@ -51,7 +51,7 @@ define([
     var patternImage = new Image();
     patternImage.src = "./images/+.png";
 
-    //An exemple of animation structutre
+    //An exemple of animation structure
     var goDownAnimation = {
                             name : "goDown",
                             sprites : [
@@ -91,13 +91,13 @@ define([
     eventBus.on("new frame", function (){
         //I clear the canvas here because we don't have a loop with a lot of things rendered
         canvas.context.clearRect(0,0,canvas.canvas.width, canvas.canvas.height);
-        pattern.render(canvas.context);
-        rotatedPattern.render(canvas.context);
-        fixPlayer.render(canvas.context);
-        movingPlayer.animate();
-        movingPlayer.render(canvas.context);
-        rotatedMovingPlayer.animate();
-        rotatedMovingPlayer.render(canvas.context);
+        eventBus.emit("render object",pattern,canvas.context)
+        eventBus.emit("render object",rotatedPattern,canvas.context)
+        eventBus.emit("render object",fixPlayer,canvas.context)
+        eventBus.emit("animate object",movingPlayer)
+        eventBus.emit("render object",movingPlayer,canvas.context)
+        eventBus.emit("animate object",rotatedMovingPlayer)
+        eventBus.emit("render object",rotatedMovingPlayer,canvas.context)
     });
 
 
