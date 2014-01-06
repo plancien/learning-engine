@@ -6,6 +6,7 @@ define(['event_bus',
 		'modules/add_domElem',
 ],function(eventBus,Gauge,Canvas,frames){
 	var stockSound=[];
+	var cappingGui=false;
     var canvas = Canvas.create({width:100,height:20});
 	canvas.canvas.style.marginLeft="50%";
 	canvas.canvas.style.left="235px";
@@ -41,8 +42,11 @@ define(['event_bus',
 		stockSound.push(music);
 		console.log(stockSound);
 		eventBus.emit("gauge sound",music);
-		if(guiNeeded)
+		if(guiNeeded && !cappingGui)
+		{
 			eventBus.emit('gui sound',music);
+			cappingGui=true;	
+		}	
 	});
 	
 	eventBus.on('gui sound', function(music)
@@ -105,8 +109,5 @@ define(['event_bus',
 		eventBus.emit("createElement", {elem:"div", stylesheet:cssPlusSound, id:"plusSound", parent:"containGui",typeEvent:"click", event:clickPlus});
 		eventBus.emit("createElement", {elem:"div", stylesheet:cssCutSound, id:"cutSound", parent:"containGui", typeEvent:"click", event:clickCut});
 		
-	// Boutons du son +/-/cut
-
-	
 	});
 });
