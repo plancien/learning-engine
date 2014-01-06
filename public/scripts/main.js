@@ -18,7 +18,7 @@ require(['connector'], function (socket) {
         });
 
         socket.on('inject template', function(data) {
-            console.log(data)
+            $("#modelParams").empty();
             $("#modelParams").append(data);
         });
 
@@ -55,6 +55,8 @@ require(['connector'], function (socket) {
             $("#modelList").change(function(e) {
                 var description = $("#modelList option:selected").data("description");
                 $("#modelDescription").html(description);
+
+                socket.emit("ask template", $("#modelList option:selected").data("fileName"));
             });
 
             $("#gameSelect button").click(function(e) {

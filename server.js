@@ -108,9 +108,12 @@ io.sockets.on('connection', function(socket) {
 
     socket.on("ask template", function(data) {
         var path = "./public/templates/" + data + ".html";
+        var template = "";
         if(fs.existsSync(path)) {
-            socket.emit("inject template", fs.readFileSync(path, "utf8"));
+            template = fs.readFileSync(path, "utf8");
         }
+        console.log(template)
+        socket.emit("inject template", template);
     });
 
     socket.on('coords', function(data){
