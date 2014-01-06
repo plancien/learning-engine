@@ -33,6 +33,7 @@ function getFileInfos(path)
     var gameNames    = [];
     var fileNames    = [];
     var descriptions = [];
+    var templates    = [];
 
     for (var i = 0; i < games.length; i++) 
     {
@@ -54,7 +55,7 @@ function getFileInfos(path)
         descriptions.push(trim(descriptionText));
     }
 
-    return { names : gameNames, fileNames : fileNames, descriptions : descriptions };
+    return { names : gameNames, fileNames : fileNames, descriptions : descriptions, templates : templates };
 }
 
 io.sockets.on('connection', function(socket) {
@@ -102,6 +103,13 @@ io.sockets.on('connection', function(socket) {
         var path = "css/" + data + ".css"
         if(fs.existsSync("./public/"+path)) {
             socket.emit("inject css", path);
+        }
+    });
+
+    socket.on("ask template", function(data) {
+        var path = "./public/templates/" + data + ".html";
+        if(fs.existsSync(path)) {
+            socket.emit("inject template", fs.readFileSync(path, "utf8"));
         }
     });
 

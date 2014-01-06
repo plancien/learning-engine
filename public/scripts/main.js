@@ -13,6 +13,15 @@ require(['connector'], function (socket) {
         var images = images;
         socket.emit("ask gamesInfos");
 
+        socket.on('inject css', function(data) {
+            $("head").append("<link rel='stylesheet' type='text/css' href='" + data + "'>");
+        });
+
+        socket.on('inject template', function(data) {
+            console.log(data)
+            $("#modelParams").append(data);
+        });
+
         socket.on("send gamesInfos", function(infos) {
             for (var i = 0; i < infos.games.names.length; i++)
             {
@@ -36,6 +45,7 @@ require(['connector'], function (socket) {
 
             $("#gameDescription").html(infos.games.descriptions[0]);
             $("#modelDescription").html(infos.models.descriptions[0]);
+            socket.emit("ask template", infos.models.fileNames[0]);
 
             $("#gameList").change(function(e) {
                 var description = $("#gameList option:selected").data("description");
@@ -54,9 +64,7 @@ require(['connector'], function (socket) {
                 var gameSelectedPath = "games/" + gameSelectedName;
 
                 socket.emit('ask css', gameSelectedName);
-                socket.on('inject css', function(data) {
-                    $("head").append("<link rel='stylesheet' type='text/css' href='" + data + "'>");
-                });
+                
 
                 require(['game', gameSelectedPath], function (game, gameSelectedPath) {
                     game.init(undefined, images);
