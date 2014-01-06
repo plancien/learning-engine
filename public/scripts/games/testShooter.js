@@ -22,6 +22,8 @@ define([
     var socket = io.connect('http://localhost:8075');
     socket.emit('nouveau_client');
 
+    var tabX = [];
+    var tabY = [];
     
         
             socket.emit('MyID');
@@ -32,9 +34,18 @@ define([
             console.log(id);
             });
 
-            socket.on('Update player', function (X, Y) {
+            socket.on('Update player', function (X, Y, id) {
+
             canvas.context.clearRect(0,0,1200,1200);
-            eventBus.emit('DrawThis', X, Y);
+            
+            tabX[id] = X;
+            tabY[id] = Y;
+
+            for (var i = 0; i < tabX.length; i++) 
+            { 
+                eventBus.emit('DrawThis', tabX[i], tabY[i]);
+            }
+
             });
 
         

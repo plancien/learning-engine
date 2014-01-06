@@ -1,6 +1,7 @@
 var express = require('express');
 var app     = express();
 
+var idtest = 0;
 var id = 0;
 
 var fs      = require('fs');
@@ -73,9 +74,13 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('StoreXY', function (X, Y) {
-        
-        socket.emit('Update player', X, Y);
-        socket.broadcast.emit('Update player', X, Y);
+        idtest++;
+        if (idtest>id)
+            {
+                idtest = 1
+            }
+        socket.emit('Update player', X, Y, idtest);
+        socket.broadcast.emit('Update player', X, Y, idtest);
 
 
     });
