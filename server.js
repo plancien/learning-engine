@@ -92,6 +92,10 @@ io.sockets.on('connection', function(socket) {
         });
     }); 
 
+    socket.on("ask images names", function() {
+        var names = fs.readdirSync("./public/images");
+        socket.emit('send images names', names)
+    });
 
     socket.on("ask gamesInfos", function() {        
         var games  = getFileInfos("./public/scripts/games");
