@@ -13,8 +13,8 @@ define(['event_bus', "connector"], function(eventBus, socket) {
         };
     })()
 
-    eventBus.on("load images", function(callback){
-
+    eventBus.on("load images", function(){
+        
         socket.on("send images names", function(names) {
 
             var images = {
@@ -22,23 +22,31 @@ define(['event_bus', "connector"], function(eventBus, socket) {
             }
 
             for(var i = 0; i < names.length; i++){
-                var smallName = names[i].split(".")[0];
-                images.files[smallName] = new Image();
-                images.files[smallName].src = "./images/"+names[i];
-                images.files[smallName].onload = function(){images.imagesLoaded++};
+                var nameSplitted = names[i].split(".");
+                var extension = nameSplitted[1];
+                var smallName = nameSplitted[0];
+                if(extension !== "png" && extension !== "jpg" && extension !== "gif"){
+                    names.splice(i,1);
+                    i--;
+                    break;
+                }
+                images[smallName] = new Image();
+                images[smallName].src = "./images/"+names[i];
+                images[smallName].onload = function(){images.imagesLoaded++};
             }
-            loadImages(callback, images);
+            loadImages(images);
         })
 
         socket.emit("ask images names");
     });
 
-    function loadImages (callback, images){
+    function loadImages (images){
+        console.log(Object.keys(images));
         if(images.imagesLoaded >= Object.keys(images).length -1){
             delete(images.imagesLoaded);
-            callback(images);
+            eventBus.emit("images loaded", images);
         }else{
-            requestAnimFrame(function(){loadImages(callback, names)});
+            requestAnimFrame(function(){loadImages(images)});
         }
     }
 });
