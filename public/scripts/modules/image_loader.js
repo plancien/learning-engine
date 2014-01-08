@@ -14,7 +14,7 @@ define(['event_bus', "connector"], function(eventBus, socket) {
     })()
 
     eventBus.on("load images", function(){
-        
+
         socket.on("send images names", function(names) {
 
             var images = {
@@ -41,7 +41,6 @@ define(['event_bus', "connector"], function(eventBus, socket) {
     });
 
     function loadImages (images){
-        console.log(Object.keys(images));
         if(images.imagesLoaded >= Object.keys(images).length -1){
             delete(images.imagesLoaded);
             eventBus.emit("images loaded", images);
