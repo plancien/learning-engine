@@ -19,8 +19,8 @@ define([
     
     return function(params)
     {
-        var bonusPoints = params.bonusPoints || 1;
-        var malusPoints = params.malusPoints || -3;
+        var bonusPoints = parseInt($("#bonusPoints")[0].value) || 1;
+        var malusPoints = parseInt($("#malusPoints")[0].value) || -3;
 
         eventBus.emit('init bonus', false, params.bonusUrl);
         eventBus.emit('init bonus', true,  params.malusUrl);
@@ -49,7 +49,6 @@ define([
         eventBus.on('init', function (_container) {
             
             container = _container;
-        console.log(params.bonusUrl);
             
             gameLoop();
 

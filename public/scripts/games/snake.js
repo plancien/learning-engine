@@ -13,10 +13,12 @@
 define([
     'event_bus',
     'modules/window_size',
-    'modules/canvas'
+    'modules/canvas',
+    'modules/score',
+    'modules/sound'
 ], function (eventBus, WindowSize, Canvas) {
 
-    //var canvas = Canvas.create('canvasId');
+    eventBus.emit("add sound" , true, 'sounds/daft_punk.mp3',true);
 
     var taille = WindowSize.getWindowSize();
 
@@ -28,13 +30,19 @@ define([
     var canvas = Canvas.create(params);
     var ctx = canvas.context;
 
+    if(taille.height > 600)
+        taille.height = 600;
+
+    if(taille.width > 800)
+        taille.width = 800;
+
     var h = taille.height;
-    var w = taille.width
+    var w = taille.width;
 
     var cw = 10;
     var d;
     var food;
-    var score;
+    var badFood;
     
     var snake_array;
     
@@ -46,8 +54,8 @@ define([
         taille = WindowSize.getWindowSize();
         ctx.fillStyle = "#000000";
         ctx.fillRect(0, 0, taille.width-200, taille.height-200);
-        w = taille.width - 200;
-        h = taille.height - 200;
+        w = 800;
+        h = 800;
     };
 
     
@@ -55,6 +63,7 @@ define([
         d = "right";
         create_snake();
         create_food();
+        create_badFood();
 
         score = 0;
         
@@ -78,6 +87,13 @@ define([
             y: Math.round(Math.random()*(h-cw)/cw), 
         };
     }
+
+    function create_badFood() {
+        badFood = {
+            x: Math.round(Math.random()*(w-cw)/cw), 
+            y: Math.round(Math.random()*(h-cw)/cw), 
+        };
+    }
     
     function paint() {
         ctx.clearRect(0, 0, w, h);
@@ -92,6 +108,9 @@ define([
         else if(d == "up") ny--;
         else if(d == "down") ny++;
 
+        if(nx >= w)
+            nx = w/4;
+        
         if(nx == -1 || nx == w/cw || ny == -1 || ny == h/cw || check_collision(nx, ny, snake_array)) {
             init();
             return;
@@ -99,15 +118,23 @@ define([
 
         if(nx == food.x && ny == food.y) {
             var tail = {x: nx, y: ny};
-            score++;
+
+            eventBus.emit('add points', 1);
 
             create_food();
-        }
-        else {
+        } else {
             var tail = snake_array.pop();
             tail.x = nx; tail.y = ny;
         }
-        
+
+
+        if(nx == badFood.x && ny == badFood.y) {
+
+            eventBus.emit('add points', -3);
+
+            create_badFood();
+        }
+                
         snake_array.unshift(tail);
         
         for(var i = 0; i < snake_array.length; i++) {
@@ -118,9 +145,14 @@ define([
         
 
         paint_cell(food.x, food.y);
-
-        var score_text = "Score: " + score;
-        ctx.fillText(score_text, 5, h-5);
+        paint_badCell(badFood.x, badFood.y);
+    }
+    
+    function paint_badCell(x, y) {
+        ctx.fillStyle = "red";
+        ctx.fillRect(x*cw, y*cw, cw, cw);
+        ctx.strokeStyle = "black";
+        ctx.strokeRect(x*cw, y*cw, cw, cw);
     }
 
     function paint_cell(x, y) {

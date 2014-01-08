@@ -8,28 +8,28 @@ define(['event_bus'], function (eventBus) {
     
     function addSquareColliderCapabilities (object, collidableObjects)
     {
-        object.prototype.detectCollision = function ()
+        object.prototype.detectSquareCollision = function ()
         {
             for (var i = 0; i < collidableObjects.length; i++) 
             {
-                if (collidableObjects[i] != object) 
+                if (collidableObjects[i] != this) 
                 {
                     var colliderOfObject = collidableObjects[i].sides;
-                    if ((object.y + object.height >= colliderOfObject[2].y) && (object.y <= colliderOfObject[2].y + colliderOfObject[2].height) && (object.x + object.width >= colliderOfObject[2].x) &&(object.x <= colliderOfObject[2].x + colliderOfObject[2].width))
+                    if ((this.y + this.height >= colliderOfObject[2].y) && (this.y <= colliderOfObject[2].y + colliderOfObject[2].height) && (this.x + this.width >= colliderOfObject[2].x) &&(this.x <= colliderOfObject[2].x + colliderOfObject[2].width))
                     {
-                        eventBus.emit('collision', object, collidableObjects, "right");
+                        eventBus.emit('collision', this, "right");
                     }
-                    if ((object.y + object.height >= colliderOfObject[0].y) && (object.y <= colliderOfObject[0].y + colliderOfObject[0].height) && (object.x + object.width >= colliderOfObject[0].x) &&(object.x <= colliderOfObject[0].x + colliderOfObject[0].width))
+                    if ((this.y + this.height >= colliderOfObject[0].y) && (this.y <= colliderOfObject[0].y + colliderOfObject[0].height) && (this.x + this.width >= colliderOfObject[0].x) &&(this.x <= colliderOfObject[0].x + colliderOfObject[0].width))
                     {
-                        eventBus.emit('collision', object, collidableObjects, "left");
+                        eventBus.emit('collision', this, "left");
                     }
-                    if ((object.y + object.height >= colliderOfObject[1].y) && (object.y <= colliderOfObject[1].y + colliderOfObject[1].height) && (object.x + object.width >= colliderOfObject[1].x) &&(object.x <= colliderOfObject[1].x + colliderOfObject[1].width))
+                    if ((this.y + this.height >= colliderOfObject[1].y) && (this.y <= colliderOfObject[1].y + colliderOfObject[1].height) && (this.x + this.width >= colliderOfObject[1].x) &&(this.x <= colliderOfObject[1].x + colliderOfObject[1].width))
                     {
-                        eventBus.emit('collision', object, collidableObjects, "top");
+                        eventBus.emit('collision', this, "top");
                     }
-                    if ((object.y + object.height >= colliderOfObject[3].y) && (object.y <= colliderOfObject[3].y + colliderOfObject[3].height) && (object.x + object.width >= colliderOfObject[3].x) &&(object.x <= colliderOfObject[3].x + colliderOfObject[3].width))
+                    if ((this.y + this.height >= colliderOfObject[3].y) && (this.y <= colliderOfObject[3].y + colliderOfObject[3].height) && (this.x + this.width >= colliderOfObject[3].x) &&(this.x <= colliderOfObject[3].x + colliderOfObject[3].width))
                     {
-                        eventBus.emit('collision', object, collidableObjects, "bottom");
+                        eventBus.emit('collision', this, "bottom");
                     }
                 }
             }

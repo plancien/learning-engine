@@ -16,11 +16,12 @@ define(['event_bus','modules/frames'], function(eventBus, frames){
         ArrayShoot.push(new Missile(X,Y,direction, speed,canvas))
 
     });
-        eventBus.on("dat new frame", function(canvas)
+        eventBus.on("DrawThat", function(canvas)
         {
             for (var i = 0; i < ArrayShoot.length; i++)
             {
                 ArrayShoot[i].lifetime ++;
+
                 if (ArrayShoot[i].direction == 1)
                 {
                     ArrayShoot[i].X-=ArrayShoot[i].speed;
@@ -39,6 +40,11 @@ define(['event_bus','modules/frames'], function(eventBus, frames){
                 }
                 canvas.context.fillStyle = "rgb(0,253,0)";
                 canvas.context.fillRect(ArrayShoot[i].X,ArrayShoot[i].Y, 5, 5);
+
+                if (ArrayShoot[i].lifetime>100)
+                {
+                    ArrayShoot.splice(i,1);
+                }
             }
 
         });

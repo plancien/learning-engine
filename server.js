@@ -1,6 +1,7 @@
 var express = require('express');
 var app     = express();
 
+var idtest = 0;
 var id = 0;
 
 var fs      = require('fs');
@@ -33,6 +34,7 @@ function getFileInfos(path)
     var gameNames    = [];
     var fileNames    = [];
     var descriptions = [];
+    var templates    = [];
 
     for (var i = 0; i < games.length; i++) 
     {
@@ -54,7 +56,7 @@ function getFileInfos(path)
         descriptions.push(trim(descriptionText));
     }
 
-    return { names : gameNames, fileNames : fileNames, descriptions : descriptions };
+    return { names : gameNames, fileNames : fileNames, descriptions : descriptions, templates : templates };
 }
 
 io.sockets.on('connection', function(socket) {
@@ -72,9 +74,13 @@ io.sockets.on('connection', function(socket) {
     });
 
     socket.on('StoreXY', function (X, Y) {
-        
-        socket.emit('Update player', X, Y);
-        socket.broadcast.emit('Update player', X, Y);
+        idtest++;
+        if (idtest>id)
+            {
+                idtest = 1
+            }
+        socket.emit('Update player', X, Y, idtest);
+        socket.broadcast.emit('Update player', X, Y, idtest);
 
 
     });
@@ -103,6 +109,16 @@ io.sockets.on('connection', function(socket) {
         if(fs.existsSync("./public/"+path)) {
             socket.emit("inject css", path);
         }
+    });
+
+    socket.on("ask template", function(data) {
+        var path = "./public/templates/" + data + ".html";
+        var template = "";
+        if(fs.existsSync(path)) {
+            template = fs.readFileSync(path, "utf8");
+        }
+        console.log(template)
+        socket.emit("inject template", template);
     });
 
     socket.on('coords', function(data){
