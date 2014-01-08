@@ -1,10 +1,13 @@
 define(['event_bus','modules/frames'], function(eventBus, frames){
 
+        var socket = io.connect('http://localhost:8075');
         
         var ArrayShoot = [];
 
         var Missile = function(X,Y,direction, speed,canvas)
         {
+
+
             this.X = X;
             this.Y = Y;
             this.direction = direction;
@@ -12,12 +15,41 @@ define(['event_bus','modules/frames'], function(eventBus, frames){
             this.lifetime = 0
         }
 
+    socket.on('collision complete', function (IdPlayer, IdShoot, nbrShoot)
+    {
+        ArrayShoot.splice(nbrShoot,1);
+    });
+
     eventBus.on('missile', function (X,Y,direction, speed,canvas) {
+
+        if (direction == 1)
+        {
+            var X = X - 20;
+            var Y = Y + 5;
+        }
+        if (direction == 2)
+        {
+            var X = X + 20;
+            var Y = Y + 5;
+        }
+        if (direction == 3)
+        {
+            var X = X + 5;
+            var Y = Y - 20;
+        }
+        if (direction == 4)
+        {
+            var X = X + 5;
+            var Y = Y + 20;
+        }
+
         ArrayShoot.push(new Missile(X,Y,direction, speed,canvas))
 
     });
-        eventBus.on("DrawThat", function(canvas)
+        eventBus.on("DrawThat", function(canvas, player)
         {
+            socket.emit('infodeCollision', ArrayShoot, player);
+
             for (var i = 0; i < ArrayShoot.length; i++)
             {
                 ArrayShoot[i].lifetime ++;

@@ -73,16 +73,28 @@ io.sockets.on('connection', function(socket) {
         socket.broadcast.emit('nouveau_client');
     });
 
-    socket.on('StoreXY', function (X, Y) {
+    socket.on('StoreXY', function (X, Y, player) {
         idtest++;
         if (idtest>id)
             {
                 idtest = 1
             }
-        socket.emit('Update player', X, Y, idtest);
-        socket.broadcast.emit('Update player', X, Y, idtest);
+        socket.emit('Update player', X, Y, idtest, player);
+        socket.broadcast.emit('Update player', X, Y, idtest, player);
 
 
+    });
+
+    socket.on('infodeCollision', function (ArrayShoot, player) 
+    {
+        socket.emit('testCollision', ArrayShoot, player);
+        socket.broadcast.emit('testCollision', ArrayShoot, player);
+    });
+
+    socket.on('collision', function (IdPlayer, IdShoot, nbrShoot) 
+    {
+        socket.emit('collision complete', IdPlayer, IdShoot, nbrShoot);
+        socket.broadcast.emit('collision complete', IdPlayer, IdShoot, nbrShoot);
     });
 
 

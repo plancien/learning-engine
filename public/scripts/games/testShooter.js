@@ -16,14 +16,17 @@ define([
     'modules/shoot',
     'modules/playerShooter',
     'modules/frames',
-    'modules/key_listener'
-], function (eventBus, Canvas, shoot) { 
+    'modules/key_listener',
+    'modules/collision',
+    ], 
+    function (eventBus, Canvas, shoot) { 
 
     var socket = io.connect('http://localhost:8075');
     socket.emit('nouveau_client');
 
     var tabX = [];
     var tabY = [];
+
     
         
             socket.emit('MyID');
@@ -34,7 +37,7 @@ define([
             console.log(id);
             });
 
-            socket.on('Update player', function (X, Y, id) {
+            socket.on('Update player', function (X, Y, id, player) {
 
             canvas.context.clearRect(0,0,1200,1200);
             
@@ -43,9 +46,9 @@ define([
 
             for (var i = 0; i < tabX.length; i++) 
             { 
-                eventBus.emit('DrawThis', tabX[i], tabY[i]);
+                eventBus.emit('DrawThis', tabX[i], tabY[i],20 ,20);
             }
-                eventBus.emit('DrawThat', canvas);
+                eventBus.emit('DrawThat', canvas, player);
 
             });
 
