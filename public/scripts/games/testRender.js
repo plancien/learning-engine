@@ -14,13 +14,13 @@ define([
     'event_bus',
     'modules/render',
     'modules/canvas',
-    'modules/frames'
+    'modules/frames',
+    'modules/image_loader'
         ], function (eventBus, Render, Canvas, frames) {
 
 
-
+    eventBus.emit("load images");
     eventBus.on('images loaded', function (images) {
-
         var canvas = Canvas.create();
 
         //fake object who will obtain the render method
