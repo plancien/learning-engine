@@ -2,6 +2,8 @@ define(['event_bus','modules/frames','modules/key_listener'], function(eventBus,
 
         var socket = io.connect('http://localhost:8075');
         var ArrayPlayer = [];
+        var img = new Image();
+        var wait = 1001;
 
         var Player = function(life, speed, x, y,id)
         {
@@ -14,9 +16,9 @@ define(['event_bus','modules/frames','modules/key_listener'], function(eventBus,
             this.cooldown = 0;
         }
 
-    eventBus.on('new player', function (life, speed, x, y,canvas,id) {
+    eventBus.on('new player', function (life, speed, x, y,canvas,id, bonus) {
             
-        ArrayPlayer.push(new Player(life, speed, x, y,id))
+        ArrayPlayer.push(new Player(life, speed, x, y,id, bonus))
             eventBus.on("keys still pressed", function(keys)
             {
 
@@ -62,11 +64,23 @@ define(['event_bus','modules/frames','modules/key_listener'], function(eventBus,
         });
 
 
-        eventBus.on("DrawThis", function(X,Y,width,height)
+        eventBus.on("DrawThis", function(X,Y,width,height, url)
         {
-
-                canvas.context.fillStyle = "red";
-                canvas.context.fillRect(X, Y, width, height);
+            wait++;
+            if (wait>1000) 
+            {
+                img = new Image();
+                img.src = url;
+                img.onload = function()
+                {
+                    canvas.context.drawImage(img, X, Y, width, height);
+                }
+                wait = 0;
+            }
+            else
+            {
+                canvas.context.drawImage(img, X, Y, width, height);
+            }
             
 
         });

@@ -69,7 +69,6 @@ io.sockets.on('connection', function(socket) {
     id++;
     socket.set('id', id);
 
-       // eventBus.emit('new player', 5, 5, 300, 100,canvas);
         socket.broadcast.emit('nouveau_client');
     });
 
@@ -83,6 +82,12 @@ io.sockets.on('connection', function(socket) {
         socket.broadcast.emit('Update player', X, Y, idtest, player);
 
 
+    });
+
+    socket.on('tir', function (ArrayShoot)
+    {
+        socket.emit('afficheTir', ArrayShoot);
+        socket.broadcast.emit('afficheTir', ArrayShoot);
     });
 
     socket.on('infodeCollision', function (ArrayShoot, player) 
