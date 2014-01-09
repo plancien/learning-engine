@@ -1,31 +1,28 @@
 define(['event_bus'], function(eventBus) {
 
-    /*
-   params 
+    /***************************************
+   params needed for the grid
    {
-        params.line;
-        params.column;
-        params.caseWidth;
-        params.caseHeight;
-        params.color;
-        params.hover;
+        params.line : the number of line (int);
+        params.column : the number of column (int);
+        params.caseWidth : (int);
+        params.caseHeight : (int);
+        params.color : the basic color for your case (string);
+        params.hover : the color when the case is selected (string);
 
    }*/
     var Grid = function (params)
     {
-        this.caseTable = [];
+        this.caseTable          =           [];
+        //creation of the cases
         for(var i = 0; i < params.line; i++)
         {
+            this.caseTable[i] = [];
             for(var j = 0; j < params.column; j++)
             {
-                this.caseTable[i][j] = new Case(j,i,params.caseWidth,params.caseHeight,params.color,params.hover);
+                this.caseTable[i].push(new Case(j,i,params.caseWidth,params.caseHeight,params.color,params.hover,params.context));
             }
         }
-    }
-   
-    Grid.prototype.update = function (event)
-    {
-        
     }
    
     Grid.prototype.render = function (event)
@@ -39,22 +36,30 @@ define(['event_bus'], function(eventBus) {
         }
     }
    
-    var Case = function (x,y,width,height,color,hover)
+    var Case = function (x,y,width,height,color,hover,context)
     {
-        this.x = x * width;
-        this.y = y * height;
-        this.width = width;
-        this.height = height;
-        this.color = color;
-        this.hover = hover;
-        this.selected = false;
-        this.actualColor = this.color;
+        this.x              =       x * width;
+        this.y              =       y * height;
+        this.width          =       width;
+        this.height         =       height;
+        this.color          =       color;
+        this.hover          =       hover;
+        this.context        =       context;
+        this.selected       =       false;
+        this.actualColor    =       this.color;
     }
    
     Case.prototype.render = function (event)
     {
-        context.fillStyle = this.color;
-        context.fillRect(this.x,this.y,this.width,this.height);
+        this.context.lineWidth = 2;
+        this.context.strokeStyle = this.actualColor;
+        this.context.strokeRect(this.x,this.y,this.width,this.height);
+        if(this.selected===true)
+        {    
+            this.context.fillStyle = this.actualColor;
+            this.context.fillRect(this.x,this.y,this.width,this.height);
+        }
+
     }
    
     Case.prototype.select = function(isSelected)
@@ -70,10 +75,9 @@ define(['event_bus'], function(eventBus) {
         }
     }
 
-    eventBus.on('init', function (params) {
-        var grid = new Grid(params);
+    eventBus.on('create grid', function (params, parent) {
 
-        eventBus.emit('grid is created', grid);
+        parent.grid = new Grid(params);
     });
 });
 
