@@ -29,7 +29,8 @@ define([
     	ctx = "";
     	var img = new Image();
     	img.src = "./images/GDP2.png";
-    	
+
+    	var callBonuses = 0;
 
     	var paramsCanvas = {
 				id: "learningShooter",
@@ -38,16 +39,14 @@ define([
 			};
 
     	var gameContainer = {
-    		paddle : "",
+    		paddle : {},
+    		answer : {},
     		key : "",
     		arrayArrows : [],
+            arrayAnswer : [],
     		ilBouge : {},
     		imageGood : new Image(),
     		imageBad :  new Image()
-    	};
-
-    	var images2 = {
-
     	};
 
 	    eventBus.on('init', function () {
@@ -66,16 +65,32 @@ define([
 		    	color : "rgb(255,255,255)"
 		    }
 
-		    gameContainer.paddle = new Paddle(paramsPaddle);	  	
-		});
+		    gameContainer.paddle = new Paddle(paramsPaddle);		
 
+    });
 
+/***************************************************************************************
+* MAIN LOOP
+***************************************************************************************/
 		eventBus.on("new frame", function(){
 				eventBus.emit('need new bonus');
 		  		ctx.fillStyle = "black";
 		  		ctx.fillRect(0, 0, paramsCanvas.width, paramsCanvas.height);
 			   	//Rendering and moving the paddle
 			   	gameContainer.paddle.update();
+
+                callBonuses++;
+                console.log(callBonuses%180);
+                if(callBonuses%180 === 0)
+                {  
+                    createAnswers();
+                }
+
+                for(var j = 0; j < gameContainer.arrayAnswer.length; j++)
+                {
+                    gameContainer.arrayAnswer[j].update();
+                }
+
 
 			   	for(var i =0 ; i < gameContainer.arrayArrows.length; i++)
 			   	{	
@@ -87,11 +102,33 @@ define([
 			   	}
 			});
 
-		eventBus.on('mouse update', function(mouseMove)
-		{
-			
-		});
 
+/***************************************************************************************
+* CREATING THE PATTERN FOR THE ANSWERS
+***************************************************************************************/
+        function createAnswers()
+        {
+            for(var i = 0; i < 3; i++)
+            {
+                var paramsAnswer = {
+                    x : Math.round(Math.random()*800), 
+                    y : Math.round(Math.random()*100),
+                    width : 80,
+                    height : 80,
+                    speed : Math.round(Math.random()*5)+1,
+                }
+
+                    gameContainer.answer = new FallingAnswer(paramsAnswer);
+                    var spritex = Math.round(Math.random()*9) * 48;
+                    var spritey = Math.round(Math.random()*3) * 62;
+                    eventBus.emit('init render', {object : gameContainer.answer,
+                          sprite : {x : spritex, y : spritey, width : 48, height : 62, img : img},
+                          rotating : true
+                          })
+
+                    var answerArray = gameContainer.arrayAnswer.push(gameContainer.answer);
+            }
+        }
 
 /***************************************************************************************
 * PADDLE
@@ -161,6 +198,7 @@ define([
 	    		var arrow = new Arrow(params);
 	    		var spritex = Math.round(Math.random()*9) * 48;
 	    		var spritey = Math.round(Math.random()*3) * 62;
+
 	    		eventBus.emit('init render', {object : arrow,
                                       		  sprite : {x : spritex, y : spritey, width : 48, height : 62, img : img},
                                       		  rotating : true
@@ -188,7 +226,6 @@ define([
 	    	this.width = this.radius;
 	    	this.height = this.radius;
 	    	this.speed = params.speed;
-	    	this.color = params.color;
 	    	this.image = gameContainer.imageGood;
 
 	    	this.move = function inputs()
@@ -204,9 +241,43 @@ define([
 	    	}
 	    }
 
-		eventBus.on('add bonus', function (good, url) {
-			gameContainer.imageGood.src = "./images/+.png";
-		});
+/***************************************************************************************
+* Bonus/malus falling from the "sky"
+***************************************************************************************/
+
+		var FallingAnswer = function FallingAnswer(params)
+		{
+			this.x = params.x;
+	    	this.y = params.y;
+	    	this.rotation = Math.random()*4;
+	    	this.radius = params.height/2;
+	    	this.width = this.radius;
+	    	this.height = this.radius;
+	    	this.speed = params.speed;
+	    	this.image = gameContainer.imageGood;
+
+
+	    	this.render = function render()
+	    	{
+	    	}
+
+	    	this.move = function move()
+	    	{
+	    		this.y += this.speed;
+	    	}
+
+			this.update = function update()
+			{
+                this.move();
+                this.rotation+= 0.05;
+                eventBus.emit('render object', this, ctx);
+               // this.render();
+			}
+		}
+
+		// eventBus.on('add bonus', function (good, url) {
+		// 	gameContainer.imageGood.src = "./images/+.png";
+		// });
 
 	   	eventBus.on('keys still pressed', function(data)
 	   	{
@@ -215,7 +286,6 @@ define([
 
         var bonusPoints = params.bonusPoints || 1;
         var malusPoints = params.malusPoints || -3;
-
 	   	eventBus.emit('init bonus', false, params.bonusUrl);
         eventBus.emit('init bonus', true,  params.malusUrl);
 
