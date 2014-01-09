@@ -4,9 +4,10 @@ define(['event_bus','modules/frames'], function(eventBus, frames){
         
         var ArrayShoot = [];
 
+        var theCanvas;
+
         var Missile = function(X,Y,direction, speed,canvas)
         {
-
 
             this.X = X;
             this.Y = Y;
@@ -15,9 +16,9 @@ define(['event_bus','modules/frames'], function(eventBus, frames){
             this.lifetime = 0
         }
 
-    socket.on('collision complete', function (IdPlayer, IdShoot, nbrShoot)
+    socket.on('collision complete', function (IdPlayer, IdShoot)
     {
-        ArrayShoot.splice(nbrShoot,1);
+        ArrayShoot.splice(IdShoot,1);
     });
 
     eventBus.on('missile', function (X,Y,direction, speed,canvas) {
@@ -48,7 +49,9 @@ define(['event_bus','modules/frames'], function(eventBus, frames){
     });
         eventBus.on("DrawThat", function(canvas, player)
         {
+            theCanvas = canvas;
             socket.emit('infodeCollision', ArrayShoot, player);
+
 
             for (var i = 0; i < ArrayShoot.length; i++)
             {
@@ -70,15 +73,26 @@ define(['event_bus','modules/frames'], function(eventBus, frames){
                 {
                     ArrayShoot[i].Y+=ArrayShoot[i].speed;
                 }
-                canvas.context.fillStyle = "rgb(0,253,0)";
-                canvas.context.fillRect(ArrayShoot[i].X,ArrayShoot[i].Y, 5, 5);
+
+                //canvas.context.fillStyle = "rgb(0,253,0)";
+                //canvas.context.fillRect(ArrayShoot[i].X,ArrayShoot[i].Y, 5, 5);
 
                 if (ArrayShoot[i].lifetime>100)
                 {
                     ArrayShoot.splice(i,1);
                 }
             }
+            socket.emit('tir', ArrayShoot);
 
-        });
 
+            });
+
+            socket.on('afficheTir', function (tab)
+            {
+                for (var i = 0; i < tab.length; i++)
+                {
+                    theCanvas.context.fillStyle = "rgb(0,253,0)";
+                    theCanvas.context.fillRect(tab[i].X,tab[i].Y, 5, 5);
+                }
+            });
 });

@@ -6,21 +6,26 @@ define(['event_bus'], function(eventBus)
 
 	socket.on('testCollision', function (shoot, player)
 	{
-		arrayPlayer[player.id-1] = player;
-		arrayShoot[player.id-1] = shoot;
+		arrayPlayer = [];
+		arrayShoot = [];
+
+		for (var i = 0; i < shoot.length; i++)
+		{
+			arrayShoot.push(shoot[i]);
+		}
+		arrayPlayer.push(player);
 
 		
 		for (var i = 0; i < arrayPlayer.length ; i++)
 			{
 				for (var j = 0; j < arrayShoot.length ; j++)
 				{
-					for (var k = 0; k < arrayShoot[j].length ; k++)
-					{
-						if (arrayShoot[j][k].X < arrayPlayer[i].x+20 && arrayShoot[j][k].X > arrayPlayer[i].x && arrayShoot[j][k].Y < arrayPlayer[i].y+20 && arrayShoot[j][k].Y > arrayPlayer[i].y)
+					
+						if (arrayShoot[j].X < arrayPlayer[i].x+20 && arrayShoot[j].X > arrayPlayer[i].x && arrayShoot[j].Y < arrayPlayer[i].y+20 && arrayShoot[j].Y > arrayPlayer[i].y)
 						{
-							socket.emit("collision", i, j, k);
+							socket.emit("collision", i, j);
 						}
-					}
+					
 				}
 			}
 	});
