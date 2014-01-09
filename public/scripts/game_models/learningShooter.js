@@ -16,12 +16,14 @@ define([
     'modules/window_size',
     'modules/score',
     'modules/frames',
-    'modules/mouse',
     'modules/key_listener',
     'modules/render',
+    'modules/tools',
+    'modules/mouse',
+    'modules/particle_generator',
     'modules/bonus_chooser',
     'modules/bonus_fader'
-], function (eventBus, canvasCreate, windowSize, score, frames, mouse,keyListener, Render) {
+], function (eventBus, canvasCreate, windowSize, score, frames, keyListener, Render, tools, mouse, particles) {
 
     return function(params)
     {
@@ -31,12 +33,17 @@ define([
     	img.src = "./images/GDP2.png";
 
     	var callBonuses = 0;
-
     	var paramsCanvas = {
 				id: "learningShooter",
 				width: 800,
 				height: 800
 			};
+
+        var mousePos = {
+            x : 0,
+            y : 0,
+            isClicking : {}
+        }
 
     	var gameContainer = {
     		paddle : {},
@@ -50,6 +57,8 @@ define([
     	};
 
 	    eventBus.on('init', function () {
+            particles();
+            eventBus.emit('need new bonus');
 			canvas = canvasCreate.create(paramsCanvas);
 			ctx = canvas.context;
 
@@ -73,14 +82,13 @@ define([
 * MAIN LOOP
 ***************************************************************************************/
 		eventBus.on("new frame", function(){
-				eventBus.emit('need new bonus');
 		  		ctx.fillStyle = "black";
 		  		ctx.fillRect(0, 0, paramsCanvas.width, paramsCanvas.height);
 			   	//Rendering and moving the paddle
 			   	gameContainer.paddle.update();
-
+                colliderObject(); 
+                
                 callBonuses++;
-                console.log(callBonuses%180);
                 if(callBonuses%180 === 0)
                 {  
                     createAnswers();
@@ -89,16 +97,20 @@ define([
                 for(var j = 0; j < gameContainer.arrayAnswer.length; j++)
                 {
                     gameContainer.arrayAnswer[j].update();
+                    if( gameContainer.arrayAnswer[j].y > 800)
+                    {
+                       gameContainer.arrayAnswer.splice(j, 1);
+                    }
+
                 }
 
 
 			   	for(var i =0 ; i < gameContainer.arrayArrows.length; i++)
 			   	{	
-			   		gameContainer.arrayArrows[i].update();
+                    gameContainer.arrayArrows[i].update();
+
 			   		if(gameContainer.arrayArrows[i].y < 0)
-			   		{
 			   			gameContainer.arrayArrows.splice(i, 1);
-			   		}
 			   	}
 			});
 
@@ -108,26 +120,41 @@ define([
 ***************************************************************************************/
         function createAnswers()
         {
-            for(var i = 0; i < 3; i++)
-            {
-                var paramsAnswer = {
-                    x : Math.round(Math.random()*800), 
+            var paramsAnswer = {
+                    x : Math.round(Math.random()*700), 
                     y : Math.round(Math.random()*100),
                     width : 80,
                     height : 80,
-                    speed : Math.round(Math.random()*5)+1,
+                    speed : Math.round(Math.random()*3)+1,
+                    answer : "good"
+                }
+                    gameContainer.imageGood.src = params.bonusUrl;
+                    gameContainer.answer = new FallingAnswer(paramsAnswer);
+                    eventBus.emit('init render', {object : gameContainer.answer,
+                          sprite : {x : 0, y : 0, width : 96, height : 96, img : gameContainer.imageGood}
+                 })
+                var answerArray = gameContainer.arrayAnswer.push(gameContainer.answer);
+                createBadAnswer();
+        }
+
+        function createBadAnswer()
+        {
+                var paramsBadAnswer = {
+                    x : Math.round(Math.random()*700), 
+                    y : Math.round(Math.random()*100),
+                    width : 80,
+                    height : 80,
+                    speed : Math.round(Math.random()*3)+1,
+                    answer : "bad"
                 }
 
-                    gameContainer.answer = new FallingAnswer(paramsAnswer);
-                    var spritex = Math.round(Math.random()*9) * 48;
-                    var spritey = Math.round(Math.random()*3) * 62;
+                 gameContainer.imageBad.src = params.malusUrl;
+                    gameContainer.answer = new FallingAnswer(paramsBadAnswer);
                     eventBus.emit('init render', {object : gameContainer.answer,
-                          sprite : {x : spritex, y : spritey, width : 48, height : 62, img : img},
-                          rotating : true
-                          })
+                          sprite : {x : 0, y : 0, width : 96, height : 96, img : gameContainer.imageBad}
+                 })
 
-                    var answerArray = gameContainer.arrayAnswer.push(gameContainer.answer);
-            }
+                 var answerArray = gameContainer.arrayAnswer.push(gameContainer.answer);
         }
 
 /***************************************************************************************
@@ -269,15 +296,34 @@ define([
 			this.update = function update()
 			{
                 this.move();
-                this.rotation+= 0.05;
                 eventBus.emit('render object', this, ctx);
-               // this.render();
 			}
 		}
+/***************************************************************************************
+* Bonus/malus falling from the "sky"
+***************************************************************************************/       
 
-		// eventBus.on('add bonus', function (good, url) {
-		// 	gameContainer.imageGood.src = "./images/+.png";
-		// });
+
+    function colliderObject()
+    { 
+        for(var i = 0; i < gameContainer.arrayAnswer.length; i++)
+        {       
+            if(gameContainer.arrayAnswer[i] != undefined){
+                var distance = tools.vectors.getDistance(gameContainer.arrayAnswer[i], mousePos);
+                 
+                if(distance < 80 && mousePos.isClicking.left){
+                    gameContainer.arrayAnswer.splice(i, 1);
+                     eventBus.emit('CreateParticles', mousePos.x, mousePos.y, "white", 40, 60);
+                }
+            }
+        }
+    }
+     eventBus.on('mouse update', function(data)
+        {
+           mousePos.x = data.x;
+           mousePos.y = data.y;
+           mousePos.isClicking = data.isClicking;
+        });
 
 	   	eventBus.on('keys still pressed', function(data)
 	   	{
