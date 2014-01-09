@@ -2,21 +2,23 @@ define(['event_bus','modules/frames','modules/key_listener'], function(eventBus,
 
         var socket = io.connect('http://localhost:8075');
         var ArrayPlayer = [];
+        var img = new Image();
+        var wait = 1001;
 
-        var Player = function(life, speed, posX, posY,id)
+        var Player = function(life, speed, x, y,id)
         {
             this.id = id
             this.life = life;
             this.speed = speed;
-            this.posX = posX;
-            this.posY = posY;
+            this.x = x;
+            this.y = y;
             this.LastMove = 1;
             this.cooldown = 0;
         }
 
-    eventBus.on('new player', function (life, speed, posX, posY,canvas,id) {
+    eventBus.on('new player', function (life, speed, x, y,canvas,id, bonus) {
             
-        ArrayPlayer.push(new Player(life, speed, posX, posY,id))
+        ArrayPlayer.push(new Player(life, speed, x, y,id, bonus))
             eventBus.on("keys still pressed", function(keys)
             {
 
@@ -25,22 +27,22 @@ define(['event_bus','modules/frames','modules/key_listener'], function(eventBus,
                     
                     if(keys[i] == 81)
                     {
-                        ArrayPlayer[0].posX -= ArrayPlayer[0].speed;
+                        ArrayPlayer[0].x -= ArrayPlayer[0].speed;
                         ArrayPlayer[0].LastMove = 1;
                     }   
                     else if(keys[i] == 68)
                     {
-                        ArrayPlayer[0].posX += ArrayPlayer[0].speed;
+                        ArrayPlayer[0].x += ArrayPlayer[0].speed;
                         ArrayPlayer[0].LastMove = 2;
                     }   
                     else if(keys[i] == 90)
                     {
-                        ArrayPlayer[0].posY -= ArrayPlayer[0].speed;
+                        ArrayPlayer[0].y -= ArrayPlayer[0].speed;
                         ArrayPlayer[0].LastMove = 3;
                     }   
                     else if(keys[i] == 83)
                     {
-                        ArrayPlayer[0].posY += ArrayPlayer[0].speed;
+                        ArrayPlayer[0].y += ArrayPlayer[0].speed;
                         ArrayPlayer[0].LastMove = 4;
                     }
                     else if(keys[i] == 69)
@@ -56,22 +58,34 @@ define(['event_bus','modules/frames','modules/key_listener'], function(eventBus,
         eventBus.on("new frame", function()
         {
                 ArrayPlayer[0].cooldown++;
-                socket.emit("StoreXY", ArrayPlayer[0].posX, ArrayPlayer[0].posY)
+                socket.emit("StoreXY", ArrayPlayer[0].x, ArrayPlayer[0].y, ArrayPlayer[0])
 
                 
         });
 
 
-        eventBus.on("DrawThis", function(X,Y)
+        eventBus.on("DrawThis", function(X,Y,width,height, url)
         {
-
-                canvas.context.fillStyle = "red";
-                canvas.context.fillRect(X, Y, 15, 15);
+            wait++;
+            if (wait>1000) 
+            {
+                img = new Image();
+                img.src = url;
+                img.onload = function()
+                {
+                    canvas.context.drawImage(img, X, Y, width, height);
+                }
+                wait = 0;
+            }
+            else
+            {
+                canvas.context.drawImage(img, X, Y, width, height);
+            }
             
 
         });
             eventBus.on("shoot", function(id){
-            eventBus.emit('missile',ArrayPlayer[id].posX,ArrayPlayer[id].posY,ArrayPlayer[id].LastMove, 5,canvas)
+            eventBus.emit('missile',ArrayPlayer[id].x,ArrayPlayer[id].y,ArrayPlayer[id].LastMove, 5,canvas)
         })
     });
 
