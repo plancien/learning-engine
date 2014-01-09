@@ -5,7 +5,7 @@
 @endName
 
 @description
-    Move with the arrows, and shoot with the up-arrow to touch the right bonuses and avoid the malus
+    Move with Q and D, shoot with space.
 @endDescription
 
 */
