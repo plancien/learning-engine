@@ -29,7 +29,7 @@ define(['event_bus','modules/frames'], function(eventBus){
                 context.fillStyle = this.color;
                 context.fillRect(this.x, this.y,this.heightWidth,this.heightWidth);
             }
-
+            
             this.update = function update()
             {
                 this.duration--;

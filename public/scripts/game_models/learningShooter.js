@@ -78,6 +78,7 @@ define([
                 },
                 valueMax : 3000,
             });
+            createAnswers();
     });
 
 /***************************************************************************************
@@ -105,8 +106,8 @@ define([
                 for(var j = 0; j < gameContainer.arrayAnswer.length; j++)
                 {
                     gameContainer.arrayAnswer[j].update();
-                    if( gameContainer.arrayAnswer[j].y > 800)
-                    {   
+                    if( gameContainer.arrayAnswer[j].y > 800){
+
                         if(gameContainer.arrayAnswer[j].answer === "good")
                             gameContainer.points += 5;
                         else 
@@ -124,6 +125,49 @@ define([
                     }
                 }
 			});
+
+
+/***************************************************************************************
+* CREATING THE PATTERN FOR THE ANSWERS
+***************************************************************************************/
+        function createAnswers()
+        {
+            var paramsAnswer = {
+                    x : Math.round(Math.random()*700), 
+                    y : Math.round(Math.random()*100),
+                    width : 80,
+                    height : 80,
+                    speed : Math.round(Math.random()*3)+1,
+                    answer : "good"
+                }
+                    gameContainer.imageGood.src = params.bonusUrl;
+                    gameContainer.answer = new FallingAnswer(paramsAnswer);
+                    eventBus.emit('init render', {object : gameContainer.answer,
+                          sprite : {x : 0, y : 0, width : 96, height : 96, img : gameContainer.imageGood}
+                 })
+                var answerArray = gameContainer.arrayAnswer.push(gameContainer.answer);
+                createBadAnswer();
+        }
+
+        function createBadAnswer()
+        {
+                var paramsBadAnswer = {
+                    x : Math.round(Math.random()*700), 
+                    y : Math.round(Math.random()*100),
+                    width : 80,
+                    height : 80,
+                    speed : Math.round(Math.random()*3)+1,
+                    answer : "bad"
+                }
+
+                 gameContainer.imageBad.src = params.malusUrl;
+                    gameContainer.answer = new FallingAnswer(paramsBadAnswer);
+                    eventBus.emit('init render', {object : gameContainer.answer,
+                          sprite : {x : 0, y : 0, width : 96, height : 96, img : gameContainer.imageBad}
+                 })
+
+                 var answerArray = gameContainer.arrayAnswer.push(gameContainer.answer);
+        }
 
 /***************************************************************************************
 * CREATING THE PATTERN FOR THE ANSWERS
@@ -188,7 +232,7 @@ It's not dry, but i didn't find any possibility to pass dinamycly the path of th
 	    	this.height = this.radius;
 	    	this.speed = params.speed;
 	    	this.image = gameContainer.imageGood;
-            this.answer = params.answer;
+
 
 	    	this.render = function render()
 	    	{
@@ -205,10 +249,10 @@ It's not dry, but i didn't find any possibility to pass dinamycly the path of th
                 eventBus.emit('render object', this, ctx);
 			}
 		}
-
 /***************************************************************************************
 * Bonus/malus falling from the "sky"
-***************************************************************************************/ 
+***************************************************************************************/       
+
     function colliderObject()
     { 
         for(var i = 0; i < gameContainer.arrayAnswer.length; i++)
@@ -216,33 +260,39 @@ It's not dry, but i didn't find any possibility to pass dinamycly the path of th
             if(gameContainer.arrayAnswer[i] != undefined){
                 var distance = tools.vectors.getDistance(gameContainer.arrayAnswer[i], mousePos);
                  
-                if(distance < 40 && mousePos.isClicking.left){
-                    if(gameContainer.arrayAnswer[i].answer === "good")
-                        gameContainer.points += 3;
-                    else
-                        gameContainer.points -= 7;
-                    
-                    gameContainer.arrayAnswer.splice(i, 1);
-                    eventBus.emit ('number random color', 1, 255, 255, 0, false);
-                    eventBus.on('random color', function(data){
-                        gameContainer.colorParticles = data;
-                     });
-                    eventBus.emit('CreateParticles', mousePos.x, mousePos.y, gameContainer.colorParticles, 200, 60);
-                    eventBus.emit('add points', gameContainer.points);
-                    gameContainer.points = 0;
+                if(distance < 80 && mousePos.isClicking.left){
+                     if(gameContainer.arrayAnswer[i].answer === "good")
+                            gameContainer.points += 5;
+                        else 
+                            gameContainer.points -= 10;
+
+                            eventBus.emit ('number random color', 1, 255, 255, 0, false);
+                            eventBus.on('random color', function(data){
+                                gameContainer.colorParticles = data;
+                            });
+                            eventBus.emit('CreateParticles',mousePos.x, mousePos.y, gameContainer.colorParticles, 200, 60);
+                            eventBus.emit('add points', gameContainer.points);
+                            gameContainer.points = 0;
+                             gameContainer.arrayAnswer.splice(i, 1);
                 }
             }
         }
     }
      eventBus.on('mouse update', function(data)
         {
-           mousePos.x = data.canvasX;
-           mousePos.y = data.canvasY;
+           mousePos.x = data.x;
+           mousePos.y = data.y;
            mousePos.isClicking = data.isClicking;
         });
 
-        // var bonusPoints = params.bonusPoints || 1;
-        // var malusPoints = params.malusPoints || -3;
+	   	eventBus.on('keys still pressed', function(data)
+	   	{
+	   	 	gameContainer.key = data;
+	   	});
+
+        var bonusPoints = params.bonusPoints || 1;
+        var malusPoints = params.malusPoints || -3;
+
 	   	eventBus.emit('init bonus', false, params.bonusUrl);
         eventBus.emit('init bonus', true,  params.malusUrl);
 
