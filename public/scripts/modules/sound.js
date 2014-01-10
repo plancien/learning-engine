@@ -3,7 +3,7 @@ define(['event_bus',
 		'modules/canvas',
 		'modules/frames',
 		'modules/chrono',
-		'modules/add_domElem',
+		'modules/add_domElem'
 ],function(eventBus,Gauge,Canvas,frames){
 	var stockSound=[];
 	var cappingGui=false;
