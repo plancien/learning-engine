@@ -112,14 +112,18 @@ define([
                         else 
                             gameContainer.points -= 10;
 
-                        eventBus.emit('add points', gameContainer.points);
-                        gameContainer.points = 0;
-                        gameContainer.arrayAnswer.splice(j, 1);
-                    }
+                            eventBus.emit ('number random color', 1, 255, 255, 0, false);
+                            eventBus.on('random color', function(data){
+                                gameContainer.colorParticles = data;
+                            });
 
+                            eventBus.emit('CreateParticles', gameContainer.arrayAnswer[j].x, gameContainer.arrayAnswer[j].y, gameContainer.colorParticles, 200, 60);
+                            eventBus.emit('add points', gameContainer.points);
+                            gameContainer.points = 0;
+                            gameContainer.arrayAnswer.splice(j, 1);
+                    }
                 }
 			});
-
 
 /***************************************************************************************
 * CREATING THE PATTERN FOR THE ANSWERS
