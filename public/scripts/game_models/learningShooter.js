@@ -5,7 +5,7 @@
 @endName
 
 @description
-    Move with Q and D, shoot with space.
+    Click on the bad  images before they hit the floor ! The good images give you point if they hit the floor, or if you clicked on them ! Have fun while learning !
 @endDescription
 
 */
