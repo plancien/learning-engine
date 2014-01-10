@@ -2,38 +2,38 @@ define(['event_bus'], function(eventBus) {
     
     function addMoveCapabilities (object,speed)
     {
-        object.prototype.speed = speed;
-        object.prototype.idle = true;
+        object.speed = speed;
+        object.idle = true;
 
-        object.prototype.moveUp = function ()
+        object.moveUp = function ()
         {
             this.y          -=      this.speed;
             this.idle      =       false;
         }
-        object.prototype.moveDown = function ()
+        object.moveDown = function ()
         {
             this.y          +=      this.speed;
             this.iddle      =       false;
         }
-        object.prototype.moveLeft = function ()
+        object.moveLeft = function ()
         {
             this.x          -=      this.speed;
             this.idle      =       false;
         }
-        object.prototype.moveRight = function ()
+        object.moveRight = function ()
         {
             this.x          +=      this.speed;
             this.idle      =       false;
 
         }
         // can be use to stop the render animation if the object don't move
-        object.prototype.stopMoving =function ()
+        object.stopMoving =function ()
         {
             this.idle      =       true;
         }
     }
 
-    eventBus.on('init', function (object,speed) {
+    eventBus.on('add move', function (object,speed) {
         addMoveCapabilities(object,speed);
         eventBus.emit('move methods', object);
     });   

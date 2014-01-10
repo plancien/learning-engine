@@ -14,17 +14,16 @@ define(['event_bus'], function (eventBus) {
         {
             if(a)
             {
-                colorHexa = Math.floor(Math.random()*r) + ',' + Math.floor(Math.random()*g) + ',' + Math.floor(Math.random()*b + ',' + Math.random();
-                colorRgb = 'RGBA('+colorHexa +');'
-                eventBus.emit('random color', colorRgb);
+                colorHexa = Math.round(Math.random()*r) + ',' + Math.round(Math.random()*g) + ',' + Math.round(Math.random()*b) + ',' + Math.random() ;
+                colorRgb = 'RGBA('+ colorHexa +');'
+                console.log(colorRgb);
             }
             else 
             {
-                colorHexa = Math.floor(Math.random()*r) + ',' + Math.floor(Math.random()*g) + ',' + Math.floor(Math.random()*b);
+                colorHexa = Math.round(Math.random()*r) + ',' + Math.round(Math.random()*g) + ',' + Math.round(Math.random()*b);
                 colorRgb = 'RGB('+colorHexa +');'
-                eventBus.emit('random color', colorRgb);
             }
-
+             eventBus.emit('random color', colorRgb);
         }
     });
 });

@@ -1,5 +1,10 @@
 define(['event_bus'], function(eventBus) {
 
+    getCanvas = {};
+
+     eventBus.on('newCanvas', function(canvas){
+            getCanvas = canvas;
+        });
     var Mouse = function ()
     {
         //position of the mouse in the window
@@ -18,15 +23,19 @@ define(['event_bus'], function(eventBus) {
         var totalOffsetX = 0;
         var totalOffsetY = 0;
         //calculating the position on the canvas
-        var currentElement = window;
+        if(getCanvas != undefined)
+            var currentElement = getCanvas.canvas;
+        else 
+            var currentElement = window;
+
         var e = event || window.event;
         totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
         totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
         //update of the mouse attributes
         this.x = e.pageX;
         this.y = e.pageY;
-        this.canvasX = e.pageX - totalOffsetX;
-        this.canvasY = e.pageY - totalOffsetY;
+        this.canvasX = this.x - totalOffsetX;
+        this.canvasY = this.y - totalOffsetY;
         eventBus.emit('mouse update', {"x":this.x, "y":this.y, "canvasX":this.canvasX, "canvasY":this.canvasY, "isClicking":this.isClicking});
     }
    
