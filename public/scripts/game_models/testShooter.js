@@ -62,7 +62,7 @@ define([
             eventBus.on('add bonus', function (good, url) {
                 for (var i = 0; i < tabX.length; i++) 
                 { 
-                    eventBus.emit('DrawThis', tabX[i], tabY[i],20 ,20,url);
+                    eventBus.emit('DrawThis', tabX[i], tabY[i],20 ,20,url,good);
                 }
             });
         

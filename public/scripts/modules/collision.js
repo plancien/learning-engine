@@ -24,6 +24,7 @@ define(['event_bus'], function(eventBus)
                         if (arrayShoot[j].X < arrayPlayer[i].x+20 && arrayShoot[j].X > arrayPlayer[i].x && arrayShoot[j].Y < arrayPlayer[i].y+20 && arrayShoot[j].Y > arrayPlayer[i].y)
                         {
                             socket.emit("collision", i, j);
+                            eventBus.emit("onDamage", 1);
                         }
                     
                 }

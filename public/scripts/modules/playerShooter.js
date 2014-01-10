@@ -1,9 +1,10 @@
-define(['event_bus','modules/frames','modules/key_listener'], function(eventBus, frames){
+define(['event_bus','modules/frames','modules/key_listener', 'modules/game_over'], function(eventBus, frames){
 
         var socket = io.connect('http://localhost:8075');
         var ArrayPlayer = [];
         var img = new Image();
         var wait = 1001;
+        var type = false;
 
         var Player = function(life, speed, x, y,id)
         {
@@ -63,11 +64,13 @@ define(['event_bus','modules/frames','modules/key_listener'], function(eventBus,
                 
         });
 
-        eventBus.on("DrawThis", function(X,Y,width,height, url)
+        eventBus.on("DrawThis", function(X,Y,width,height, url, good)
         {
             wait++;
             if (wait>1000) 
             {
+                type = good;
+                eventBus.emit("type", type);
                 img = new Image();
                 img.src = url;
                 img.onload = function()
@@ -82,12 +85,15 @@ define(['event_bus','modules/frames','modules/key_listener'], function(eventBus,
             }
         });
             eventBus.on("shoot", function(id){
-            eventBus.emit('missile',ArrayPlayer[id].x,ArrayPlayer[id].y,ArrayPlayer[id].LastMove, 5,canvas)
+                if (type == true)
+                {
+                    eventBus.emit('missile',ArrayPlayer[id].x,ArrayPlayer[id].y,ArrayPlayer[id].LastMove, 5,canvas)
+                }
         });
         eventBus.on("onDamage", function(damage){
             ArrayPlayer[0].life -= damage;
             if(ArrayPlayer[0].life <= 0){
-                eventBus.emit("dead");
+                eventBus.emit("gameover");
             }
         })
     });
