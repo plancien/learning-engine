@@ -23,6 +23,8 @@ define([
     'modules/particle_generator',
     'modules/gauge',
     'modules/color',
+    'modules/game_over',
+    'modules/win',
     'modules/bonus_chooser',
     'modules/bonus_fader'
 ], function (eventBus, canvasCreate, windowSize, score, frames, keyListener, Render, tools, mouse, particles, Gauge) {
@@ -54,7 +56,9 @@ define([
             colorParticles : 'RGB(255,0,0);',
             gauge : {},
     		imageGood : new Image(),
-    		imageBad :  new Image()
+    		imageBad :  new Image(),
+            end : false,
+            scoreEnd : 0
     	};
 
 	    eventBus.on('init', function () {
@@ -92,10 +96,13 @@ define([
 
                 gameContainer.gauge.currentValue--;
 
-                if(gameContainer.gauge <= 0){
-                    //EndGame
-                    alert('Terminé !');
-                }
+               if(gameContainer.gauge.currentValue <= 0 && !gameContainer.end ){
+                    gameContainer.end = true;
+                    if(gameContainer.scoreEnd >= 0)
+                        eventBus.emit('win');
+                    if(gameContainer.scoreEnd < 0)
+                       eventBus.emit('gameover');
+               }    
 
                 callBonuses++;
                 if(callBonuses%180 === 0)
@@ -107,7 +114,6 @@ define([
                 {
                     gameContainer.arrayAnswer[j].update();
                     if( gameContainer.arrayAnswer[j].y > 800){
-
                         if(gameContainer.arrayAnswer[j].answer === "good")
                             gameContainer.points += 5;
                         else 
@@ -120,54 +126,13 @@ define([
 
                             eventBus.emit('CreateParticles', gameContainer.arrayAnswer[j].x, gameContainer.arrayAnswer[j].y, gameContainer.colorParticles, 200, 60);
                             eventBus.emit('add points', gameContainer.points);
+                            gameContainer.scoreEnd += gameContainer.points;
                             gameContainer.points = 0;
                             gameContainer.arrayAnswer.splice(j, 1);
+
                     }
                 }
 			});
-
-
-/***************************************************************************************
-* CREATING THE PATTERN FOR THE ANSWERS
-***************************************************************************************/
-        function createAnswers()
-        {
-            var paramsAnswer = {
-                    x : Math.round(Math.random()*700), 
-                    y : Math.round(Math.random()*100),
-                    width : 80,
-                    height : 80,
-                    speed : Math.round(Math.random()*3)+1,
-                    answer : "good"
-                }
-                    gameContainer.imageGood.src = params.bonusUrl;
-                    gameContainer.answer = new FallingAnswer(paramsAnswer);
-                    eventBus.emit('init render', {object : gameContainer.answer,
-                          sprite : {x : 0, y : 0, width : 96, height : 96, img : gameContainer.imageGood}
-                 })
-                var answerArray = gameContainer.arrayAnswer.push(gameContainer.answer);
-                createBadAnswer();
-        }
-
-        function createBadAnswer()
-        {
-                var paramsBadAnswer = {
-                    x : Math.round(Math.random()*700), 
-                    y : Math.round(Math.random()*100),
-                    width : 80,
-                    height : 80,
-                    speed : Math.round(Math.random()*3)+1,
-                    answer : "bad"
-                }
-
-                 gameContainer.imageBad.src = params.malusUrl;
-                    gameContainer.answer = new FallingAnswer(paramsBadAnswer);
-                    eventBus.emit('init render', {object : gameContainer.answer,
-                          sprite : {x : 0, y : 0, width : 96, height : 96, img : gameContainer.imageBad}
-                 })
-
-                 var answerArray = gameContainer.arrayAnswer.push(gameContainer.answer);
-        }
 
 /***************************************************************************************
 * CREATING THE PATTERN FOR THE ANSWERS
@@ -232,6 +197,7 @@ It's not dry, but i didn't find any possibility to pass dinamycly the path of th
 	    	this.height = this.radius;
 	    	this.speed = params.speed;
 	    	this.image = gameContainer.imageGood;
+            this.answer = params.answer;
 
 
 	    	this.render = function render()
@@ -272,6 +238,7 @@ It's not dry, but i didn't find any possibility to pass dinamycly the path of th
                             });
                             eventBus.emit('CreateParticles',mousePos.x, mousePos.y, gameContainer.colorParticles, 200, 60);
                             eventBus.emit('add points', gameContainer.points);
+                             gameContainer.scoreEnd += gameContainer.points;
                             gameContainer.points = 0;
                              gameContainer.arrayAnswer.splice(i, 1);
                 }
@@ -295,6 +262,5 @@ It's not dry, but i didn't find any possibility to pass dinamycly the path of th
 
 	   	eventBus.emit('init bonus', false, params.bonusUrl);
         eventBus.emit('init bonus', true,  params.malusUrl);
-
 	};
 });
