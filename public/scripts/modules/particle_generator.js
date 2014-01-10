@@ -10,13 +10,12 @@ define(['event_bus','modules/frames'], function(eventBus){
         var Particle = function(x, y, color, duration) {
             this.x = x;
             this.y = y;
-            var heightWidth = 5;
-            var fix=5;
-            var change;
+            this.heightWidth = 5;
             this.duration = duration;
             this.speed = 4;
             this.angle = Math.random() *Math.PI *2;
             this.color = color;
+            
             this.move = function() {
                 //mouvements aleatoirs en angle
                 this.x += Math.cos(this.angle)* this.speed;
@@ -28,7 +27,7 @@ define(['event_bus','modules/frames'], function(eventBus){
             }
             this.draw = function() {
                 context.fillStyle = this.color;
-                context.fillRect(this.x, this.y, heightWidth, heightWidth);
+                context.fillRect(this.x, this.y,this.heightWidth, this.heightWidth);
             }
 
             this.update = function update()
