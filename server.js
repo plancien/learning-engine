@@ -92,7 +92,6 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('infodeCollision', function (ArrayShoot, player) 
     {
-        socket.emit('testCollision', ArrayShoot, player);
         socket.broadcast.emit('testCollision', ArrayShoot, player);
     });
 

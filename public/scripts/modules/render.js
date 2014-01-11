@@ -88,7 +88,7 @@ define(['event_bus'], function(eventBus) {
                 currentAnim : undefined,
                 anims : [],
                 play : function(animName){
-                    this.currentAnim = object.animation.anims[animName];
+                    this.currentAnim = anims[animName];
                     this.f = 0;
                     this.currentFrame = 0;
                 },
@@ -119,19 +119,20 @@ define(['event_bus'], function(eventBus) {
     });  
 
     eventBus.on('add animation', function (object, anim) {
+
         if(object !== undefined || anim !== undefined){
             addAnim(object, anim)
         }
     }) 
 
     eventBus.on('play animation', function (object, animName) {
-        if(object !== undefined || animName !== undefined){
+        if(params.object !== undefined || animName !== undefined){
             object.animation.play(animName)
         }
     })
 
     eventBus.on('pause animation', function (object) {
-        if(object !== undefined){
+        if(params.object !== undefined){
             object.animation.pause(animName)
         }
     })
