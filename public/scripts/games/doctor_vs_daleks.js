@@ -8,6 +8,9 @@
     Save Math Smith by clicking on the nasty daleks !
 @endDescription
 
+@timer
+    00:00:20
+@endTimer
 */
 
 define([

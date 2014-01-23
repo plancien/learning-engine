@@ -12,7 +12,7 @@ require(['connector'], function (socket) {
             $("#modelParams").append(data);
         });
 
-        socket.on("send gamesInfos", function(infos) {
+       socket.on("send gamesInfos", function(infos) {
             for (var i = 0; i < infos.games.names.length; i++)
             {
                 var $game = $(document.createElement('option'));

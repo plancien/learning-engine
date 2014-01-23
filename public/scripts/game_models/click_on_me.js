@@ -8,6 +8,9 @@
     Simple game. Click on the bonus to win points, you loose points if you click on the malus.
 @endDescription
 
+@timer
+    00:00:20
+@endTimer
 */
 
 define([

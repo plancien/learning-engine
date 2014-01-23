@@ -115,6 +115,7 @@ io.sockets.on('connection', function(socket) {
 
     socket.on("ask gamesInfos", function() {        
         var games  = getFileInfos("./public/scripts/games");
+        console.log(games);
         var models = getFileInfos("./public/scripts/game_models");
         socket.emit('send gamesInfos', { games : games, models : models });    
     });
