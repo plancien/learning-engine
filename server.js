@@ -60,15 +60,19 @@ function getFileInfos(path)
 }
 
 io.sockets.on('connection', function(socket) {
-    
+    var user = []; // Tab for one specific user, destinate to a client side update
+    var allUsers = []; // Sever side tab with all the users
     socket.set('id', id);
-
     io.sockets.emit('welcome', 'hello');
 
-    socket.on('nouveau_client', function(pseudo) {
-    id++;
-    socket.set('id', id);
-
+    socket.on('nouveau_client', function(pseudo) { // WIP hope to link the score to users tab
+        id++;
+        user.push(id);
+        user.push(pseudo);
+        allUsers.push(user);
+        /* I tought it was forgotten */
+        // socket.set('id', id); 
+        socket.set('users', allUsers);
         socket.broadcast.emit('nouveau_client');
     });
 
@@ -115,7 +119,6 @@ io.sockets.on('connection', function(socket) {
 
     socket.on("ask gamesInfos", function() {        
         var games  = getFileInfos("./public/scripts/games");
-        console.log(games);
         var models = getFileInfos("./public/scripts/game_models");
         socket.emit('send gamesInfos', { games : games, models : models });    
     });
@@ -133,7 +136,6 @@ io.sockets.on('connection', function(socket) {
         if(fs.existsSync(path)) {
             template = fs.readFileSync(path, "utf8");
         }
-        console.log(template)
         socket.emit("inject template", template);
     });
 

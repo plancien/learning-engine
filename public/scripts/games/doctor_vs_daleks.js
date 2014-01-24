@@ -8,6 +8,7 @@
     Save Math Smith by clicking on the nasty daleks !
 @endDescription
 
+// WIP made as a defaut timer for existing exercices
 @timer
     00:00:20
 @endTimer
