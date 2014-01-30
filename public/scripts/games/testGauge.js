@@ -15,7 +15,6 @@ define([
     'modules/gauge',
     'modules/canvas',
     'modules/frames',
-    'modules/chrono',
     'modules/mouse'
 ], function (eventBus, Gauge, Canvas, frames, Mouse) {
 
@@ -54,8 +53,6 @@ define([
 
     eventBus.on("gauge is empty"+gauge2.gaugeId, function(){
         this.currentValue = this.valueMax;
-        eventBus.emit('stop stopwatch');
     }, gauge2)
-
 
 });

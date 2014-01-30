@@ -1,4 +1,15 @@
+#mainMenu {
+    display : none;
+}
+.alert p {
+    color : red;
+}
 #eventsList {
     position: absolute;
     right : 0;
 }
+/* Timer style made to work with commented elem in clickOnMe.html */
+/*#hour, #minute, #second {
+    width: 20px;
+    margin: 0px 5px;
+}*/

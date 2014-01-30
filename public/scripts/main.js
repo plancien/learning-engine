@@ -12,7 +12,7 @@ require(['connector'], function (socket) {
             $("#modelParams").append(data);
         });
 
-        socket.on("send gamesInfos", function(infos) {
+       socket.on("send gamesInfos", function(infos) {
             for (var i = 0; i < infos.games.names.length; i++)
             {
                 var $game = $(document.createElement('option'));
@@ -47,6 +47,28 @@ require(['connector'], function (socket) {
                 $("#modelDescription").html(description);
 
                 socket.emit("ask template", $("#modelList option:selected").data("fileName"));
+            });
+
+            /* User name verification */
+            $("#user button").click(function(e) {
+                var myRegex = /\W/; // Match every non character
+                var userName = $("#userName").val();
+
+                if (userName.match(myRegex) === null){
+                    $(this).parent().css('display', 'none');
+                    $("#mainMenu").fadeIn('normal');
+
+                    var socket = io.connect();
+                    socket.emit('nouveau_client', userName); // Create the server side tabs with users data 
+                    
+                    /* WIP RANKING MODULE */
+                    // require(['modules/ranking',], function () {           
+                    // });
+                }
+                else
+                {
+                    $("#userAlert").html("Ce champ n'accepte des chiffres et des lettres sans espace!");
+                }
             });
 
             $("#gameSelect button").click(function(e) {

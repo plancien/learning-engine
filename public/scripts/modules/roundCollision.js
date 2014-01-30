@@ -6,7 +6,7 @@ define(['modules/tools'], function(tools) {
         {
             for (var i = 0; i < collidableObjects.length; i++) 
             {
-                if((this.distanceToCollide >= tools.getDistance(this,collidableObjects[i])) && (collidableObjects[i] != this))
+                if((this.distanceToCollide >= tools.vectors.getDistance(this,collidableObjects[i])) && (collidableObjects[i] != this))
                 {
                     eventBus.emit('roundCollision', this);
                 }

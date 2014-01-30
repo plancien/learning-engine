@@ -23,7 +23,7 @@ define(['event_bus'], function (eventBus) {
     });
 
     eventBus.on('new frame', function()
-    {
+    { 
         if(stopWatchStart)
         {
             var compareStamp = new Date().getTime();

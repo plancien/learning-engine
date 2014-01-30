@@ -50,7 +50,7 @@ define(['event_bus'], function(eventBus) {
                     context.translate(this.x - this.width/2, this.y - this.height/2);
                     var pattern = context.createPattern(this.defaultSprite.img, this.patternRepeat);
                     context.fillStyle = pattern;
-                    context.fillRect(this.x - this.width/2, this.y - this.height/2, this.width, this.height);
+                    context.fillRect(0, 0, this.width, this.height);
                     context.fillStyle = "rgb(0,0,0)";
                     context.restore();
                 }

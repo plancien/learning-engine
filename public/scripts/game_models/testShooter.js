@@ -28,8 +28,9 @@ define([
         eventBus.emit('init bonus', false, params.bonusUrl);
         eventBus.emit('init bonus', true,  params.malusUrl);
 
-    var socket = io.connect('http://localhost:8075');
-    socket.emit('nouveau_client');
+    /* Main userName modification replace at main.js line 61*/
+    // var socket = io.connect('http://localhost:8075');
+    // socket.emit('nouveau_client');
 
     var tabX = [];
     var tabY = [];
@@ -62,7 +63,7 @@ define([
             eventBus.on('add bonus', function (good, url) {
                 for (var i = 0; i < tabX.length; i++) 
                 { 
-                    eventBus.emit('DrawThis', tabX[i], tabY[i],20 ,20,url);
+                    eventBus.emit('DrawThis', tabX[i], tabY[i],20 ,20,url,good);
                 }
             });
         

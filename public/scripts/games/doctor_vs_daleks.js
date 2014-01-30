@@ -8,6 +8,10 @@
     Save Math Smith by clicking on the nasty daleks !
 @endDescription
 
+// WIP made as a defaut timer for existing exercices
+@timer
+    00:00:20
+@endTimer
 */
 
 define([
@@ -15,11 +19,13 @@ define([
     'modules/score',
     'modules/bonus_chooser',
     'modules/bonus_fader',
+    'modules/game_over',
     'modules/sound'
 ], function (eventBus) {
     
 	eventBus.emit("add sound" , true, 'sounds/playstation.mp3',true);
 	eventBus.emit("add sound" , true, 'sounds/daft_punk.mp3',false);
+	// eventBus.emit("gameover");
     eventBus.emit('init bonus', false, 'images/doctor.png');
     eventBus.emit('init bonus', true,  'images/dalek.png');
 
@@ -31,7 +37,7 @@ define([
             left: Math.random()*500+'px',
             top:  Math.random()*300+'px'
         });
-        
+ 
         container.append(bonus);
 
         eventBus.emit('bonus added', bonus);        

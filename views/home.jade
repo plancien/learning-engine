@@ -7,6 +7,13 @@ html
     script(type="text/javascript", src="/socket.io/socket.io.js")
     script(type="text/javascript", src="/scripts/ext_libs/require.js", data-main="/scripts/main")
   body
+    div#user
+        h1 Bienvenue !
+        |Nom d'utilisateur :  
+        input#userName(type='text')
+        button.button Validez !
+        div.alert
+            p#userAlert
     div#mainMenu
         h1 Play an existant game !
         div#gameSelect
