@@ -16,43 +16,44 @@ define([
     'modules/canvas',
     'modules/frames',
     'modules/mouse'
-], function (eventBus, Gauge, Canvas, frames, Mouse) {
+], function(eventBus, Gauge, Canvas, frames, Mouse) {
 
     var canvas = Canvas.create();
+
     var gauge = new Gauge({
-        context : canvas.context,
-        size : {
-            x : 100,
-            y : 100
+        context: canvas.context,
+        size: {
+            x: 100,
+            y: 100
         },
-        valueMax : 100,
-        displayMode : "horizontal"
+        valueMax: 100,
+        displayMode: "horizontal"
     });
+
     var gauge2 = new Gauge({
-        context : canvas.context,
-        size : {
-            x : 100,
-            y : 100
+        context: canvas.context,
+        size: {
+            x: 100,
+            y: 100
         },
-        position : {
-            x : 110,
-            y : 0
+        position: {
+            x: 110,
+            y: 0
         },
-        valueMax : 1000,
+        valueMax: 1000
     });
 
-
-    eventBus.on("new frame", function(){
+    eventBus.on("new frame", function() {
         gauge.currentValue--;
         gauge2.currentValue--;
-    })
+    });
 
-    eventBus.on("gauge is empty"+gauge.gaugeId, function(){
+    eventBus.on("gauge is empty" + gauge.gaugeId, function() {
         this.currentValue = this.valueMax;
-    }, gauge)
+    }, gauge);
 
-    eventBus.on("gauge is empty"+gauge2.gaugeId, function(){
+    eventBus.on("gauge is empty" + gauge2.gaugeId, function() {
         this.currentValue = this.valueMax;
-    }, gauge2)
+    }, gauge2);
 
 });

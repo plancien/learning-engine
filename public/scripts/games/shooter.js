@@ -3,8 +3,6 @@ define([
     'modules/score',
     'modules/bonus_chooser',
     'module/key_listener'
-], function (eventBus) {
-
-
+], function(eventBus) {
 
 });
