@@ -13,15 +13,7 @@ io.set('log level', 1);
 //app.use(express.logger());
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
-
-
-app.get('/test', function(req, res){
-    res.send('Server is ok !');
-});
-
-app.get('/', function(req, res){
-    res.render('home.jade');
-});
+require('./config/routes.js')(app);
 
 function trim(myString)
 {
