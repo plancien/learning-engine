@@ -1,6 +1,7 @@
-require(['connector'], function (socket) {
-    
+require(['connector'], function(socket) {
+
     $(function() {
+
         socket.emit("ask gamesInfos");
 
         socket.on('inject css', function(data) {
@@ -12,9 +13,9 @@ require(['connector'], function (socket) {
             $("#modelParams").append(data);
         });
 
-       socket.on("send gamesInfos", function(infos) {
-            for (var i = 0; i < infos.games.names.length; i++)
-            {
+        socket.on("send gamesInfos", function(infos) {
+
+            for (var i = 0; i < infos.games.names.length; i++) {
                 var $game = $(document.createElement('option'));
                 $game.attr("id", infos.games.names[i]);
                 $game.html(infos.games.names[i]);
@@ -23,13 +24,12 @@ require(['connector'], function (socket) {
                 $("#gameList").append($game);
             }
 
-            for (var i = 0; i < infos.models.names.length; i++)
-            {
+            for (var j = 0; j < infos.models.names.length; j++) {
                 var $model = $(document.createElement('option'));
-                $model.attr("id", infos.models.names[i]);
-                $model.html(infos.models.names[i]);
-                $model.data("description", infos.models.descriptions[i]);
-                $model.data("fileName", infos.models.fileNames[i]);
+                $model.attr("id", infos.models.names[j]);
+                $model.html(infos.models.names[j]);
+                $model.data("description", infos.models.descriptions[j]);
+                $model.data("fileName", infos.models.fileNames[j]);
                 $("#modelList").append($model);
             }
 
@@ -54,19 +54,16 @@ require(['connector'], function (socket) {
                 var myRegex = /\W/; // Match every non character
                 var userName = $("#userName").val();
 
-                if (userName.match(myRegex) === null){
+                if (userName.match(myRegex) === null) {
                     $(this).parent().css('display', 'none');
                     $("#mainMenu").fadeIn('normal');
 
                     var socket = io.connect();
                     socket.emit('nouveau_client', userName); // Create the server side tabs with users data 
-                    
                     /* WIP RANKING MODULE */
-                    // require(['modules/ranking',], function () {           
+                    // require(['modules/ranking',], function () {
                     // });
-                }
-                else
-                {
+                } else {
                     $("#userAlert").html("Ce champ n'accepte des chiffres et des lettres sans espace!");
                 }
             });
@@ -78,10 +75,10 @@ require(['connector'], function (socket) {
                 var gameSelectedPath = "games/" + gameSelectedName;
 
                 socket.emit('ask css', gameSelectedName);
-                
 
-                require(['game', gameSelectedPath], function (game) {
-                    game.init();            
+
+                require(['game', gameSelectedPath], function(game) {
+                    game.init();
                 });
             });
 
@@ -100,16 +97,18 @@ require(['connector'], function (socket) {
 
                 var question = $("#question")[0].value;
                 var params = {
-                    bonusUrl : $("#bonusImg option:selected")[0].value,
-                    malusUrl : $("#malusImg option:selected")[0].value
-                }
+                    bonusUrl: $("#bonusImg option:selected")[0].value,
+                    malusUrl: $("#malusImg option:selected")[0].value
+                };
 
-                require(['game', modelSelectedPath], function (game, setGame) {
-                    setGame(params);            
+                require(['game', modelSelectedPath], function(game, setGame) {
+                    setGame(params);
                     game.init(question);
                 });
             });
+
         });
+
     });
 
 });
