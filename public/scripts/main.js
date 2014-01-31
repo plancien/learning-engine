@@ -88,7 +88,7 @@ require(['connector'], function(socket) {
                 $("#mainMenu").hide();
 
                 var modelSelectedName = $("#modelList option:selected").data("fileName");
-                var modelSelectedPath = "game_models/" + modelSelectedName;
+                var modelSelectedPath = "game_types/" + modelSelectedName;
 
                 socket.emit('ask css', modelSelectedName);
                 socket.on('inject css', function(data) {

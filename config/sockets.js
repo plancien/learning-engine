@@ -93,7 +93,7 @@ module.exports = function(io) {
 
         socket.on("ask gamesInfos", function() {
             var games = getFileInfos(rootPath + "./public/scripts/games");
-            var models = getFileInfos(rootPath + "./public/scripts/game_models");
+            var models = getFileInfos(rootPath + "./public/scripts/game_types");
             socket.emit('send gamesInfos', {
                 games: games,
                 models: models
