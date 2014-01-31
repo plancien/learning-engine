@@ -4,6 +4,8 @@ The Learning Engine is a serious game generator.
 
 ## Documentation pour les développeurs
 
+[Conventions de code](http://javascript.crockford.com/code.html)
+
 [Page d'acceuil du wiki](https://github.com/plancien/learning-engine/wiki)
 
 [Bonnes pratiques pour le code](https://github.com/plancien/learning-engine/wiki/Guidelines-sur-le-code)
