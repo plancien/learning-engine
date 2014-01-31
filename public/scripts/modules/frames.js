@@ -1,4 +1,4 @@
-define(['event_bus'], function (eventBus) {
+define(['event_bus'], function(eventBus) {
 
     var requestAnimationFrame = window.requestAnimationFrame
         || window.webkitRequestAnimationFrame
@@ -8,14 +8,12 @@ define(['event_bus'], function (eventBus) {
         || function(callback) {
             window.setTimeout(callback, 1000 / 60);
         };
-    
+
     var onEachFrame = function() {
-        eventBus.emit('new frame');
-        requestAnimationFrame(onEachFrame);
-    };
-    
+            eventBus.emit('new frame');
+            requestAnimationFrame(onEachFrame);
+        };
+
     onEachFrame();
 
-    
 });
-    

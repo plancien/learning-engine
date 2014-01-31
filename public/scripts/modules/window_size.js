@@ -1,20 +1,20 @@
-define(['event_bus'], function (eventBus) {
+define(['event_bus'], function(eventBus) {
 
-    var WindowSize = function(){
+    function WindowSize() {
         this.defaultWidth = 500;
         this.defaultHeight = 300;
     }
 
-    WindowSize.prototype.getWindowSize = function(){
+    WindowSize.prototype.getWindowSize = function() {
         var width = window.innerWidth;
         var height = window.innerHeight;
 
         var object = {
-            width : width,
-            height : height
+            width: width,
+            height: height
         };
 
-        return object;  
+        return object;
     };
 
     return new WindowSize();
