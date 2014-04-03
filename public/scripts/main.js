@@ -60,9 +60,6 @@ require(['connector'], function(socket) {
 
                     var socket = io.connect();
                     socket.emit('nouveau_client', userName); // Create the server side tabs with users data 
-                    /* WIP RANKING MODULE */
-                    // require(['modules/ranking',], function () {
-                    // });
                 } else {
                     $("#userAlert").html("Ce champ n'accepte des chiffres et des lettres sans espace!");
                 }
