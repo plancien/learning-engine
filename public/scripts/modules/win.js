@@ -3,7 +3,7 @@ define([
     'modules/window_size',
     'modules/add_domElem',
     'modules/canvas'
-], function(eventBus, WindowSize, Canvas) {
+], function(eventBus, WindowSize) {
     
     eventBus.on("win", function() {
         function replay() {

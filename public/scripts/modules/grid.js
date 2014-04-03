@@ -1,4 +1,4 @@
-define(['event_bus'], function(eventBus) {
+define(['event_bus'], function (eventBus) {
 
     /***************************************
      params needed for the grid
@@ -11,7 +11,7 @@ define(['event_bus'], function(eventBus) {
      params.hover : the color when the case is selected (string);
      }*/
 
-    function Grid(params) {
+    function Grid (params) {
         this.caseTable = [];
         //creation of the cases
         for (var i = 0; i < params.line; i++) {
@@ -22,7 +22,7 @@ define(['event_bus'], function(eventBus) {
         }
     }
 
-    Grid.prototype.render = function(event) {
+    Grid.prototype.render = function () {
         for (var i = 0; i < this.caseTable.length; i++) {
             for (var j = 0; j < this.caseTable[i].length; j++) {
                 this.caseTable[i][j].render();
@@ -30,7 +30,7 @@ define(['event_bus'], function(eventBus) {
         }
     };
 
-    function Case(x, y, width, height, color, hover, context) {
+    function Case (x, y, width, height, color, hover, context) {
         this.x = x * width;
         this.y = y * height;
         this.width = width;
@@ -42,7 +42,7 @@ define(['event_bus'], function(eventBus) {
         this.actualColor = this.color;
     }
 
-    Case.prototype.render = function(event) {
+    Case.prototype.render = function () {
         this.context.lineWidth = 2;
         this.context.strokeStyle = this.actualColor;
         this.context.strokeRect(this.x, this.y, this.width, this.height);
@@ -52,7 +52,7 @@ define(['event_bus'], function(eventBus) {
         }
     };
 
-    Case.prototype.select = function(isSelected) {
+    Case.prototype.select = function (isSelected) {
         this.selected = isSelected;
         if (!this.selected) {
             this.actualColor = this.color;
@@ -61,7 +61,7 @@ define(['event_bus'], function(eventBus) {
         }
     };
 
-    eventBus.on('create grid', function(params, parent) {
+    eventBus.on('create grid', function (params, parent) {
         parent.grid = new Grid(params);
     });
 
