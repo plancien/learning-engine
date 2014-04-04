@@ -1,6 +1,6 @@
 define(['event_bus'], function(eventBus) {
 
-    var keysDown = {};
+    var keysStillDown = {};
 
     var keyCodes = {
         37: 'left',
@@ -69,23 +69,20 @@ define(['event_bus'], function(eventBus) {
 
     window.addEventListener("keydown", function(e) {
         var niceCode = keyCodes[e.keyCode] || String.fromCharCode(e.keyCode);
-        console.log(niceCode);
-        keysDown[niceCode] = true;
+        keysStillDown[niceCode] = true;
         eventBus.emit('key pressed', niceCode);
         eventBus.emit('key pressed ' + niceCode);
     }, false);
 
     window.addEventListener("keyup", function(e) {
-        var niceCode = keyCodes[e.keyCode] || e.keyCode;
-        delete keysDown[e.keyCode];
+        var niceCode = keyCodes[e.keyCode] || String.fromCharCode(e.keyCode);
+        delete keysStillDown[niceCode];
     }, false);
 
     eventBus.on('new frame', function() {
-        var keys = [];
-        for (keyCode in keysDown) {
-            keys.push(keyCode);
+        for (niceCode in keysStillDown) {
+            eventBus.emit('keys still pressed', niceCode);
+            eventBus.emit('keys still pressed ' + niceCode);
         }
-        eventBus.emit('keys still pressed', keys);
     });
-
 });

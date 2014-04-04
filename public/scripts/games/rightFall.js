@@ -16,7 +16,6 @@ define([
     game.canvas.height = 600;
     window.pGame= game;
     eventBus.on("key pressed", function(key){
-    	console.log(key);
     });
 
     var run = function(game){
