@@ -9,11 +9,11 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
         });
 
         function Particle(params) {
-            this.x = params.x || 0 ;
-            this.y = params.y || 0;
+            this.x = params.x - 7 || 0 ;
+            this.y = params.y - 151 || 0;
             this.size = (params.size || 5)*Math.random() ;
             this.styleParticles = params.style || true;
-            this.lifeTime = (params.lifeTime || 100)*Math.random();
+            this.lifeTime = (params.lifeTime || 100)*Math.random() + 1000;
             this.speed = (params.speed || 5)*Math.random()+1;
             this.angle = (params.angle|| Math.PI * 2)* Math.random();
             this.color = params.color;
