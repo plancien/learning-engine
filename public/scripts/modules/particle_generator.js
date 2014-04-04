@@ -12,7 +12,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
             this.x = params.x || 0 ;
             this.y = params.y || 0;
             this.size = (params.size || 5)*Math.random() ;
-            this.styleParticles = params.style || true;
+            this.styleParticles = params.style ;
             this.lifeTime = (params.lifeTime || 100)*Math.random();
             this.speed = (params.speed || 5)*Math.random()+1;
             this.angle = (params.angle|| Math.PI * 2)* Math.random();
@@ -28,13 +28,13 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
             };
 
             this.draw = function() {
+                context.fillStyle = this.color;
                 if(this.styleParticles){
-                    context.fillStyle = this.color;
                     context.fillRect(this.x, this.y, this.size, this.size);
                 }
                 else{
                     context.beginPath();
-                    context.arc(this.x, this.y,10,this.size,2*Math.PI);
+                    context.arc(this.x, this.y,this.size,0,2*Math.PI);
                     context.stroke();
                     context.fill();
                 }
