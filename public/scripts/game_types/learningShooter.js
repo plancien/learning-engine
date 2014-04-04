@@ -13,7 +13,6 @@
 define([
     'event_bus',
     'modules/canvas',
-    'modules/window_size',
     'modules/score',
     'modules/frames',
     'modules/key_listener',
@@ -27,7 +26,7 @@ define([
     'modules/win',
     'modules/bonus_chooser',
     'modules/bonus_fader'
-], function(eventBus, canvasCreate, windowSize, score, frames, keyListener, Render, tools, mouse, particles, Gauge) {
+], function(eventBus, canvasCreate, score, frames, keyListener, Render, tools, mouse, particles, Gauge) {
 
     return function(params) {
         var canvas, ctx = "";
