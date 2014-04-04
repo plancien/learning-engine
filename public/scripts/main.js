@@ -1,7 +1,6 @@
 require(['connector'], function(socket) {
 
     $(function() {
-
         socket.emit("ask gamesInfos");
 
         socket.on('inject css', function(data) {
@@ -77,6 +76,23 @@ require(['connector'], function(socket) {
                 require(['game', gameSelectedPath], function(game) {
                     game.init();
                 });
+            });
+
+            $("button#rouge").click(function(e) {
+                $( "header" ).css( "background-color", "#E41D1D" );
+                $( "footer" ).css( "background-color", "#E41D1D" );
+            });
+            $("button#jaune").click(function(e) {
+                $( "header" ).css( "background-color", "#E9F046" );
+                $( "footer" ).css( "background-color", "#E9F046" );
+            });
+            $("button#violet").click(function(e) {
+                $( "header" ).css( "background-color", "#E946F0" );
+                $( "footer" ).css( "background-color", "#E946F0" );
+            });
+            $("button#bleu").click(function(e) {
+                $( "header" ).css( "background-color", "#73C8E9" );
+                $( "footer" ).css( "background-color", "#73C8E9" );
             });
 
             $("#gameCreation").submit(function(e) {
