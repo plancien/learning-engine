@@ -11,11 +11,11 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
         function Particle(params) {
             this.x = params.x || 0 ;
             this.y = params.y || 0;
-            this.size = params.size || 5 ;
-            this.styleParticles = params.style || true;
-            this.lifeTime = params.lifeTime || 100;
-            this.speed = params.speed || Math.random() * 5 || 5;
-            this.angle = params.angle*Math.random() || Math.random() * Math.PI * 2;
+            this.size = (params.size || 5)*Math.random() ;
+            this.styleParticles = params.style ;
+            this.lifeTime = (params.lifeTime || 100)*Math.random();
+            this.speed = (params.speed || 5)*Math.random()+1;
+            this.angle = (params.angle|| Math.PI * 2)* Math.random();
             this.color = params.color;
 
             this.move = function() {
@@ -28,13 +28,13 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
             };
 
             this.draw = function() {
+                context.fillStyle = this.color;
                 if(this.styleParticles){
-                    context.fillStyle = this.color;
                     context.fillRect(this.x, this.y, this.size, this.size);
                 }
                 else{
                     context.beginPath();
-                    context.arc(this.x, this.y,10,this.size,2*Math.PI);
+                    context.arc(this.x, this.y,this.size,0,2*Math.PI);
                     context.stroke();
                     context.fill();
                 }
@@ -56,7 +56,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
         });
 
         eventBus.on('CreateParticles', function(params) {
-            for (var i = 0; i < params.count; i++) {
+        for (var i = 0; i < params.count; i++) {
                 var star = new Particle(params);
                 particleTable.push(star);
             }
