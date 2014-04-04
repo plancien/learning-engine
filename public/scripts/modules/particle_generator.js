@@ -14,7 +14,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
             this.size = (params.size || 5)*Math.random() ;
             this.styleParticles = params.style || true;
             this.lifeTime = (params.lifeTime || 100)*Math.random();
-            this.speed = (params.speed || 5)* Math.random();
+            this.speed = (params.speed || 5)*Math.random()+1;
             this.angle = (params.angle|| Math.PI * 2)* Math.random();
             this.color = params.color;
 
