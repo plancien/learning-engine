@@ -47,22 +47,31 @@ require(['connector'], function(socket) {
 
                 socket.emit("ask template", $("#modelList option:selected").data("fileName"));
             });
+            /* Cookie verification */
+            if(localStorage.length > 0){
+                $("#socialBar").css('display', 'none');
+                $("#mainMenu").fadeIn('normal');
+                $("#blocUser").html("Welcome my friend, "+localStorage.cookie+"");
+            }
+            else{
+                /* User name verification */
+                $("#user button").click(function(e) {
+                    var myRegex = /\W/; // Match every non character
+                    var userName = $("#userName").val();
 
-            /* User name verification */
-            $("#user button").click(function(e) {
-                var myRegex = /\W/; // Match every non character
-                var userName = $("#userName").val();
-
-                if (userName.match(myRegex) === null) {
-                    $(this).parent().css('display', 'none');
-                    $("#mainMenu").fadeIn('normal');
-
-                    var socket = io.connect();
-                    socket.emit('nouveau_client', userName); // Create the server side tabs with users data 
-                } else {
-                    $("#userAlert").html("Ce champ n'accepte des chiffres et des lettres sans espace!");
-                }
-            });
+                    if (userName.match(myRegex) === null) {
+                        localStorage.setItem("cookie",userName);
+                        
+                        $(this).parent().css('display', 'none');
+                        $("#mainMenu").fadeIn('normal');
+                        $("#blocUser").html("Welcome my friend, "+userName+"");
+                        var socket = io.connect();
+                        socket.emit('nouveau_client', userName); // Create the server side tabs with users data 
+                    } else {
+                        $("#userAlert").html("Ce champ n'accepte pas de chiffre et de lettre sans espace!");
+                    }
+                });
+            }
 
             $("#gameSelect button").click(function(e) {
                 $("#mainMenu").hide();
@@ -78,22 +87,24 @@ require(['connector'], function(socket) {
                 });
             });
 
-            $("button#rouge").click(function(e) {
-                $( "header" ).css( "background-color", "#E41D1D" );
-                $( "footer" ).css( "background-color", "#E41D1D" );
-            });
-            $("button#jaune").click(function(e) {
-                $( "header" ).css( "background-color", "#E9F046" );
-                $( "footer" ).css( "background-color", "#E9F046" );
-            });
-            $("button#violet").click(function(e) {
-                $( "header" ).css( "background-color", "#E946F0" );
-                $( "footer" ).css( "background-color", "#E946F0" );
-            });
-            $("button#bleu").click(function(e) {
-                $( "header" ).css( "background-color", "#73C8E9" );
-                $( "footer" ).css( "background-color", "#73C8E9" );
-            });
+            $(".btnThemes").click(function(e){
+                if($(this)[0].id == "rouge"){
+                    $( "header" ).css( "background-color", "#E41D1D" );
+                    $( "footer" ).css( "background-color", "#E41D1D" );
+                }
+                if($(this)[0].id == "jaune"){
+                    $( "header" ).css( "background-color", "#E9F046" );
+                    $( "footer" ).css( "background-color", "#E9F046" );
+                }
+                if($(this)[0].id == "violet"){
+                    $( "header" ).css( "background-color", "#E946F0" );
+                    $( "footer" ).css( "background-color", "#E946F0" );
+                }
+                if($(this)[0].id == "bleu"){
+                    $( "header" ).css( "background-color", "#73C8E9" );
+                    $( "footer" ).css( "background-color", "#73C8E9" );
+                }
+            })
 
             $("#gameCreation").submit(function(e) {
                 e.preventDefault();

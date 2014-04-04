@@ -57,12 +57,12 @@ body{
 	float: right;
 }
 
-#gameSelect {
+#blocLeft {
 	width: 400px;
 	float: left;
 }
 
-#gameSelect, #gameCreation{
+#gameSelect, #blocUser, #gameCreation{
 	text-align: center;
 	border: 1px solid #ddd;
 	-mox-border-radius: 6px;
@@ -101,9 +101,9 @@ body > footer {
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	padding: 15px 15px 25px 15px;
+	padding: 1px 15px 25px 15px;
 	background-color: #73C8E9;
-	height: 15px;
+	height: 10px;
 	font-size: 12px;
 	text-align: center;
 }
