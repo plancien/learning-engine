@@ -28,15 +28,14 @@ body{
 }
 #eventsList {
     float: right;
-	margin-right: 7%;
-	font-size: 12px;
+	font-size: 9px;
 }
 /* Timer style made to work with commented elem in clickOnMe.html */
 /*#hour, #minute, #second {
     width: 20px;
     margin: 0px 5px;
 }*/
-#mainMenu > header, #user > header{
+#user > header{
 	position: absolute;
 	top: 0;
 	left: 0;
