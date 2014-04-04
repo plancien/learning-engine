@@ -114,8 +114,14 @@ define([
                     eventBus.on('random color', function(data) {
                         gameContainer.colorParticles = data;
                     });
-
-                    eventBus.emit('CreateParticles', gameContainer.arrayAnswer[j].x, gameContainer.arrayAnswer[j].y, gameContainer.colorParticles, 200, 60);
+                    var params = {
+                        x: gameContainer.arrayAnswer[j].x,
+                        y: gameContainer.arrayAnswer[j].y,
+                        color : gameContainer.colorParticles,
+                        count : 200,
+                        lifetime : 60,
+                    }
+                    eventBus.emit('CreateParticles', params);
                     eventBus.emit('add points', gameContainer.points);
                     gameContainer.scoreEnd += gameContainer.points;
                     gameContainer.points = 0;
@@ -230,7 +236,14 @@ define([
                         eventBus.on('random color', function(data) {
                             gameContainer.colorParticles = data;
                         });
-                        eventBus.emit('CreateParticles', mousePos.x, mousePos.y, gameContainer.colorParticles, 200, 60);
+                        var params = {
+                            x: mousePos.x,
+                            y: mousePos.y,
+                            color : gameContainer.colorParticles,
+                            count : 200,
+                            lifetime : 60,
+                        }
+                        eventBus.emit('CreateParticles', params);
                         eventBus.emit('add points', gameContainer.points);
                         gameContainer.scoreEnd += gameContainer.points;
                         gameContainer.points = 0;
@@ -241,8 +254,8 @@ define([
         }
         
         eventBus.on('mouse update', function(data) {
-            mousePos.x = data.x;
-            mousePos.y = data.y;
+            mousePos.x = data.canvasX;
+            mousePos.y = data.canvasY;
             mousePos.isClicking = data.isClicking;
         });
 
