@@ -8,31 +8,40 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
             context = canvas.context;
         });
 
-        function Particle(x, y, color, duration) {
-            this.x = x;
-            this.y = y;
-            this.heightWidth = 5;
-            this.duration = duration;
-            this.speed = Math.random() * 5;
-            this.angle = Math.random() * Math.PI * 2;
-            this.color = color;
+        function Particle(params) {
+            this.x = params.x || 0 ;
+            this.y = params.y || 0;
+            this.size = params.size || 5 ;
+            this.styleParticles = params.style || true;
+            this.lifeTime = params.lifeTime || 100;
+            this.speed = params.speed || Math.random() * 5 || 5;
+            this.angle = params.angle*Math.random() || Math.random() * Math.PI * 2;
+            this.color = params.color;
 
             this.move = function() {
                 //mouvements aleatoirs en angle
                 this.x += Math.cos(this.angle) * this.speed;
                 this.y -= Math.sin(this.angle) * this.speed;
-                if (this.duration <= 0) {
+                if (this.lifeTime <= 0) {
                     particleTable.splice(particleTable.indexOf(this), 1);
                 }
             };
 
             this.draw = function() {
-                context.fillStyle = this.color;
-                context.fillRect(this.x, this.y, this.heightWidth, this.heightWidth);
+                if(this.styleParticles){
+                    context.fillStyle = this.color;
+                    context.fillRect(this.x, this.y, this.size, this.size);
+                }
+                else{
+                    context.beginPath();
+                    context.arc(this.x, this.y,10,this.size,2*Math.PI);
+                    context.stroke();
+                    context.fill();
+                }
             };
 
             this.update = function update() {
-                this.duration--;
+                this.lifeTime--;
                 this.draw();
                 this.move();
             };
@@ -46,9 +55,9 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
             }
         });
 
-        eventBus.on('CreateParticles', function(x, y, color, count, duration) {
-            for (var i = 0; i < count; i++) {
-                var star = new Particle(x, y, color, duration);
+        eventBus.on('CreateParticles', function(params) {
+            for (var i = 0; i < params.count; i++) {
+                var star = new Particle(params);
                 particleTable.push(star);
             }
         });

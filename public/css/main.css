@@ -1,15 +1,110 @@
+body{
+	background-color: #D8D8D8;
+	font-family: arial black;
+}
+
 #mainMenu {
     display : none;
+    margin: auto;
+    margin-top: 150px;
+    width: 900px;
+    font-size: 13px;
 }
+
+#user {
+	margin: auto;
+	margin-top: 150px;
+	width: 900px;
+	text-align: center;
+}
+
+#socialBar {
+	width: 500px;
+	margin: auto;
+}
+
 .alert p {
     color : red;
 }
 #eventsList {
-    position: absolute;
-    right : 0;
+    float: right;
+	margin-right: 7%;
+	font-size: 12px;
 }
 /* Timer style made to work with commented elem in clickOnMe.html */
 /*#hour, #minute, #second {
     width: 20px;
     margin: 0px 5px;
 }*/
+#mainMenu > header, #user > header{
+	position: absolute;
+	top: 0;
+	left: 0;
+	padding: 10px 0px 10px 0px;
+	width: 100%;
+	height: 100px;
+	background-color: #73C8E9;
+	-webkit-box-shadow: 0px 1px 24px 0px rgba(50, 50, 50, 0.46);
+	-moz-box-shadow:    0px 1px 24px 0px rgba(50, 50, 50, 0.46);
+	box-shadow:         0px 1px 24px 0px rgba(50, 50, 50, 0.46);
+}
+
+#user > header > img {
+	width: 800px;
+}
+
+#gameCreation{
+	width: 400px;
+	float: right;
+}
+
+#gameSelect {
+	width: 400px;
+	float: left;
+}
+
+#gameSelect, #gameCreation{
+	text-align: center;
+	border: 1px solid #ddd;
+	-mox-border-radius: 6px;
+	-weblit-border-radius: 6px;
+	border-radius: 6px;
+	padding: 5px;
+}
+
+input, textarea, button, select
+{
+	width: 150px;
+	background: #efefef;
+	border: 1px solid #ddd;
+	font-size: 0.7em;
+	color: #666;
+	height:	40px;
+	padding: 8px;
+	margin: 10px;
+	-mox-border-radius: 6px;
+	-weblit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+#userName{
+	height: 22px;
+}
+
+input:focus, textarea:focus
+{
+
+    border:1px solid #99cc66;
+}
+
+body > footer {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	padding: 15px;
+	background-color: #73C8E9;
+	height: 15px;
+	font-size: 12px;
+	text-align: center;
+}

@@ -95,8 +95,12 @@ define([
 
             if (gameContainer.gauge.currentValue <= 0 && !gameContainer.end) {
                 gameContainer.end = true;
-                if (gameContainer.scoreEnd >= 0) eventBus.emit('win');
-                if (gameContainer.scoreEnd < 0) eventBus.emit('gameover');
+                if (gameContainer.scoreEnd >= 0){
+                    eventBus.emit('win');
+                }
+                if (gameContainer.scoreEnd < 0){
+                    eventBus.emit('gameover');
+                }
             }
 
             callBonuses++;
@@ -107,20 +111,26 @@ define([
             for (var j = 0; j < gameContainer.arrayAnswer.length; j++) {
                 gameContainer.arrayAnswer[j].update();
                 if (gameContainer.arrayAnswer[j].y > 800) {
-                    if (gameContainer.arrayAnswer[j].answer === "good") gameContainer.points += 5;
-                    else gameContainer.points -= 10;
+                    if (gameContainer.arrayAnswer[j].answer === "good"){
+                        gameContainer.points -= 10;
+                    }
 
                     eventBus.emit('number random color', 1, 255, 255, 0, false);
                     eventBus.on('random color', function(data) {
                         gameContainer.colorParticles = data;
                     });
-
-                    eventBus.emit('CreateParticles', gameContainer.arrayAnswer[j].x, gameContainer.arrayAnswer[j].y, gameContainer.colorParticles, 200, 60);
+                    var params = {
+                        x: gameContainer.arrayAnswer[j].x,
+                        y: gameContainer.arrayAnswer[j].y,
+                        color : gameContainer.colorParticles,
+                        count : 200,
+                        lifetime : 60,
+                    }
+                    eventBus.emit('CreateParticles', params);
                     eventBus.emit('add points', gameContainer.points);
                     gameContainer.scoreEnd += gameContainer.points;
                     gameContainer.points = 0;
                     gameContainer.arrayAnswer.splice(j, 1);
-
                 }
             }
         });
@@ -223,14 +233,25 @@ define([
                     var distance = tools.vectors.getDistance(gameContainer.arrayAnswer[i], mousePos);
 
                     if (distance < 80 && mousePos.isClicking.left) {
-                        if (gameContainer.arrayAnswer[i].answer === "good") gameContainer.points += 5;
-                        else gameContainer.points -= 10;
+                        if (gameContainer.arrayAnswer[i].answer === "good"){
+                            gameContainer.points += 5;
+                        }
+                        else {
+                            gameContainer.points -= 10;
+                        }
 
                         eventBus.emit('number random color', 1, 255, 255, 0, false);
                         eventBus.on('random color', function(data) {
                             gameContainer.colorParticles = data;
                         });
-                        eventBus.emit('CreateParticles', mousePos.x, mousePos.y, gameContainer.colorParticles, 200, 60);
+                        var params = {
+                            x: mousePos.x,
+                            y: mousePos.y,
+                            color : gameContainer.colorParticles,
+                            count : 200,
+                            lifetime : 60,
+                        }
+                        eventBus.emit('CreateParticles', params);
                         eventBus.emit('add points', gameContainer.points);
                         gameContainer.scoreEnd += gameContainer.points;
                         gameContainer.points = 0;
@@ -241,8 +262,8 @@ define([
         }
         
         eventBus.on('mouse update', function(data) {
-            mousePos.x = data.x;
-            mousePos.y = data.y;
+            mousePos.x = data.canvasX;
+            mousePos.y = data.canvasY;
             mousePos.isClicking = data.isClicking;
         });
 
