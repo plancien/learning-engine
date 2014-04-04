@@ -19,10 +19,10 @@ define([
 
     return function(params) {
         var bonusPoints = parseInt($("#bonusPoints")[0].value, 10) || 1;
-        var malusPoints = parseInt($("#malusPoints")[0].value, 10) || -3;
+        var malusPoints = parseInt($("#malusPoints")[0].value, 10) || 3;
 
-        eventBus.emit('init bonus', false, params.bonusUrl);
-        eventBus.emit('init bonus', true, params.malusUrl);
+        eventBus.emit('init bonus', true, params.bonusUrl);
+        eventBus.emit('init bonus', false, params.malusUrl);
 
         eventBus.on('add bonus', function(good, url) {
             var htmlClass = good ? 'good' : 'bad';
@@ -60,7 +60,7 @@ define([
                 if ($(this).hasClass('good')) {
                     eventBus.emit('add points', bonusPoints);
                 } else {
-                    eventBus.emit('add points', malusPoints);
+                    eventBus.emit('add points', -malusPoints);
                 }
             });
 
