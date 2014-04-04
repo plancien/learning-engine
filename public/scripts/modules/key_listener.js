@@ -1,3 +1,7 @@
+/*
+* 04/04/14 Baptiste : Ajout de la fonctionnalite du key still pressed
+*/
+
 define(['event_bus'], function(eventBus) {
 
     var keysStillDown = {};
