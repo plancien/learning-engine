@@ -1,94 +1,69 @@
-/* TOUT CE QUI EST GLOBAL */
-
-body, div, textarea {
-	margin: 0; padding: 0; border: 0; outline: none;
+#mainMenu {
+    display : none;
+    margin: auto;
+    width: 900px;
 }
 
-html {
-	height: 130%;
+#user {
+	margin: auto;
+	width: 900px;
 }
 
-b{
-	color: #ff0000; text-transform: uppercase;
-	left: 100%;
-	text-shadow: 0px 1px 0px #ffffff;	
-}
-
-body {
-	background: #4B4B4B;
-	background: -moz-linear-gradient(top, #4B4B4B 0%, #B4B4B4 100%); /* firefox */	
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#B4B4B4), color-stop(100%,#4B4B4B)); /* webkit */
-	font-family: sans-serif; 
-	font-size: 15px; color: #dddddd;
-	text-shadow: 0px 1px 0px #dddddd;
-}
-
-h1 {
-	font-size: 28px; color: #444444; text-transform: uppercase;
-	 text-shadow: 0px 1px 0px #cccccc;
-}
-
-button{left: 50px;}
-
-input,button,select {
-	position:center;
-	width: 160px; height: 35px; padding: 5px 20px 0px 20px; margin: 0 0 20px 0; 
-	background: #eeeeee;
-	background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 20%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(20%,#cccccc)); /* webkit */
-	border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px;
-	-moz-box-shadow: 0px 1px 0px #f2f2f2;-webkit-box-shadow: 0px 1px 0px #f2f2f2;
-	font-family: sans-serif; font-size: 16px; color: #444444; text-shadow: 0px -1px 0px #444444;
-}
-	input::-webkit-input-placeholder  {
-    	color:#333333; text-shadow: 0px -1px 0px #444444;  
-	}
-	input:-moz-placeholder {
-	    color: #333333; text-shadow: 0px -1px 0px #444444; 
-	}
-	
-input:focus, textarea:focus {
-	background: #eeeeee;
-	background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 20%); /* firefox */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(20%,#cccccc)); /* webkit */
-}
-
-select option {
-	color: #eeeeee;
-	background: #4B4B4B;
-}
-
-/* CAS PARTICULIER */.
-
-.gameOptions{
-	background: #8B8B8B;
-	background: -moz-linear-gradient(top, #CCCCCC 0%, #BBBBBB 100%); /* firefox */	
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#CCCCCC), color-stop(100%,#BBBBBB)); /* webkit */
-}
-#user{
-	text-align: center;
-}
-#mainMenu{
-	width:1000px;
-	text-align: center;
-	width : 50%; 
-	margin : auto; 
-
-}
-
-#bienvenu{
-	font-size: 48px;
-}
-#gameSelect{
-	border-width: 2px; border-style: solid; border-color: #000000;
-	margin-right: 20px;
-	text-align: center;
-	float:left;
-}
-#gameCreation{
-	border-width: 2px; border-style: solid; border-color: #000000;
-	margin-left: 20px;
+#socialBar {
 	width: 500px;
+	margin: auto;
+}
+
+.alert p {
+    color : red;
+}
+#eventsList {
+    position: absolute;
+    right : 0;
+}
+/* Timer style made to work with commented elem in clickOnMe.html */
+/*#hour, #minute, #second {
+    width: 20px;
+    margin: 0px 5px;
+}*/
+#gameCreation{
+	width: 400px;
+	float: right;
+}
+#gameSelect {
+	width: 400px;
+	float: left;
+}
+#gameSelect, #gameCreation{
 	text-align: center;
-	float:right;
+	border: 1px solid #ddd;
+	-mox-border-radius: 6px;
+	-weblit-border-radius: 6px;
+	border-radius: 6px;
+	padding: 5px;
+}
+
+input, textarea, button, select
+{
+	width: 150px;
+	background: #efefef;
+	border: 1px solid #ddd;
+	font-size: 0.7em;
+	color: #666;
+	height:	40px;
+	padding: 8px;
+	margin: 10px;
+	-mox-border-radius: 6px;
+	-weblit-border-radius: 6px;
+	border-radius: 6px;
+}
+
+#userName{
+	height: 22px;
+}
+
+input:focus, textarea:focus
+{
+
+    border:1px solid #99cc66;
 }

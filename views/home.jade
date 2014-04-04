@@ -8,12 +8,13 @@ html
     script(type="text/javascript", src="/scripts/ext_libs/require.js", data-main="/scripts/main")
   body
     div#user
-        h1#bienvenu Bienvenue !
-        |Nom d'utilisateur :  
-        input#userName(type='text')
-        button.button Validez !
-        div.alert
-            p#userAlert
+        div#socialBar
+            h1#bienvenu Bienvenue !
+            |Nom d'utilisateur :  
+            input#userName(type='text')
+            button.button Validez !
+            div.alert
+                p#userAlert
     div#mainMenu
         div#gameSelect.gameOptions
             h1 Play an existant game !
