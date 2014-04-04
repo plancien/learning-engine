@@ -59,7 +59,7 @@ define([
         eventBus.on("new frame", function() {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, paramsCanvas.width, paramsCanvas.height);
-            eventBus.emit('CreateParticles', mousePos.x, mousePos.y, 'red', 10,4, 5,-0.5);
+            eventBus.emit('CreateParticles', {x : mousePos.x,y : mousePos.y,size : 5,style : false,lifeTime : 100,count:20,speed : 4,angle : -0.5,color : 'red',});
         });
 //-----------------------------------------------
 //                     OTHERS

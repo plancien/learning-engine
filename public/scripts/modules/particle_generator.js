@@ -9,6 +9,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
         });
 
         function Particle(params) {
+            console.log(params)
             this.x = params.x || 0 ;
             this.y = params.y || 0;
             this.size = params.size || 5 ;
@@ -56,7 +57,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
         });
 
         eventBus.on('CreateParticles', function(params) {
-            for (var i = 0; i < params.count; i++) {
+        for (var i = 0; i < params.count; i++) {
                 var star = new Particle(params);
                 particleTable.push(star);
             }
