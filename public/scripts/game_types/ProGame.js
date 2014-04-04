@@ -59,7 +59,7 @@ define([
         eventBus.on("new frame", function() {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, paramsCanvas.width, paramsCanvas.height);
-            eventBus.emit('CreateParticles', {x : mousePos.x,y : mousePos.y,size : 5,style : false,lifeTime : 100,count:20,speed : 4,angle : -0.5,color : 'red',});
+            GenerateParticles(mousePos);
         });
 //-----------------------------------------------
 //                     OTHERS
@@ -70,5 +70,20 @@ define([
             mousePos.y = data.y;
             mousePos.isClicking = data.isClicking;
         });
+
+        function GenerateParticles(mousePos){
+            var ParaticlesParams = {
+                x : mousePos.x,
+                y : mousePos.y,
+                size : 5,
+                style : false,
+                lifeTime : 100,
+                speed : 4,
+                count:10,
+                angle : -0.5,
+                color : 'red',
+            }
+            eventBus.emit('CreateParticles', ParaticlesParams);
+        }
     };
 });
