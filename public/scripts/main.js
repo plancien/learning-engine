@@ -1,7 +1,6 @@
 require(['connector'], function(socket) {
 
     $(function() {
-
         socket.emit("ask gamesInfos");
 
         socket.on('inject css', function(data) {
