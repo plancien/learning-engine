@@ -20,10 +20,6 @@ define(['event_bus'], function(eventBus) {
         34 : "page down", // page down
         35 : "end", // end
         36 : "home", // home
-        37 : "left arrow", // left arrow
-        38 : "up arrow", // up arrow
-        39 : "right arrow", // right arrow
-        40 : "down arrow", // down arrow
         45 : "insert", // insert
         46 : "delete", // delete
         91 : "left window", // left window
@@ -72,7 +68,8 @@ define(['event_bus'], function(eventBus) {
     };
 
     window.addEventListener("keydown", function(e) {
-        var niceCode = keyCodes[e.keyCode] || String.fromCharCode(e.keyCode);;
+        var niceCode = keyCodes[e.keyCode] || String.fromCharCode(e.keyCode);
+        console.log(niceCode);
         keysDown[niceCode] = true;
         eventBus.emit('key pressed', niceCode);
         eventBus.emit('key pressed ' + niceCode);
