@@ -71,7 +71,7 @@ body{
 	padding: 5px;
 }
 
-input, textarea, button, select
+input, textarea, .button, select
 {
 	width: 150px;
 	background: #efefef;
@@ -101,9 +101,22 @@ body > footer {
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	padding: 15px;
+	padding: 15px 15px 25px 15px;
 	background-color: #73C8E9;
 	height: 15px;
 	font-size: 12px;
 	text-align: center;
+}
+
+.btnThemes {
+	width: 54px;
+	height: 15px;
+	background: #EFEFEF;
+	border: 1px solid #DDD;
+	font-size: 0.7em;
+	color: #666;
+	margin-left: 15px;
+	-mox-border-radius: 6px;
+	-weblit-border-radius: 6px;
+	border-radius: 6px;
 }
