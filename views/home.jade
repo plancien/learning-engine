@@ -8,20 +8,20 @@ html
     script(type="text/javascript", src="/scripts/ext_libs/require.js", data-main="/scripts/main")
   body
     div#user
-        h1 Bienvenue !
+        h1#bienvenu Bienvenue !
         |Nom d'utilisateur :  
         input#userName(type='text')
         button.button Validez !
         div.alert
             p#userAlert
     div#mainMenu
-        h1 Play an existant game !
-        div#gameSelect
+        div#gameSelect.gameOptions
+            h1 Play an existant game !
             select#gameList
             button.button Play !
             div#gameDescription Game description.
-        h1 Create a custom game !
-        form#gameCreation
+        form#gameCreation.gameOptions
+            h1 Create a custom game !
             |Question : 
             input#question
             br
