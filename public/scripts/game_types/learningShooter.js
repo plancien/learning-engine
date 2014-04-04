@@ -95,8 +95,12 @@ define([
 
             if (gameContainer.gauge.currentValue <= 0 && !gameContainer.end) {
                 gameContainer.end = true;
-                if (gameContainer.scoreEnd >= 0) eventBus.emit('win');
-                if (gameContainer.scoreEnd < 0) eventBus.emit('gameover');
+                if (gameContainer.scoreEnd >= 0){
+                    eventBus.emit('win');
+                }
+                if (gameContainer.scoreEnd < 0){
+                    eventBus.emit('gameover');
+                }
             }
 
             callBonuses++;
@@ -107,8 +111,9 @@ define([
             for (var j = 0; j < gameContainer.arrayAnswer.length; j++) {
                 gameContainer.arrayAnswer[j].update();
                 if (gameContainer.arrayAnswer[j].y > 800) {
-                    if (gameContainer.arrayAnswer[j].answer === "good") gameContainer.points += 5;
-                    else gameContainer.points -= 10;
+                    if (gameContainer.arrayAnswer[j].answer === "good"){
+                        gameContainer.points -= 10;
+                    }
 
                     eventBus.emit('number random color', 1, 255, 255, 0, false);
                     eventBus.on('random color', function(data) {
@@ -126,7 +131,6 @@ define([
                     gameContainer.scoreEnd += gameContainer.points;
                     gameContainer.points = 0;
                     gameContainer.arrayAnswer.splice(j, 1);
-
                 }
             }
         });
@@ -229,8 +233,12 @@ define([
                     var distance = tools.vectors.getDistance(gameContainer.arrayAnswer[i], mousePos);
 
                     if (distance < 80 && mousePos.isClicking.left) {
-                        if (gameContainer.arrayAnswer[i].answer === "good") gameContainer.points += 5;
-                        else gameContainer.points -= 10;
+                        if (gameContainer.arrayAnswer[i].answer === "good"){
+                            gameContainer.points += 5;
+                        }
+                        else {
+                            gameContainer.points -= 10;
+                        }
 
                         eventBus.emit('number random color', 1, 255, 255, 0, false);
                         eventBus.on('random color', function(data) {

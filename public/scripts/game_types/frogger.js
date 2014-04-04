@@ -70,7 +70,7 @@ define([
                     this.y = params.y;
                     this.width = params.width;
                     this.height = this.width;
-                    this.speed = 4;
+                    this.speed = 74;
                     this.rotation = 0;
                     this.canMove = true;
                     var movedDistance = 0;
