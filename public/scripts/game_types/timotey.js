@@ -19,7 +19,7 @@ define([
             var canvas = canvasCreate.create({width:800,height:600,});
             var context = canvas.context;
             var players = {};
-            var bullets = [];
+            var bullets = {};
             
             function NPC(x, y, id){
                this.x = x || 0;
@@ -43,10 +43,6 @@ define([
                    this.x = x;
                    this.y = y;
                };
-               this.shoot = function(vector){
-                bullets.push(new Bullet(this.x+this.w*0.5,this.y+this.h*0.5, vector, this.bulletSpeed, this.id, this.color));
-                connector.emit("shoot",{x:this.x+this.w*0.5,y:this.y+this.h*0.5,speed:this.bulletSpeed,vectorSend:{x:vector.x,y:vector.y},id:this.id,color:this.color});
-               };
                this.draw = function(context){
                 context.fillStyle = this.color;
                 context.fillRect(this.x,this.y,this.w,this.h);
@@ -62,15 +58,14 @@ define([
               this.id = id;
               this.color = color
 
-              this.move = function(){
-                   this.x += this.vector.x*this.speed;
-                   this.y += this.vector.y*this.speed;
+              this.move = function(x, y){
+                   this.x += x;
+                   this.y = y;
                };
               this.draw = function(context){
                context.fillStyle = this.color;
                context.fillRect(this.x,this.y,this.w,this.h);
-              }
-              console.log(this)
+              };
             };
             function addSendPositionCapabilities(object){
                object.sendPositionToServer = function(){
@@ -111,6 +106,11 @@ define([
                   object.shoot(vector);
                });
             };
+            function addShootCapabilities(object){
+              object.shoot = function(){
+                connector.emit("shoot",{x:this.x+this.w*0.5,y:this.y+this.h*0.5,speed:this.bulletSpeed,vectorSend:{x:vector.x,y:vector.y},id:this.id,color:this.color});
+              };
+            };
 
             //CREATE OWN PLAYER
             connector.emit('create player');
@@ -118,6 +118,7 @@ define([
                players[player.id] = new NPC(player.x, player.y, player.id);
                addInputControl(players[player.id]);
                addSendPositionCapabilities(players[player.id]);
+               addShootCapabilities(players[player.id]);
                console.log("CREATE OWN PLAYER DONE")
             });
             //CREATE NEW PLAYER
@@ -150,11 +151,21 @@ define([
                console.log(user)
                delete players[user.id];
             });
-            //SHOOOOOOOOT
+            //New Shoot fired by someone
             connector.on("shoot", function(shoot){
-              bullets.push(new Bullet(shoot.x,shoot.y,shoot.vectorSend,shoot.speed,shoot.id,shoot.color));
-            })
-
+              if(!bullets[shoot.id]){
+                bullets[shoot.id] = [];
+              }
+              bullets[shoot.id].push(new Bullet(shoot.x,shoot.y,shoot.vectorSend,shoot.speed,shoot.id,shoot.color));
+            });
+            //Update all shoots send by Server
+            connector.on("update shoots",function(shoots){
+              for(var key in shoots){
+                for(var i = 0; i < shoots[key].length; i++){
+                  bullets[key][i] = shoots[key][i];
+                }
+              }
+            });
 
             context.fillStyle = "black";
             context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
@@ -166,9 +177,10 @@ define([
             	for(var key in players){
                    players[key].draw(context);
               }
-              for(var i = 0; i < bullets.length; i++){
-                bullets[i].move();
-                bullets[i].draw(context);
+              for(var key in bullets){
+                for(var i = 0; i < bullets[key].length; i++){
+                  bullets[key][i].draw(context);
+                }
               }
             });
         });

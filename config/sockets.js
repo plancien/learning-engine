@@ -39,9 +39,12 @@ module.exports = function(io) {
 
     var idtest = 0;
     var id = 0;
+    //TIM
+    /*******************************/
     var amountOfConnections = 0;
     var users = {};
     var bullets = {};
+    /*******************************/
     // LORS DE LA CONNEXION
     //On bind chaque event a l'élément socket retourné dans le callback
     //C'est un générateur de socket
@@ -58,7 +61,7 @@ module.exports = function(io) {
         /*Tim Socket
         io.sockets. => pour tout le monde
         socket. => juste le player
-        ************/
+        *******************************************/
         //Créé un perso
 
         socket.on("create player",function(){
@@ -96,7 +99,7 @@ module.exports = function(io) {
             }
             bullets[shoot.id].push(shoot);
         });
-        /**/
+        /************************************/
 
         // WIP hope to link the score to users tab
         socket.on('nouveau_client', function(pseudo) {
