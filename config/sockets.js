@@ -47,7 +47,7 @@ module.exports = function(io) {
 
     io.sockets.on('connection', function(socket) {
         amountOfConnections++;
-        var user = []
+        var user = [];
         var userTim = {};
         var allUsers = [];
         var sessionId = socket.id;

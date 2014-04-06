@@ -66,8 +66,9 @@ define([
 //-----------------------------------------------
 
         eventBus.on('mouse update', function(data) {
-            mousePos.x = data.x;
-            mousePos.y = data.y;
+            console.log(data)
+            mousePos.x = data.canvasX;
+            mousePos.y = data.canvasY;
             mousePos.isClicking = data.isClicking;
         });
 
