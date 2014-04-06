@@ -73,9 +73,12 @@ define(['event_bus'], function(eventBus) {
 
     window.addEventListener("keydown", function(e) {
         var niceCode = keyCodes[e.keyCode] || String.fromCharCode(e.keyCode);
+        if (!keysStillDown[niceCode]) {
+            eventBus.emit('key pressed', niceCode);
+            eventBus.emit('key pressed ' + niceCode);
+        }
         keysStillDown[niceCode] = true;
-        eventBus.emit('key pressed', niceCode);
-        eventBus.emit('key pressed ' + niceCode);
+        
     }, false);
 
     window.addEventListener("keyup", function(e) {
