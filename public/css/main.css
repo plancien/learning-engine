@@ -27,8 +27,10 @@ body{
     color : red;
 }
 #eventsList {
-    float: right;
+	position: absolute;
 	font-size: 9px;
+	right: 0;
+	z-index: 1;
 }
 /* Timer style made to work with commented elem in clickOnMe.html */
 /*#hour, #minute, #second {
@@ -68,6 +70,7 @@ body{
 	-mox-border-radius: 6px;
 	-weblit-border-radius: 6px;
 	border-radius: 6px;
+	margin-bottom: 50px;
 	padding: 5px;
 }
 
@@ -100,6 +103,7 @@ body > footer {
 	position: fixed;
 	bottom: 0;
 	left: 0;
+	z-index: 2;
 	width: 100%;
 	padding: 1px 15px 25px 15px;
 	background-color: #73C8E9;
