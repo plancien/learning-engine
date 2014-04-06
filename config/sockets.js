@@ -59,6 +59,7 @@ module.exports = function(io) {
         socket. => juste le player
         ************/
         //Créé un perso
+        
         socket.on("create player",function(){
             console.log("CREATE PLAYER")
             userTim.id = sessionId;
