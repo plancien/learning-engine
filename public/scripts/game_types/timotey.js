@@ -47,7 +47,7 @@ define([
                }
             };
             function addKeyListeners(object){
-               eventBus.on('key pressed', function(e){
+               eventBus.on('keys still pressed', function(e){
                    var oldPosition = {
                        x:object.x,
                        y:object.y
