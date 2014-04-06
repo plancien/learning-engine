@@ -41,6 +41,7 @@ module.exports = function(io) {
     var id = 0;
     var amountOfConnections = 0;
     var users = {};
+    var bullets = {};
     // LORS DE LA CONNEXION
     //On bind chaque event a l'élément socket retourné dans le callback
     //C'est un générateur de socket
@@ -59,7 +60,7 @@ module.exports = function(io) {
         socket. => juste le player
         ************/
         //Créé un perso
-        
+
         socket.on("create player",function(){
             console.log("CREATE PLAYER")
             userTim.id = sessionId;
@@ -68,6 +69,7 @@ module.exports = function(io) {
             socket.emit("creation", userTim);
             socket.broadcast.emit('new player', userTim);
             socket.emit('init all players', users);
+            socket.emit('init all bullets', bullets);
             users[userTim.id] = userTim;
         });
         //Emission des déplacements
@@ -85,6 +87,13 @@ module.exports = function(io) {
             };
             socket.broadcast.emit('player disconnected',a);
             delete users[userTim.id];
+        });
+        socket.on("shoot",function(shoot){
+            socket.broadcast.emit("shoot",shoot);
+            if(!bullets[shoot.id]){
+                bullets[shoot.id] = [];
+            }
+            bullets[shoot.id].push(shoot);
         });
         /**/
 

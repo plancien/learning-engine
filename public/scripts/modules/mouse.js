@@ -52,12 +52,12 @@ define(['event_bus'], function(eventBus) {
 
     Mouse.prototype.clickDown = function(event) {
         this.isClicking[this.btns[event.button]] = true;
-        eventBus.emit('mouse ' + this.btns[event.button] + ' is clicking', this.isClicking);
+        eventBus.emit('mouse ' + this.btns[event.button] + ' is clicking', this);
     };
 
     Mouse.prototype.clickUp = function(event) {
         this.isClicking[this.btns[event.button]] = false;
-        eventBus.emit('mouse ' + this.btns[event.button] + ' stop clicking', this.isClicking);
+        eventBus.emit('mouse ' + this.btns[event.button] + ' stop clicking', this);
     };
 
     eventBus.on('init', function() {
