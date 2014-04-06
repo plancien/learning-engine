@@ -88,6 +88,7 @@ module.exports = function(io) {
             socket.broadcast.emit('player disconnected',a);
             delete users[userTim.id];
         });
+        //Lorsque quelqu'un tire
         socket.on("shoot",function(shoot){
             socket.broadcast.emit("shoot",shoot);
             if(!bullets[shoot.id]){
