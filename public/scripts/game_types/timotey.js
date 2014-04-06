@@ -3,8 +3,9 @@ define([
     'modules/canvas',
     'modules/frames',
     'modules/key_listener',
-    'event_capabilities'
-], function (eventBus,canvasCreate,framer,keyListener,addEventCapabilities) {	//Déclare les variables contenant les modules chargé dans define([])
+    'event_capabilities',
+    'connector'
+], function (eventBus,canvasCreate,framer,keyListener,addEventCapabilities,connector) {	//Déclare les variables contenant les modules chargé dans define([])
 
 	//Le module retourné
     return function(params) {
@@ -16,44 +17,136 @@ define([
              //Ici je récupère le canvas, canvasCreate est le module canvas.js chargé plus haut
              var canvas = canvasCreate.create({width:800,height:600,});
              var context = canvas.context;
-             //Je créé un carré que l'on affichera
-             var box = {
-             	speed:10,
-             	x:0,
-             	y:0,
-             	w:100,
-             	h:100,
-             	color: 'red',
+             var players = {};
+             console.log(connector)       
+             
+             function NPC(x, y, id){
+                this.x = x || 0;
+                this.y = y || 0;
+                this.w = 30;
+                this.h = 30;
+                this.id = id || Math.random()*1000;
+                
+                this.speed = 10;
+                this.color = "red";
+                
+                this.syncPosFromServer = function(e){
+                    console.log(e.id,this.id)
+                    if(e.id = this.id){
+                        this.move(e.x,e.y);
+                    }
+                };
+
+                this.move = function(x,y){
+                    this.x = x;
+                    this.y = y;
+                };
              };
 
-             addEventCapabilities(box);
-             
-             eventBus.on('key pressed',function(e){
-             	a = {
-             		x:0,
-             		y:0,
-             	};
-             	if(e=="left"){
-             		a.x = -1;
-             	}
-             	if(e=="up"){
-             		a.y = -1;
-             	}
-             	if(e=="right"){
-             		a.x = 1;
-             	}
-             	if(e=="down"){
-             		a.y = 1;
-             	}
-             	console.log(a,e)
-             	box.emit('move', a);
+             function addSendPositionCapabilities(object){
+                object.sendPositionToServer = function(){
+                    connector.emit('position from client',{id:this.id,x:this.x,y:this.y});
+                }
+             };
+
+             function addKeyListeners(object){
+                eventBus.on('key pressed', function(e){
+                    var oldPosition = {
+                        x:object.x,
+                        y:object.y
+                    };
+                    if(e == "left"){
+                        object.x -= object.speed;
+                    }
+                    if(e == "right"){
+                        object.x += object.speed;
+                    }
+                    if(e == "up"){
+                        object.y -= object.speed;
+                    }
+                    if(e == "down"){
+                        object.y += object.speed;
+                    }
+
+                    if(object.x != oldPosition.x || object.y != oldPosition.y){
+                        connector.emit('own player has moved', {id:object.id,x:object.x,y:object.y});
+                    }
+                });
+             };
+
+             //CREATE OWN PLAYER
+             connector.emit('create player');
+             connector.on("creation",function(player){
+                players[player.id] = new NPC(player.x, player.y, player.id);
+                addKeyListeners(players[player.id]);
+                addSendPositionCapabilities(players[player.id]);
+                console.log("CREATE OWN PLAYER DONE")
+             });
+             //CREATE NEW PLAYER
+             connector.on("new player", function(player){
+                players[player.id] = new NPC(player.x, player.y, player.id);
+                console.log("CREATE NEW PLAYER")
+             });
+             //LOAD ALL PLAYERS
+             connector.on("init all players",function(users){
+                console.log(users)
+                for(var key in users){
+                    players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].id);
+                }
+                console.log("Init Players DONE")
+             });
+             //MOVE PARTS
+             connector.on("new position",function(player){
+                players[player.id].move(player.x,player.y);
+             });
+             //Deconnexion d'un joueur
+             connector.on('player disconnected',function(user){
+                console.log(user)
+                delete players[user.id];
              });
 
-             box.on('move', function(e){
-             	box.x += e.x*box.speed;
-             	box.y += e.y*box.speed;
-             	console.log(e)
+/*             function Player(id){
+             	this.x = 0+Math.random()*10;
+             	this.y = 0;
+             	this.id = id;
+             	this.color = "red";
+             	this.speed = 10;
+             	
+             	var that = this;
+
+             	eventBus.on('currentPlayer has moved',function(e){
+             		that.x += e.x*that.speed;
+             		that.y += e.y*that.speed;
+             		connector.emit('player has moved', {id:that.id,x:that.x,y:that.y});
+             	});
+
+	            });
+             };*/
+/*
+             connector.on('new NPC', function(e){
+             	if(!players[e.id]){
+             		players[e.id] = new Player(e.id);
+             		console.log("Nouveau joueur créé");
+             	}
              });
+
+             connector.on('create clientPlayer',function(e){
+             	player = new Player(e.id);
+             	eventBus.on('key pressed',function(e){
+             		if(e == "Left"){
+             			player.x -= player.speed;
+             		}
+             		if(e == "Right"){
+             			player.x += player.speed;
+             		}
+             		if(e == "Up"){
+             			player.y -= player.speed;
+             		}
+             		if(e == "Down"){
+             			player.y += player.speed;
+             		}
+             	});
+             })*/
 
              context.fillStyle = "black";
              context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
@@ -63,8 +156,10 @@ define([
              	context.fillStyle = "black";
              	context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
 
-             	context.fillStyle = box.color;
-             	context.fillRect(box.x,box.y,box.w,box.h);
+             	for(var key in players){
+                    context.fillStyle = players[key].color;
+                    context.fillRect(players[key].x,players[key].y,players[key].w,players[key].h);
+                }
              });
         });
     }

@@ -39,12 +39,53 @@ module.exports = function(io) {
 
     var idtest = 0;
     var id = 0;
+    var amountOfConnections = 0;
+    var users = {};
+    // LORS DE LA CONNEXION
+    //On bind chaque event a l'élément socket retourné dans le callback
+    //C'est un générateur de socket
 
     io.sockets.on('connection', function(socket) {
-        var user = []; // Tab for one specific user, destinate to a client side update
-        var allUsers = []; // Sever side tab with all the users
+        amountOfConnections++;
+        var user = []
+        var userTim = {};
+        var allUsers = [];
+        var sessionId = socket.id;
+        socket.name = amountOfConnections;
         socket.set('id', id);
-        io.sockets.emit('welcome', 'hello');
+
+        /*Tim Socket
+        io.sockets. => pour tout le monde
+        socket. => juste le player
+        ************/
+        //Créé un perso
+        socket.on("create player",function(){
+            console.log("CREATE PLAYER")
+            userTim.id = sessionId;
+            userTim.x = Math.random()*100;
+            userTim.y = Math.random()*100;
+            socket.emit("creation", userTim);
+            socket.broadcast.emit('new player', userTim);
+            socket.emit('init all players', users);
+            users[userTim.id] = userTim;
+        });
+        //Emission des déplacements
+        socket.on("own player has moved",function(user){
+            socket.broadcast.emit("new position",user);
+            users[user.id].x = user.x;
+            users[user.id].y = user.y;
+        });
+        //Lorsque quelqu'un ce déconnecte
+        socket.on('disconnect', function(){
+            var a = {
+                id:userTim.id,
+                x:userTim.x,
+                y:userTim.y
+            };
+            socket.broadcast.emit('player disconnected',a);
+            delete users[userTim.id];
+        });
+        /**/
 
         // WIP hope to link the score to users tab
         socket.on('nouveau_client', function(pseudo) {
