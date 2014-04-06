@@ -72,7 +72,7 @@ define([
                    connector.emit('position from client',{id:this.id,x:this.x,y:this.y});
                }
             };
-            function addInputControl(object){
+            function addKeyListeners(object){
                eventBus.on('keys still pressed', function(e){
                    var oldPosition = {
                        x:object.x,
