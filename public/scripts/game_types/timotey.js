@@ -22,7 +22,6 @@ define([
             var bullets = {};
             var ownPlayerId = null;
             var time = new Time();
-
             function randomColorRGBA(){
               var r = (Math.random()*255)|0;
               var g = (Math.random()*255)|0;
@@ -185,7 +184,7 @@ define([
             }
 
             //CREATE OWN PLAYER
-            connector.emit('create player',{id:connector.socket.sessionid,x:Math.random()*700,y:Math.random()*500,health:30,color:randomColorRGBA(),alive:true});
+            connector.emit('create player',{id:connector.socket.sessionid,localName:localStorage.userName,x:Math.random()*700,y:Math.random()*500,health:30,color:randomColorRGBA(),alive:true});
             connector.on("creation over",function(player, users){
                for(var key in users){
                    players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].id, users[key].health, users[key].alive, users[key].color);

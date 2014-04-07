@@ -7,10 +7,6 @@ define(['event_bus'], function(eventBus) {
     var keysStillDown = {};
 
     var keyCodes = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down',
         8 : "backspace", //  backspace
         9 : "tab", //  tab
         13 : "enter", //  enter
@@ -24,6 +20,10 @@ define(['event_bus'], function(eventBus) {
         34 : "page down", // page down
         35 : "end", // end
         36 : "home", // home
+        37: 'left',         //==>LEFT
+        38: 'up',           //==>UP
+        39: 'right',        //==>RIGHT
+        40: 'down',         //==>DOWN
         45 : "insert", // insert
         46 : "delete", // delete
         91 : "left window", // left window

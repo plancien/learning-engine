@@ -54,7 +54,6 @@ module.exports = function(io) {
         amountOfConnections++;
         //a clean
         var user = [];
-        var userTim = {};
         var allUsers = [];
         //a garder
         var AllUsersIG = {};
@@ -71,12 +70,24 @@ module.exports = function(io) {
         /*Tim Socket
         io.sockets. => pour tout le monde
         socket. => juste le player
+        socket.broadcast => tout le monde sauf le player
         *******************************************/
         //Créé un perso
         //CREATE OWN PLAYER
         socket.on("create player",function(player){
+            var isExisting = false;
+            for(var key in users){
+                if(key == player.localName){
+                    isExisting = true;
+                    users[player.id] = player;
+                    break;
+                }
+            }
+            if(!isExisting){
+                users[player.localName] = player;
+                player.id = player.localName;
+            }
             console.log("PLAYER CONNECTED ID° "+player.id)
-            users[player.id] = player;
             //CREATE OWN PLAYER FOR OTHERS
             socket.broadcast.emit('new player', player);
             //END CREATION EVENT
