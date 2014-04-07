@@ -1,4 +1,5 @@
 var fs = require('fs');
+var moduleBroadcast = require('./global_broadcast');
 var rootPath = require('path').join(__dirname, '../');
 
 module.exports = function(io) {
@@ -57,6 +58,12 @@ module.exports = function(io) {
         var sessionId = socket.id;
         socket.name = amountOfConnections;
         socket.set('id', id);
+
+        /****\
+
+        \****/
+
+        moduleBroadcast(io,socket);
 
         /*Tim Socket
         io.sockets. => pour tout le monde

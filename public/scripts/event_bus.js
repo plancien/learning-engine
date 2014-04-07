@@ -1,4 +1,4 @@
-define(['event_capabilities'], function(addEventCapabilities) {
+define(['event_capabilities',"connector"], function(addEventCapabilities,socket) {
 
     var eventBus = {};
     addEventCapabilities(eventBus);
