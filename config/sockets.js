@@ -64,18 +64,11 @@ module.exports = function(io) {
         *******************************************/
         //Créé un perso
 
-        socket.on("create player",function(){
+        socket.on("create player",function(player){
             console.log("CREATE PLAYER")
-            userTim.id = sessionId;
-            userTim.x = Math.random()*100;
-            userTim.y = Math.random()*100;
-            userTim.health = 30;
-            userTim.alive = true;
-            socket.emit("creation", userTim);
-            socket.broadcast.emit('new player', userTim);
-            socket.emit('init all players', users);
-            socket.emit('init all bullets', bullets);
-            users[userTim.id] = userTim;
+            users[player.id] = player;
+            socket.broadcast.emit('new player', player);
+            socket.emit("creation over", player, users);
         });
         //Emission des déplacements
         socket.on("own player has moved",function(user){

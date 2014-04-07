@@ -175,8 +175,12 @@ define([
             }
 
             //CREATE OWN PLAYER
-            connector.emit('create player');
-            connector.on("creation",function(player){
+            connector.emit('create player',{id:connector.socket.sessionid,x:Math.random()*700,y:Math.random()*500,health:30,color:"red",alive:true});
+            connector.on("creation over",function(player, users){
+               for(var key in users){
+                   players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].id, users[key].health, users[key].alive);
+                   bullets[users[key].id] = [];
+               }
                players[player.id] = new NPC(player.x, player.y, player.id, player.health, player.alive);
                ownPlayerId = player.id;
                addInputControl(players[player.id]);
@@ -184,21 +188,14 @@ define([
                addShootCapabilities(players[player.id]);
                addSendDeathCapabilities(players[player.id]);
                bullets[ownPlayerId] = [];
+
+
                console.log("CREATE OWN PLAYER DONE")
             });
             //CREATE NEW PLAYER
-            connector.on("new player", function(player){
+            connector.on("new player", function(player, users){
                players[player.id] = new NPC(player.x, player.y, player.id, player.health, player.alive);
                console.log("CREATE NEW PLAYER")
-            });
-            //LOAD ALL PLAYERS
-            connector.on("init all players",function(users){
-               console.log(users)
-               for(var key in users){
-                   players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].id, users[key].health, users[key].alive);
-                   bullets[users[key].id] = [];
-               }
-               console.log("Init Players DONE")
             });
             //INIT ALL BULLETS
             /*connector.on("init all bullets",function(bulletsSend){
