@@ -52,6 +52,12 @@ require(['connector'], function(socket) {
                 $("#socialBar").css('display', 'none');
                 $("#mainMenu").fadeIn('normal');
                 $("#blocUser").html("Welcome my friend, "+localStorage.cookie+"");
+                $('</br><button id="logout" class="button">Deconnexion</button>').appendTo("#blocUser");
+                $("#logout").click(function(e) {
+                    localStorage.clear();
+                    $("#mainMenu").css('display', 'none');
+                    $("#socialBar").fadeIn('normal');
+                });
             }
             else{
                 /* User name verification */
@@ -65,6 +71,12 @@ require(['connector'], function(socket) {
                         $(this).parent().css('display', 'none');
                         $("#mainMenu").fadeIn('normal');
                         $("#blocUser").html("Welcome my friend, "+userName+"");
+                        $('</br><button id="logout" class="button">Deconnexion</button>').appendTo("#blocUser");
+                        $("#logout").click(function(e) {
+                            localStorage.clear();
+                            $("#mainMenu").css('display', 'none');
+                            $("#socialBar").fadeIn('normal');
+                        });
                         var socket = io.connect();
                         socket.emit('nouveau_client', userName); // Create the server side tabs with users data 
                     } else {
