@@ -123,6 +123,7 @@ define([
             });
             //CREATE NEW PLAYER
             connector.on("new player", function(player){
+              console.log(player)
                players[player.id] = new NPC(player.x, player.y, player.id);
                console.log("CREATE NEW PLAYER")
             });
