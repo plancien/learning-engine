@@ -39,10 +39,10 @@ module.exports = function(io) {
 
     var idtest = 0;
     var id = 0;
+    var users = {};
+    var amountOfConnections = 0;
     //TIM
     /*******************************/
-    var amountOfConnections = 0;
-    var users = {};
     var bullets = {};
     /*******************************/
     // LORS DE LA CONNEXION
@@ -67,57 +67,6 @@ module.exports = function(io) {
         *******************************************/
         //Créé un perso
 
-        socket.on("create player",function(player){
-            console.log("CREATE PLAYER")
-            users[player.id] = player;
-            socket.broadcast.emit('new player', player);
-            socket.emit("creation over", player, users);
-        });
-        //Emission des déplacements
-        socket.on("own player has moved",function(user){
-            socket.broadcast.emit("new position",user);
-            users[user.id].x = user.x;
-            users[user.id].y = user.y;
-        });
-        //Lorsque quelqu'un se déconnecte
-        socket.on('disconnect', function(){
-            var a = {
-                id:userTim.id,
-                x:userTim.x,
-                y:userTim.y
-            };
-            socket.broadcast.emit('player disconnected',a);
-            delete users[userTim.id];
-        });
-        //Lorsque quelqu'un tire
-        socket.on("shoot",function(shoot){
-            io.sockets.emit("shoot",shoot);
-            if(!bullets[shoot.id]){
-                bullets[shoot.id] = [];
-            }
-            bullets[shoot.id].push(shoot);
-        });
-        socket.on("own shoot has moved", function(shoot){
-            //
-        });
-        //COLLISION
-        socket.on("hit",function(hit){
-            socket.broadcast.emit("hit",hit);
-            users[hit.id].health -= hit.amountOfDamages;
-            console.log("HIT "+ hit.id)
-        });
-        //DEATH
-        socket.on("death", function(death){
-            socket.broadcast.emit("death",death);
-            users[death.id].alive = false;
-            console.log("DEATH OF ",death.id)
-        });
-        //RESPAWN
-        socket.on("respawn", function(player){
-            socket.broadcast.emit("respawn",player);
-            users[player.id].alive = true;
-            console.log("RESPAWN OF ",player.id)
-        });
         /************************************/
         //     FIN DU CODE DE TIMOTENOOB    //
 
