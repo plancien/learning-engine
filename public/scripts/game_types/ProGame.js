@@ -97,7 +97,8 @@ define([
         });
 
         //LOAD ALL Players
-        connector.on("Add all Players",function(UsersID){
+        connector.on('Add all Players',function(UsersID){
+          console.log(UsersID)
           for(var key in UsersID){
             if(UsersID[key] != gameContainer.idOfPlayer){
               gameContainer.nbOfPlayer++;
@@ -111,8 +112,7 @@ define([
             gameContainer.Players[player.id].move(player.x,player.y);
         });
         //les autres ont bougé
-        eventBus.on('coords update', function(data) {
-          console.log(data)
+        connector.on('coords update', function(data) {
           gameContainer.Players[data.id].x = data.x;
           gameContainer.Players[data.id].y = data.y;
         });
@@ -148,7 +148,7 @@ define([
            this.y += y;
           };
           this.render = function(context){
-            generateParticles({x : this.x , y : this.y, color : this.color})
+            generateParticles({x : this.x , y : this.y, color : this.color, angle : this.angle})
           };
 
           this.drawScore = function(context,i){
@@ -182,7 +182,7 @@ define([
             }
             object.x += object.speed.x;
             object.y += object.speed.y;
-            //this.angle = getOrientation(object.speed);
+            this.angle = getOrientation(object.speed);
             if(object.x != oldPosition.x || object.y != oldPosition.y){
                connector.emit('coords', {id:object.id,x:object.x,y:object.y});
             }
@@ -204,7 +204,7 @@ define([
                 lifeTime : 100,
                 speed : 2,
                 count:10,
-                angle : -0.5,
+                angle : pos.angle,
                 color : pos.color,
             }
             eventBus.emit('CreateParticles', ParaticlesParams);
