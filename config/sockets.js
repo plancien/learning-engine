@@ -67,16 +67,11 @@ module.exports = function(io) {
         *******************************************/
         //Créé un perso
 
-        socket.on("create player",function(){
+        socket.on("create player",function(player){
             console.log("CREATE PLAYER")
-            userTim.id = sessionId;
-            userTim.x = Math.random()*100;
-            userTim.y = Math.random()*100;
-            socket.emit("creation", userTim);
-            socket.broadcast.emit('new player', userTim);
-            socket.emit('init all players', users);
-            socket.emit('init all bullets', bullets);
-            users[userTim.id] = userTim;
+            users[player.id] = player;
+            socket.broadcast.emit('new player', player);
+            socket.emit("creation over", player, users);
         });
         //Emission des déplacements
         socket.on("own player has moved",function(user){
@@ -96,11 +91,32 @@ module.exports = function(io) {
         });
         //Lorsque quelqu'un tire
         socket.on("shoot",function(shoot){
-            socket.broadcast.emit("shoot",shoot);
+            io.sockets.emit("shoot",shoot);
             if(!bullets[shoot.id]){
                 bullets[shoot.id] = [];
             }
             bullets[shoot.id].push(shoot);
+        });
+        socket.on("own shoot has moved", function(shoot){
+            //
+        });
+        //COLLISION
+        socket.on("hit",function(hit){
+            socket.broadcast.emit("hit",hit);
+            users[hit.id].health -= hit.amountOfDamages;
+            console.log("HIT "+ hit.id)
+        });
+        //DEATH
+        socket.on("death", function(death){
+            socket.broadcast.emit("death",death);
+            users[death.id].alive = false;
+            console.log("DEATH OF ",death.id)
+        });
+        //RESPAWN
+        socket.on("respawn", function(player){
+            socket.broadcast.emit("respawn",player);
+            users[player.id].alive = true;
+            console.log("RESPAWN OF ",player.id)
         });
         /************************************/
         //     FIN DU CODE DE TIMOTENOOB    //

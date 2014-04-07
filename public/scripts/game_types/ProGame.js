@@ -200,7 +200,7 @@ define([
                 x : pos.x,
                 y : pos.y,
                 size : 5,
-                style : true,
+                style : false,
                 lifeTime : 100,
                 speed : 2,
                 count:10,
