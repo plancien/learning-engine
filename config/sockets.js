@@ -73,30 +73,28 @@ module.exports = function(io) {
         socket. => juste le player
         *******************************************/
         //Créé un perso
-
+        //CREATE OWN PLAYER
         socket.on("create player",function(player){
-            console.log("CREATE PLAYER")
+            console.log("PLAYER CONNECTED ID° "+player.id)
             users[player.id] = player;
+            //CREATE OWN PLAYER FOR OTHERS
             socket.broadcast.emit('new player', player);
+            //END CREATION EVENT
             socket.emit("creation over", player, users);
         });
-        //Emission des déplacements
+        //UPDATE MOVE
         socket.on("own player has moved",function(user){
             socket.broadcast.emit("new position",user);
             users[user.id].x = user.x;
             users[user.id].y = user.y;
         });
-        //Lorsque quelqu'un se déconnecte
+        //DISCONNECT
         socket.on('disconnect', function(){
-            var a = {
-                id:userTim.id,
-                x:userTim.x,
-                y:userTim.y
-            };
-            socket.broadcast.emit('player disconnected',a);
-            delete users[userTim.id];
+            console.log("PLAYER DISCONNECTED ID° "+socket.id)
+            socket.broadcast.emit('player disconnected',{id:socket.id});
+            delete users[socket.id];
         });
-        //Lorsque quelqu'un tire
+        //CREATE SHOOT
         socket.on("shoot",function(shoot){
             io.sockets.emit("shoot",shoot);
             if(!bullets[shoot.id]){
@@ -104,14 +102,16 @@ module.exports = function(io) {
             }
             bullets[shoot.id].push(shoot);
         });
+        //UPDATE SHOOT
         socket.on("own shoot has moved", function(shoot){
-            //
+            bullets[shoot.id][shoot.i].x = shoot.x;
+            bullets[shoot.id][shoot.i].y = shoot.y;
         });
         //COLLISION
         socket.on("hit",function(hit){
             socket.broadcast.emit("hit",hit);
             users[hit.id].health -= hit.amountOfDamages;
-            console.log("HIT "+ hit.id)
+            console.log("HIT " + hit.id)
         });
         //DEATH
         socket.on("death", function(death){
