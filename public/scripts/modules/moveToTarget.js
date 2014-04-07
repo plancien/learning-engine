@@ -1,6 +1,6 @@
 define([
     'event_bus',
-    "tools"
+    "modules/tools"
 ], function(eventBus,tools) {
  /*
 	This function returns an array with the new position of the object sent in the 1rst paramater !IF! it's an object !
