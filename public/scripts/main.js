@@ -67,6 +67,8 @@ require(['connector'], function(socket) {
 
                     if (userName.match(myRegex) === null) {
                         localStorage.setItem("cookie",userName);
+                        localStorage.setItem("userName",userName);
+                        //localStorage.userName = userName;
                         
                         $(this).parent().css('display', 'none');
                         $("#mainMenu").fadeIn('normal');
