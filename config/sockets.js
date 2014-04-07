@@ -56,7 +56,7 @@ module.exports = function(io) {
         var userTim = {};
         var allUsers = [];
         //a garder
-        var AllUsers = {};
+        var AllUsersIG = {};
         var sessionId = socket.id;
         socket.name = amountOfConnections;
         socket.set('id', id);
@@ -73,9 +73,9 @@ module.exports = function(io) {
 
         // Connection du joueur
         socket.on("create new player",function(){
-            AllUsers[sessionId] = sessionId;
+            AllUsersIG[sessionId] = sessionId;
             socket.emit("your player", sessionId);
-            socket.emit('Add all Players', AllUsers)
+            socket.emit('Add all Players', AllUsersIG)
             socket.broadcast.emit('new player', sessionId);
         });
 
@@ -86,7 +86,7 @@ module.exports = function(io) {
         //Lorsque'on se déconnecte
         socket.on('disconnect', function(){
             socket.broadcast.emit('player left',sessionId);
-            delete AllUsers[sessionId];
+            delete AllUsersIG[sessionId];
         });
 
 
