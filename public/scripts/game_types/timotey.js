@@ -193,14 +193,8 @@ define([
                console.log("CREATE OWN PLAYER DONE")
             });
             //CREATE NEW PLAYER
-<<<<<<< HEAD
-            connector.on("new player", function(player){
-              console.log(player)
-               players[player.id] = new NPC(player.x, player.y, player.id);
-=======
             connector.on("new player", function(player, users){
                players[player.id] = new NPC(player.x, player.y, player.id, player.health, player.alive);
->>>>>>> 65e428077dbd2074a9c1a0989525f05f94383524
                console.log("CREATE NEW PLAYER")
             });
             //INIT ALL BULLETS
