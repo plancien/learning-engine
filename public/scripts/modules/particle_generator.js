@@ -35,7 +35,6 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
                 else{
                     context.beginPath();
                     context.arc(this.x, this.y,this.size,0,2*Math.PI);
-                    context.stroke();
                     context.fill();
                 }
             };
