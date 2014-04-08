@@ -58,10 +58,10 @@ define([
               }
               this.useOnPlayer = function(player){
                 var modificationKey = [];
-                var data = {idPlayer:player.id,idPowerUp:this.id};
+                var data = {idPlayer:player.id,idPowerUp:this.id,player:{}};
                 for(var key in this.modification){
                   player[key] += this.modification[key];
-                  data[key] = player[key];
+                  data.player[key] = player[key];
                 }
                 connector.emit("player get powerup",data)
               };
@@ -248,7 +248,7 @@ define([
                    bullets[users[key].id] = [];
                }
                for(var key in powerups){
-                powerUp[key] = new PowerUp(powerups[key].x, powerups[key].y, 30, 30, null, powerups[key].id, powerups[key].type, {speed: 20});
+                powerUp[key] = new PowerUp(powerups[key].x, powerups[key].y, powerups[key].w, powerups[key].h, powerups[key].color, powerups[key].id, powerups[key].type, powerups[key].modification);
                }
                players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.maxHealth, player.alive, player.color);
                ownPlayerId = player.id;
@@ -309,11 +309,11 @@ define([
             });
             connector.on("new powerup", function(data){
               console.log("New Power UP !")
-              powerUp[data.id] = new PowerUp(data.x, data.y, 30, 30, null, data.id, data.type,{speed: 20});
+              powerUp[data.id] = new PowerUp(data.x, data.y, data.w, data.h, data.color, data.id, data.type,data.modification);
               console.log(powerUp)
             });
             connector.on("player get powerup",function(data){
-              console.log("PLAYER ID° "+data.idPlayer+" GOT A POWER UP");
+              console.log("PLAYER ID° "+data.idPlayer+" GOT A POWER UP", data);
               for(var key in data.player){
                 players[data.idPlayer][key] = data.player[key];
               }

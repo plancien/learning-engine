@@ -46,17 +46,40 @@ module.exports = function(io) {
     /*******************************/
     var bullets = {};
     var powerUp = {};
+    /******************************
+    Cette boucle est appelée toute les 30 secondes
+    elle rajoute un power Up sur la map et dans le tableau de power up
+    ******************************/
     setInterval(function(){
         var powerup = {
             type:((Math.random()*3)|0)+1,
             x:Math.random()*700,
             y:Math.random()*500,
+            w: 30,
+            h: 30,
             id:(Math.random()*100000000)|0
         };
+        switch(powerup.type){
+            case 1:
+            powerup.modification = {health: 30};
+            powerup.color = "green";
+            break;
+            case 2:
+            powerup.modification = {bulletDamage: 10};
+            powerup.color = "rouge";
+            break;
+            case 3:
+            powerup.modification = {h:20,w:20,bulletDamage:20};
+            powerup.color = "orange";
+            break;
+            default:
+            powerup.modification = {speed: 5};
+            powerup.color = "white";
+        }
         io.sockets.emit("new powerup",powerup);
         powerUp[powerup.id] = powerup;
         console.log("NEW POWERUP ID° "+powerup.id);
-    },30*1000);
+    },25*1000);
     /*******************************/
     // LORS DE LA CONNEXION
     //On bind chaque event a l'élément socket retourné dans le callback
