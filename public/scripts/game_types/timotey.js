@@ -18,13 +18,13 @@ define([
         	//???
             container = _container;
             //Ici je récupère le canvas, canvasCreate est le module canvas.js chargé plus haut
-            var canvas = canvasCreate.create({width:800,height:600,});
+            Particle();
+            var canvas = canvasCreate.create({width:800,height:600,id:"TimoteyCanvas"});
             var context = canvas.context;
             var players = {};
             var bullets = {};
             var ownPlayerId = null;
             var time = new Time();
-            Particle();
 
             function randomColorRGBA(){
               var r = (Math.random()*255)|0;
@@ -41,7 +41,7 @@ define([
               this.frame = 0;
             }
             
-            function NPC(x, y, w, h, id, health, alive, color){
+            function NPC(x, y, w, h, id, health, maxHealth, alive, color){
                this.x = x || 0;
                this.y = y || 0;
                this.w = w || 30;
@@ -49,6 +49,7 @@ define([
                this.id = id || Math.random()*1000;
                
                this.health = health || 30;
+               this.maxHealth = maxHealth;
                this.alive = alive;
                this.speed = 10;
                this.bulletSpeed = 10;
@@ -161,9 +162,9 @@ define([
             function addSendDeathCapabilities(object){
               object.respawnDelay = 180;
               object.frameSinceDeath = 0;
-              object.takeDamage = function(amountOfDamage){
+              object.takeDamage = function(amountOfDamage,iOfBullet){
                 this.health -= amountOfDamage;
-                connector.emit("hit",{id:object.id,amountOfDamage:amountOfDamage});
+                connector.emit("hit",{id:object.id,amountOfDamage:amountOfDamage,i:iOfBullet});
                 if(this.health <= 0){
                   object.kill()
                 }
@@ -192,19 +193,20 @@ define([
                   this.frameSinceDeath = 0;
                   this.x = Math.random()*700;
                   this.y = Math.random()*500;
-                  connector.emit("respawn",{id:this.id,x:this.x,y:this.y})
+                  this.health = this.maxHealth;
+                  connector.emit("respawn",{id:this.id,x:this.x,y:this.y,health:this.maxHealth})
                 }
               }
             }
 
             //CREATE OWN PLAYER
-            connector.emit('create player',{id:connector.socket.sessionid,localName:localStorage.userName,x:(Math.random()*700)|0,y:(Math.random()*500)|0,w:30,h:30,health:30,color:randomColorRGBA(),alive:true});
+            connector.emit('create player',{id:connector.socket.sessionid,localName:localStorage.userName,x:(Math.random()*700)|0,y:(Math.random()*500)|0,w:30,h:30,health:30,maxHealth:30,color:randomColorRGBA(),alive:true});
             connector.on("creation over",function(player, users){
                for(var key in users){
-                   players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].w, users[key].h, users[key].id, users[key].health, users[key].alive, users[key].color);
+                   players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].w, users[key].h, users[key].id, users[key].health, users[key].maxHealth, users[key].alive, users[key].color);
                    bullets[users[key].id] = [];
                }
-               players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.alive, player.color);
+               players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.maxHealth, player.alive, player.color);
                ownPlayerId = player.id;
                addInputControl(players[player.id]);
                addSendPositionCapabilities(players[player.id]);
@@ -215,7 +217,7 @@ define([
             });
             //CREATE NEW PLAYER
             connector.on("new player", function(player, users){
-               players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.alive, player.color);
+               players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.maxHealth, player.alive, player.color);
                console.log("PLAYER ID° "+player.id+"CONNECTED.")
             });
             //INIT ALL BULLETS
@@ -250,15 +252,16 @@ define([
               players[player.id].alive = true;
               players[player.id].x = player.x;
               players[player.id].y = player.y;
+              players[player.id].health = player.health;
             });
             connector.on("hit", function(hit){
-              players[hit.id].takeDamageNPC(hit.damage);
+              players[hit.id].takeDamageNPC(hit.amountOfDamage);
               bullets[hit.id].splice(hit.i,1);
             });
             connector.on("death",function(death){
               players[death.id].alive = false;
               console.log("DEATH OF "+death.id);
-              eventBus.emit("CreateParticles",{x:players[death.id].x+(players[death.id].w*0.5),y:players[death.id].y+(players[death.id].h*0.5),size:4,style:true,lifeTime:60,color:"white"});
+              eventBus.emit("CreateParticles",{x:players[death.id].x+(players[death.id].w*0.5),y:players[death.id].y+(players[death.id].h*0.5),size:4,style:true,lifeTime:180,color:players[death.id].color,count:20});
             });
 
             context.fillStyle = "black";
@@ -266,9 +269,9 @@ define([
             //On ajoute un écouteur sur 'new frame', évènement défini dans frames.js
             //Le callback correspond à notre mainLoop / Update 
             eventBus.on('new frame', function(){
-            	context.fillStyle = "black";
-            	context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
-            	for(var key in players){
+              context.fillStyle = "black";
+              context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
+              for(var key in players){
                    players[key].draw(context);
               }
               for(var key in bullets){
@@ -286,8 +289,8 @@ define([
                     if(key != ownPlayerId){
                       var arrayColliding = players[ownPlayerId].collision(bullets[key]);
                       for(var i = 0; i < arrayColliding.length; i++){
-                        players[ownPlayerId].takeDamage(arrayColliding[i].bullet.damage);
-                        connector.emit("hit", {damage:arrayColliding[i].bullet.damage,id:ownPlayerId,i:arrayColliding[i].i});
+                        players[ownPlayerId].takeDamage(arrayColliding[i].bullet.damage,arrayColliding[i].i);
+                        console.log(players[ownPlayerId].health)
                         bullets[key].splice(arrayColliding[i].i,1);
                       }
                     }

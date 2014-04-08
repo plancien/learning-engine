@@ -122,28 +122,31 @@ module.exports = function(io) {
         //COLLISION
         socket.on("hit",function(hit){
             socket.broadcast.emit("hit",hit);
-            users[hit.id].health -= hit.amountOfDamages;
-            console.log("HIT " + hit.id)
+            users[hit.id].health -= hit.amountOfDamage;
+            console.log("HIT ",hit.id," HEALTH=",users[hit.id].health);
         });
         //DEATH
         socket.on("death", function(death){
             socket.broadcast.emit("death",death);
             users[death.id].alive = false;
-            console.log("DEATH OF ",death.id)
+            console.log("DEATH OF ",death.id," HEALTH=",users[death.id].health);
         });
         //RESPAWN
         socket.on("respawn", function(player){
             socket.broadcast.emit("respawn",player);
             users[player.id].alive = true;
-            console.log("RESPAWN OF ",player.id)
+            users[player.id].health = player.health;
+            console.log("RESPAWN OF ",player.id," HEALTH=",users[player.id].health);
         });
         //MODIF PLAYER  player = {player:{ALL-PROPERTIES-I-NEED-TO-UPDATE},id:MY-ID}
         socket.on("modification player", function(player){
+            console.log("MODIFICATION OF PLAYER ID° ",player.id," START");
             for(var key in player.player){
-                users[player.id] = player.player[key];
+                users[player.id][key] = player.player[key];
+                console.log(key+"OF PLAYER ID° "+player.id+" IS NOW "+users[player.id][key]);
             }
             socket.broadcast.emit("modification player",player);
-            console.log("MODIFICATION ON PLAYER ID° "+player.id);
+            console.log("MODIFICATION ON PLAYER ID° "+player.id+" END");
         });
         //LOAD EVERY USERS IN USERS ARRAY
         socket.on("load players",function(){
