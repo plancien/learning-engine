@@ -123,6 +123,9 @@ module.exports = function(io) {
                 users[player.localName] = player;
                 player.id = player.localName;
             }
+            else{
+                users[player.id] = player;
+            }
             console.log("PLAYER CONNECTED ID° "+player.id)
             //CREATE OWN PLAYER FOR OTHERS
             socket.broadcast.emit('new player', player);
