@@ -71,6 +71,7 @@ module.exports = function(io) {
         io.sockets. => pour tout le monde
         socket. => juste le player
         socket.broadcast => tout le monde sauf le player
+        
         *******************************************/
         //Créé un perso
         //CREATE OWN PLAYER Can be used by everyone for stocking player's information in the server
