@@ -38,11 +38,11 @@ define([
               this.frame = 0;
             }
             
-            function NPC(x, y, id, health, alive, color){
+            function NPC(x, y, w, h, id, health, alive, color){
                this.x = x || 0;
                this.y = y || 0;
-               this.w = 30;
-               this.h = 30;
+               this.w = w || 30;
+               this.h = h || 30;
                this.id = id || Math.random()*1000;
                
                this.health = health || 30;
@@ -195,25 +195,24 @@ define([
             }
 
             //CREATE OWN PLAYER
-            connector.emit('create player',{id:connector.socket.sessionid,localName:localStorage.userName,x:(Math.random()*700)|0,y:(Math.random()*500)|0,health:30,color:randomColorRGBA(),alive:true});
+            connector.emit('create player',{id:connector.socket.sessionid,localName:localStorage.userName,x:(Math.random()*700)|0,y:(Math.random()*500)|0,w:30,h:30,health:30,color:randomColorRGBA(),alive:true});
             connector.on("creation over",function(player, users){
                for(var key in users){
-                   players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].id, users[key].health, users[key].alive, users[key].color);
+                   players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].w, users[key].h, users[key].id, users[key].health, users[key].alive, users[key].color);
                    bullets[users[key].id] = [];
                }
-               players[player.id] = new NPC(player.x, player.y, player.id, player.health, player.alive, player.color);
+               players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.alive, player.color);
                ownPlayerId = player.id;
                addInputControl(players[player.id]);
                addSendPositionCapabilities(players[player.id]);
                addShootCapabilities(players[player.id]);
                addSendDeathCapabilities(players[player.id]);
                bullets[ownPlayerId] = [];
-
                console.log("OWN PLAYER CREATED, ID° "+player.id);
             });
             //CREATE NEW PLAYER
             connector.on("new player", function(player, users){
-               players[player.id] = new NPC(player.x, player.y, player.id, player.health, player.alive, player.color);
+               players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.alive, player.color);
                console.log("PLAYER ID° "+player.id+"CONNECTED.")
             });
             //INIT ALL BULLETS

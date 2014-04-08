@@ -73,7 +73,7 @@ module.exports = function(io) {
         socket.broadcast => tout le monde sauf le player
         *******************************************/
         //Créé un perso
-        //CREATE OWN PLAYER
+        //CREATE OWN PLAYER Can be used by everyone for stocking player's information in the server
         socket.on("create player",function(player){
             var isExisting = false;
             for(var key in users){
@@ -135,6 +135,18 @@ module.exports = function(io) {
             socket.broadcast.emit("respawn",player);
             users[player.id].alive = true;
             console.log("RESPAWN OF ",player.id)
+        });
+        //MODIF PLAYER  player = {player:{ALL-PROPERTIES-I-NEED-TO-UPDATE},id:MY-ID}
+        socket.on("modification player", function(player){
+            for(var key in player.player){
+                users[player.id] = player.player[key];
+            }
+            socket.broadcast.emit("modification player",player);
+            console.log("MODIFICATION ON PLAYER ID° "+player.id);
+        });
+        //LOAD EVERY USERS IN USERS ARRAY
+        socket.on("load players",function(){
+            socket.emit("load players", users);
         });
         /************************************/
         //     FIN DU CODE DE TIMOTENOOB    //
