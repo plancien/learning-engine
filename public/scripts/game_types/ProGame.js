@@ -79,7 +79,6 @@ define([
 //-----------------------------------------------
 //                     MAIN LOOP
 //-----------------------------------------------
-
         eventBus.on("new frame", function() {
             ctx.clearRect(0,0,canvas.canvas.width,canvas.canvas.height);
             if(gameContainer.state == 'Play'){
