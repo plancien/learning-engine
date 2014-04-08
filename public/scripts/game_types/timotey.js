@@ -23,6 +23,7 @@ define([
             var context = canvas.context;
             var players = {};
             var bullets = {};
+            var powerUp = {};
             var ownPlayerId = null;
             var time = new Time();
 
@@ -40,7 +41,47 @@ define([
               this.deltaTime = 0;
               this.frame = 0;
             }
-            
+
+            function PowerUp(x, y, w, h, color, id, type, modification){
+              this.x = x;
+              this.y = y;
+              this.w = w;
+              this.h = h;
+
+              this.id = id;
+              this.color = color || "white";
+
+              this.type = type;
+              this.modification = {};
+              for(var key in modification){
+                this.modification[key] = modification[key];
+              }
+              this.useOnPlayer = function(player){
+                var modificationKey = [];
+                var data = {idPlayer:player.id,idPowerUp:this.id};
+                for(var key in this.modification){
+                  player[key] += this.modification[key];
+                  data[key] = player[key];
+                }
+                connector.emit("player get powerup",data)
+              };
+              this.draw = function(context){
+                context.fillStyle = this.color;
+                context.fillRect(this.x,this.y,this.w,this.h);
+              };
+              this.collision = function(object){
+                if((this.x >= object.x + object.w)      // trop à droite
+                    || (this.x + this.w <= object.x) // trop à gauche
+                    || (this.y >= object.y + object.h) // trop en bas
+                    || (this.y + this.h <= object.y))  // trop en haut
+                      return false 
+                    else{
+                      this.useOnPlayer(object);
+                      return true;
+                    }
+              }
+            };
+
             function NPC(x, y, w, h, id, health, maxHealth, alive, color){
                this.x = x || 0;
                this.y = y || 0;
@@ -201,10 +242,13 @@ define([
 
             //CREATE OWN PLAYER
             connector.emit('create player',{id:connector.socket.sessionid,localName:localStorage.userName,x:(Math.random()*700)|0,y:(Math.random()*500)|0,w:30,h:30,health:30,maxHealth:30,color:randomColorRGBA(),alive:true});
-            connector.on("creation over",function(player, users){
+            connector.on("creation over",function(player, users, powerups){
                for(var key in users){
                    players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].w, users[key].h, users[key].id, users[key].health, users[key].maxHealth, users[key].alive, users[key].color);
                    bullets[users[key].id] = [];
+               }
+               for(var key in powerups){
+                powerUp[key] = new PowerUp(powerups[key].x, powerups[key].y, 30, 30, null, powerups[key].id, powerups[key].type, {speed: 20});
                }
                players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.maxHealth, player.alive, player.color);
                ownPlayerId = player.id;
@@ -263,6 +307,18 @@ define([
               console.log("DEATH OF "+death.id);
               eventBus.emit("CreateParticles",{x:players[death.id].x+(players[death.id].w*0.5),y:players[death.id].y+(players[death.id].h*0.5),size:4,style:true,lifeTime:180,color:players[death.id].color,count:20});
             });
+            connector.on("new powerup", function(data){
+              console.log("New Power UP !")
+              powerUp[data.id] = new PowerUp(data.x, data.y, 30, 30, null, data.id, data.type,{speed: 20});
+              console.log(powerUp)
+            });
+            connector.on("player get powerup",function(data){
+              console.log("PLAYER ID° "+data.idPlayer+" GOT A POWER UP");
+              for(var key in data.player){
+                players[data.idPlayer][key] = data.player[key];
+              }
+              delete powerUp[data.idPowerUp];
+            });
 
             context.fillStyle = "black";
             context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
@@ -283,8 +339,13 @@ define([
                   }
                 }
               }
+              for(var key in powerUp){
+                powerUp[key].draw(context);
+              }
               if(ownPlayerId != null){
+                //UPDATE CLIENT SIDE FOR YOUR PLAYER
                 if(players[ownPlayerId].alive){
+                  //BULLETS
                   for(var key in bullets){
                     if(key != ownPlayerId){
                       var arrayColliding = players[ownPlayerId].collision(bullets[key]);
@@ -295,8 +356,15 @@ define([
                       }
                     }
                   }
+                  //POWERUP
+                  for(var key in powerUp){
+                    if(powerUp[key].collision(players[ownPlayerId])){
+                      delete powerUp[key];
+                    }
+                  }
                 }
                 else{
+                  //WHEN YOU ARE DEAD
                   players[ownPlayerId].waitForSpawn();
                 }
               }

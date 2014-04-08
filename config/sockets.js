@@ -45,6 +45,18 @@ module.exports = function(io) {
     //TIM
     /*******************************/
     var bullets = {};
+    var powerUp = {};
+    setInterval(function(){
+        var powerup = {
+            type:((Math.random()*3)|0)+1,
+            x:Math.random()*700,
+            y:Math.random()*500,
+            id:(Math.random()*100000000)|0
+        };
+        io.sockets.emit("new powerup",powerup);
+        powerUp[powerup.id] = powerup;
+        console.log("NEW POWERUP ID° "+powerup.id);
+    },30*1000);
     /*******************************/
     // LORS DE LA CONNEXION
     //On bind chaque event a l'élément socket retourné dans le callback
@@ -92,7 +104,7 @@ module.exports = function(io) {
             //CREATE OWN PLAYER FOR OTHERS
             socket.broadcast.emit('new player', player);
             //END CREATION EVENT
-            socket.emit("creation over", player, users);
+            socket.emit("creation over", player, users, powerUp);
         });
         //UPDATE MOVE
         socket.on("own player has moved",function(ownUser){
@@ -137,6 +149,14 @@ module.exports = function(io) {
             users[player.id].alive = true;
             users[player.id].health = player.health;
             console.log("RESPAWN OF ",player.id," HEALTH=",users[player.id].health);
+        });
+        //POWER UP
+        socket.on("player get powerup", function(data){
+            for(var key in data.player){
+                users[data.idPlayer][key] = data.player[key];
+            }
+            socket.broadcast.emit("player get powerup",data)
+            delete powerUp[data.idPowerUp];
         });
         //MODIF PLAYER  player = {player:{ALL-PROPERTIES-I-NEED-TO-UPDATE},id:MY-ID}
         socket.on("modification player", function(player){
