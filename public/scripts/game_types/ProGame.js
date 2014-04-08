@@ -20,6 +20,7 @@ define([
     'connector',
     'modules/bonus_chooser',
     'modules/key_listener',
+    'modules/add_canvasBoundingBox'
 ], function(eventBus, canvasCreate, frames, render, mouse, particles,connector, keyListner){
 
     return function(params) {
@@ -43,7 +44,11 @@ define([
 
         //VarsContainer
         var gameContainer = {
+            intervalRepop : 350,
+            state : 'Play',
+            winner : '',
             frame: 0,
+            maxPoints : 100,
             goodImages : new Image(),
             badImages : new Image(),
             bonus : [],
@@ -77,16 +82,27 @@ define([
 
         eventBus.on("new frame", function() {
             ctx.clearRect(0,0,canvas.canvas.width,canvas.canvas.height);
-            GenerateBonus(canvas.canvas);
-            PlayerManage(ctx,canvas.canvas);
-            BonusManage(ctx);
-            gameContainer.frame++;
+            if(gameContainer.state == 'Play'){
+              GenerateBonus(canvas.canvas);
+              PlayerManage(ctx,canvas.canvas);
+              BonusManage(ctx);
+              gameContainer.frame++;
+            }
+            else if(gameContainer.state == 'Over'){
+              var l = ctx.measureText(gameContainer.winner+' WIN!!!').width;
+              ctx.fillText(gameContainer.winner+' WIN!!!',canvas.canvas.width*0.5-l,canvas.canvas.height*0.5);
+              var i = 0;
+              for(var key in gameContainer.Players){
+                i+=100;
+                gameContainer.Players[key].drawScore(ctx,20+i,canvas.canvas.height*0.5+50)
+              }
+            }
         });
 //-----------------------------------------------
 //              MAIN LOOP ELEMENTS
 //-----------------------------------------------
         function GenerateBonus(canvas){
-          if(gameContainer.frame % 350 == 0){
+          if(gameContainer.frame % gameContainer.intervalRepop == 0){
             gameContainer.bonus.push(new Bonus(true,canvas));
             gameContainer.bonus.push(new Bonus(false,canvas));
           }
@@ -97,9 +113,12 @@ define([
           for(var key in gameContainer.Players){
             i+=50;
             gameContainer.Players[key].render(ctx);
-            gameContainer.Players[key].drawScore(ctx,i)
+            gameContainer.Players[key].drawScore(ctx,20+i,30)
             gameContainer.Players[key].deceleration();
             gameContainer.Players[key].collision(canvas,gameContainer.bonus);
+            if(gameContainer.Players[key].points>=gameContainer.maxPoints){
+              EndGame(key);
+            }
           }
         }
         function BonusManage(ctx){
@@ -179,7 +198,6 @@ define([
           this.speed = {x : 0,y : 0};
           this.color = color;
           //divers 
-          this.offsetScore = 100;
           this.syncPosFromServer = function(e){
            if(e.id = this.id){
                this.move(e.x,e.y);
@@ -193,10 +211,10 @@ define([
             generateParticles({x : this.x , y : this.y, color : this.color, angle : this.angle})
           };
 
-          this.drawScore = function(context,i){
+          this.drawScore = function(context,x,y){
             context.fillStyle = this.color;
-            context.fillText(this.color+' : ', this.offsetScore+i, 30);
-            context.fillText(this.points, this.offsetScore+i, 60);
+            context.fillText(this.color+' : ',x,y);
+            context.fillText(this.points,x,y+30);
           };
           this.deceleration = function(){
             if(Math.abs(this.speed.x)>0){
@@ -222,7 +240,7 @@ define([
               this.y += -(this.speed.y)*5;
             }
             for (var i = 0; i < bonus.length; i++) {
-              if(this.x>bonus[i].x && this.x<bonus[i].x+bonus[i].w && this.y>bonus[i].y && this.y<bonus[i].y+bonus[i].h){
+              if(CheckCollision(this,bonus[i])){
                 this.points += bonus[i].point;
                 bonus.splice(i,1);
                 i--;
@@ -295,20 +313,41 @@ define([
           }
         };
 
+        function CheckCollision(object1,object2){
+          if((object1.x < (object2.x + object2.w)) && ((object1.x + object1.w) > object2.x) && 
+              (object1.y < (object2.y + object2.h)) && ((object1.y + object1.h) > object2.y)){
+            return true;
+          }  
+          else{
+            return false;
+          }
+        };
+
         function generateParticles(pos){
-            var ParaticlesParams = {
-                x : pos.x,
-                y : pos.y,
-                size : 5,
-                style : false,
-                lifeTime : 30,
-                alpha : true,
-                speed : 2,
-                count:10,
-                angle : pos.angle,
-                color : pos.color,
-            }
-            eventBus.emit('CreateParticles', ParaticlesParams);
+          var ParaticlesParams = {
+              x : pos.x,
+              y : pos.y,
+              size : 5,
+              style : false,
+              lifeTime : 30,
+              alpha : true,
+              speed : 2,
+              count:10,
+              angle : pos.angle,
+              color : pos.color,
+          }
+          eventBus.emit('CreateParticles', ParaticlesParams);
+        }
+
+        function EndGame(key){
+          ctx.font = '24pt Calibri';
+          if(key == gameContainer.idOfPlayer){
+            gameContainer.winner = 'YOU';
+          }
+          else{
+            gameContainer.winner = gameContainer.Players[key].color;
+          }
+          gameContainer.state = 'Over';
         }
 //-----------------------------------------------
 //                     VECTORS
