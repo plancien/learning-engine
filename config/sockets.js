@@ -113,13 +113,13 @@ module.exports = function(io) {
         socket.on("create player",function(player){
             var isExisting = false;
             for(var key in users){
-                if(key == player.localName && player.localName != ""){
+                if(key == player.localName){
                     isExisting = true;
                     users[player.id] = player;
                     break;
                 }
             }
-            if(!isExisting){
+            if(!isExisting && player.localName != ""){
                 users[player.localName] = player;
                 player.id = player.localName;
             }
