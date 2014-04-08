@@ -113,7 +113,7 @@ module.exports = function(io) {
         socket.on("create player",function(player){
             var isExisting = false;
             for(var key in users){
-                if(key == player.localName){
+                if(key == player.localName && player.localName != ""){
                     isExisting = true;
                     users[player.id] = player;
                     break;
@@ -132,6 +132,7 @@ module.exports = function(io) {
         //UPDATE MOVE
         socket.on("own player has moved",function(ownUser){
             socket.broadcast.emit("new position",ownUser);
+            
             users[ownUser.id].x = ownUser.x;
             users[ownUser.id].y = ownUser.y;
         });
