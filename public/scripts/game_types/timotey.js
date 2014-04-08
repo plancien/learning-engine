@@ -5,8 +5,9 @@ define([
     'modules/key_listener',
     'event_capabilities',
     'connector',
-    "modules/mouse"
-], function (eventBus,canvasCreate,framer,keyListener,addEventCapabilities,connector,mouse) {	//Déclare les variables contenant les modules chargé dans define([])
+    "modules/mouse",
+    "modules/add_canvasBoundingBox"
+], function (eventBus,canvasCreate,framer,keyListener,addEventCapabilities,connector,mouse,canvasBoundingBox) {	//Déclare les variables contenant les modules chargé dans define([])
 
 	//Le module retourné
     return function(params) {
@@ -50,7 +51,6 @@ define([
                this.bulletSpeed = 10;
                this.bulletDamage = 5;
                this.color = color || "white";
-               console.log(this.color)
                this.deathColor = "black";
                
                this.syncPosFromServer = function(e){
@@ -110,22 +110,33 @@ define([
                        x:object.x,
                        y:object.y
                    };
+                   var previewX = object.x;
+                   var previewY = object.y;
                    if(e == "left"){
-                       object.x -= object.speed;
+                      previewX = object.x - object.speed;
                    }
                    if(e == "right"){
-                       object.x += object.speed;
+                      previewX = object.x + object.speed;
                    }
                    if(e == "up"){
-                       object.y -= object.speed;
+                      previewY = object.y - object.speed;
                    }
                    if(e == "down"){
-                       object.y += object.speed;
+                      previewY = object.y + object.speed;
                    }
-                   if(object.x != oldPosition.x || object.y != oldPosition.y){
-                       connector.emit('own player has moved', {id:object.id,x:object.x,y:object.y});
-                   }
+                   eventBus.emit("outside canvas",{canvas:canvas.canvas,target:{oldX:oldPosition.x,oldY:oldPosition.y,x:previewX,y:previewY,w:object.w,h:object.h}});
                });
+                eventBus.on("outside canvas response",function(params){
+                   if(!params.isPartiallyOutOnX){
+                     object.x = params.previewX;
+                   }
+                   if(!params.isPartiallyOutOnY){
+                     object.y = params.previewY;
+                   }
+                   if(object.x != params.oldX || object.y != params.oldY){
+                    connector.emit('own player has moved', {id:object.id,x:object.x,y:object.y});
+                   }
+                });
                eventBus.on("mouse left is clicking",function(mouse){
                 if(object.alive){
                   var vector ={
@@ -184,7 +195,7 @@ define([
             }
 
             //CREATE OWN PLAYER
-            connector.emit('create player',{id:connector.socket.sessionid,localName:localStorage.userName,x:Math.random()*700,y:Math.random()*500,health:30,color:randomColorRGBA(),alive:true});
+            connector.emit('create player',{id:connector.socket.sessionid,localName:localStorage.userName,x:(Math.random()*700)|0,y:(Math.random()*500)|0,health:30,color:randomColorRGBA(),alive:true});
             connector.on("creation over",function(player, users){
                for(var key in users){
                    players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].id, users[key].health, users[key].alive, users[key].color);

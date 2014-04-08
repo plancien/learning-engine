@@ -9,8 +9,14 @@ define(['event_bus'], function(eventBus) {
     		SUCCESS NOT GUARANTEED IF NOT STRUCTURED LIKE THIS
 
     	Will send an object 
-    		object.isOutOnX = true/false,
-    		object.isOutOnY = true/false
+    		object.isEntirelyOutOnX = true/false,
+    		object.isEntirelyOutOnY = true/false
+            object.isPartiallyOutOnX = true/false,
+            object.isPartiallyOutOnY = true/false,
+            object.previewX = next position of target on X
+            object.previewY = next position of target on Y
+            object.oldX = position to set of target if colliding on X
+            object.oldY = position to set of target if colliding on Y
 
     	To catch the response add,
     	eventBus.on('outside canvas response',function(params){
@@ -26,17 +32,21 @@ define(['event_bus'], function(eventBus) {
 			if(params.isPartiallyOutOnY){
 				//SPRITE IS PARTIALLY OUT OF THE CANVAS SCREEN ON THE Y AXIS
 			}
-			
+
     	});
     **********************************************/
     eventBus.on('outside canvas', function(params) {
     	var canvas = params.canvas;
     	var target = params.target;
     	var paramsToSend = {
-    		isEntirelyOutOnX:false,
-    		isPartiallyOutOnX:false,
-    		isEntirelyOutOnY:false,
-    		isPartiallyOutOnY:false
+    		isEntirelyOutOnX: false,
+    		isPartiallyOutOnX: false,
+    		isEntirelyOutOnY: false,
+    		isPartiallyOutOnY: false,
+            previewX: params.target.x,
+            previewY: params.target.y,
+            oldX: params.target.oldX,
+            oldY: params.target.oldY
     	};
     	//Try to change if forgot to make it w/h
     	if(!target.w){
