@@ -95,10 +95,10 @@ module.exports = function(io) {
             socket.emit("creation over", player, users);
         });
         //UPDATE MOVE
-        socket.on("own player has moved",function(user){
-            socket.broadcast.emit("new position",user);
-            users[user.id].x = user.x;
-            users[user.id].y = user.y;
+        socket.on("own player has moved",function(ownUser){
+            socket.broadcast.emit("new position",ownUser);
+            users[ownUser.id].x = ownUser.x;
+            users[ownUser.id].y = ownUser.y;
         });
         //DISCONNECT
         socket.on('disconnect', function(){
