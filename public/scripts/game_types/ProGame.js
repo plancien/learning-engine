@@ -70,6 +70,7 @@ define([
               i+=50;
               gameContainer.Players[key].render(ctx);
               gameContainer.Players[key].drawScore(ctx,i)
+              gameContainer.Players[key].deceleration()
             }
         });
 //-----------------------------------------------
@@ -134,7 +135,7 @@ define([
 
           this.angle = 0;
           this.points = 0;
-          this.MAXSPEED = 10;
+          this.MAXSPEED = 3;
           this.accel = 0.2
           this.speed = {x : 0,y : 0};
           this.color = color;
@@ -156,6 +157,22 @@ define([
             context.fillText(this.color+' : ', 100+i, 30);
             context.fillText(this.points, 100+i, 60);
           };
+          this.deceleration = function(){
+            if(Math.abs(this.speed.x)>0){
+              this.speed.x <0 ? this.speed.x+=0.1 : this.speed.x-=0.1
+              if(Math.abs(this.speed.x)<0.1){
+                this.speed.x=0;
+              }
+            }
+            if(Math.abs(this.speed.y)>0){
+              this.speed.y <0 ? this.speed.y+=0.1 : this.speed.y-=0.1
+              if(Math.abs(this.speed.y)<0.1){
+                this.speed.y=0;
+              }
+            }
+            this.x += this.speed.x;
+            this.y += this.speed.y;
+          }
         };
 
         function addInputControl(object){
@@ -201,7 +218,8 @@ define([
                 y : pos.y,
                 size : 5,
                 style : false,
-                lifeTime : 100,
+                lifeTime : 30,
+                alpha : true,
                 speed : 2,
                 count:10,
                 angle : pos.angle,

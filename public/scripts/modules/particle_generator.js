@@ -13,9 +13,11 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
             this.y = params.y || 0;
             this.size = (params.size || 5)*Math.random() ;
             this.styleParticles = params.style ;
+            this.alpha = params.alpha;
             this.lifeTime = (params.lifeTime || 100)*Math.random();
-            this.speed = (params.speed || 5)*Math.random()+1;
-            this.angle = (params.angle|| Math.PI * 2)* Math.random();
+            this.maxLifeTime = this.lifeTime;
+            this.speed = (params.speed || 5)*Math.random();
+            this.angle = (params.angle|| Math.PI * 2)*Math.random();
             this.color = params.color;
 
             this.move = function() {
@@ -29,6 +31,9 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
 
             this.draw = function() {
                 context.fillStyle = this.color;
+                if(this.alpha){
+                    context.globalAlpha = (this.lifeTime/this.maxLifeTime)+0.1;
+                }
                 if(this.styleParticles){
                     context.fillRect(this.x, this.y, this.size, this.size);
                 }
@@ -36,6 +41,9 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
                     context.beginPath();
                     context.arc(this.x, this.y,this.size,0,2*Math.PI);
                     context.fill();
+                }
+                if(this.alpha){
+                    context.globalAlpha = 1;
                 }
             };
 
