@@ -6,8 +6,9 @@ define([
     'event_capabilities',
     'connector',
     "modules/mouse",
-    "modules/add_canvasBoundingBox"
-], function (eventBus,canvasCreate,framer,keyListener,addEventCapabilities,connector,mouse,canvasBoundingBox) {	//Déclare les variables contenant les modules chargé dans define([])
+    "modules/add_canvasBoundingBox",
+    "modules/particle_generator"
+], function (eventBus,canvasCreate,framer,keyListener,addEventCapabilities,connector,mouse,canvasBoundingBox,Particle) {	//Déclare les variables contenant les modules chargé dans define([])
 
 	//Le module retourné
     return function(params) {
@@ -23,6 +24,8 @@ define([
             var bullets = {};
             var ownPlayerId = null;
             var time = new Time();
+            Particle();
+
             function randomColorRGBA(){
               var r = (Math.random()*255)|0;
               var g = (Math.random()*255)|0;
@@ -255,6 +258,7 @@ define([
             connector.on("death",function(death){
               players[death.id].alive = false;
               console.log("DEATH OF "+death.id);
+              eventBus.emit("CreateParticles",{x:players[death.id].x+(players[death.id].w*0.5),y:players[death.id].y+(players[death.id].h*0.5),size:4,style:true,lifeTime:60,color:"white"});
             });
 
             context.fillStyle = "black";
