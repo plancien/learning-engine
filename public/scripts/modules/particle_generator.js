@@ -18,7 +18,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
             this.maxLifeTime = this.lifeTime;
             this.speed = (params.speed || 5)*Math.random();
             this.angle = (params.angle|| Math.PI * 2)*Math.random();
-            this.color = params.color;
+            this.color = params.color ||'red';
 
             this.move = function() {
                 //mouvements aleatoirs en angle

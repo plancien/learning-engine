@@ -23,7 +23,6 @@ define([
 ], function(eventBus, canvasCreate, frames, render, mouse, particles,connector, keyListner){
 
     return function(params) {
-
 //-----------------------------------------------
 //                     VARS
 //-----------------------------------------------
@@ -31,8 +30,8 @@ define([
         var canvas, ctx;
         var paramsCanvas = {
             id: "Progame",
-            width: 800,
-            height: 800
+            width: 1280,
+            height: 720
         };
 
         //Mouse
@@ -44,11 +43,16 @@ define([
 
         //VarsContainer
         var gameContainer = {
+            frame: 0,
+            goodImages : new Image(),
+            badImages : new Image(),
+            bonus : [],
             idOfPlayer : '',
             Players : {},
             nbOfPlayer : 0,
             colors : ['red','green','blue','purple','orange','brown','yellow'],
         };
+
 //-----------------------------------------------
 //                     INIT
 //-----------------------------------------------
@@ -57,6 +61,14 @@ define([
             canvas = canvasCreate.create(paramsCanvas);
             ctx = canvas.context;
             ctx.font = '14pt Calibri';
+            for(var key in params){
+              if(key == "bonusUrl"){
+                gameContainer.goodImages.src = params[key];
+              }
+              else if (key == "malusUrl"){
+                gameContainer.badImages.src= params[key];
+              }
+            }
             connector.emit('create new player');
         });
 //-----------------------------------------------
@@ -65,14 +77,40 @@ define([
 
         eventBus.on("new frame", function() {
             ctx.clearRect(0,0,canvas.canvas.width,canvas.canvas.height);
-            var i = 0;
-            for(var key in gameContainer.Players){
-              i+=50;
-              gameContainer.Players[key].render(ctx);
-              gameContainer.Players[key].drawScore(ctx,i)
-              gameContainer.Players[key].deceleration()
-            }
+            GenerateBonus(canvas.canvas);
+            PlayerManage(ctx,canvas.canvas);
+            BonusManage(ctx);
+            gameContainer.frame++;
         });
+//-----------------------------------------------
+//              MAIN LOOP ELEMENTS
+//-----------------------------------------------
+        function GenerateBonus(canvas){
+          if(gameContainer.frame % 350 == 0){
+            gameContainer.bonus.push(new Bonus(true,canvas));
+            gameContainer.bonus.push(new Bonus(false,canvas));
+          }
+        }
+
+        function PlayerManage(ctx,canvas){
+          var i = 0;
+          for(var key in gameContainer.Players){
+            i+=50;
+            gameContainer.Players[key].render(ctx);
+            gameContainer.Players[key].drawScore(ctx,i)
+            gameContainer.Players[key].deceleration();
+            gameContainer.Players[key].collision(canvas,gameContainer.bonus);
+          }
+        }
+        function BonusManage(ctx){
+          for (var i = gameContainer.bonus.length - 1; i >= 0; i--){
+            gameContainer.bonus[i].render(ctx);
+            gameContainer.bonus[i].lifeTime--;
+            if(gameContainer.bonus[i].lifeTime<0){
+              gameContainer.bonus.splice(i,1);
+            }
+          };
+        }
 //-----------------------------------------------
 //                     EVENTS
 //-----------------------------------------------
@@ -99,7 +137,6 @@ define([
 
         //LOAD ALL Players
         connector.on('Add all Players',function(UsersID){
-          console.log(UsersID)
           for(var key in UsersID){
             if(UsersID[key] != gameContainer.idOfPlayer){
               gameContainer.nbOfPlayer++;
@@ -124,21 +161,25 @@ define([
         });
         
 //-----------------------------------------------
-//                     OTHERS
+//                     PLAYER
 //-----------------------------------------------
         function Player(id,color){
+          //proprieté du player
           this.x = 0;
           this.y = 0;
           this.w = 30;
           this.h = 30;
           this.id = id || Math.random()*1000;
-
+          //gestion vitesse
           this.angle = 0;
           this.points = 0;
-          this.MAXSPEED = 3;
-          this.accel = 0.2
+          this.MAXSPEED = 4;
+          this.accel = 0.2;
+          this.decel = 0.1;
           this.speed = {x : 0,y : 0};
           this.color = color;
+          //divers 
+          this.offsetScore = 100;
           this.syncPosFromServer = function(e){
            if(e.id = this.id){
                this.move(e.x,e.y);
@@ -154,27 +195,68 @@ define([
 
           this.drawScore = function(context,i){
             context.fillStyle = this.color;
-            context.fillText(this.color+' : ', 100+i, 30);
-            context.fillText(this.points, 100+i, 60);
+            context.fillText(this.color+' : ', this.offsetScore+i, 30);
+            context.fillText(this.points, this.offsetScore+i, 60);
           };
           this.deceleration = function(){
             if(Math.abs(this.speed.x)>0){
-              this.speed.x <0 ? this.speed.x+=0.1 : this.speed.x-=0.1
-              if(Math.abs(this.speed.x)<0.1){
+              this.speed.x <0 ? this.speed.x+=this.decel : this.speed.x-=this.decel
+              if(Math.abs(this.speed.x)<this.decel){
                 this.speed.x=0;
               }
             }
             if(Math.abs(this.speed.y)>0){
-              this.speed.y <0 ? this.speed.y+=0.1 : this.speed.y-=0.1
-              if(Math.abs(this.speed.y)<0.1){
+              this.speed.y <0 ? this.speed.y+=this.decel : this.speed.y-=this.decel
+              if(Math.abs(this.speed.y)<this.decel){
                 this.speed.y=0;
               }
             }
             this.x += this.speed.x;
             this.y += this.speed.y;
           }
+          this.collision = function(canvas,bonus){
+            if(this.x<0 || this.x>canvas.width-this.w){
+              this.x += -(this.speed.x)*5;
+            }
+            if(this.y<0 || this.y>canvas.height-this.h){
+              this.y += -(this.speed.y)*5;
+            }
+            for (var i = 0; i < bonus.length; i++) {
+              if(this.x>bonus[i].x && this.x<bonus[i].x+bonus[i].w && this.y>bonus[i].y && this.y<bonus[i].y+bonus[i].h){
+                this.points += bonus[i].point;
+                bonus.splice(i,1);
+                i--;
+              }
+            };
+          }
         };
+//-----------------------------------------------
+//                     BONUS
+//-----------------------------------------------
+        function Bonus(value,canvas){
+          this.w = 40;
+          this.h = 60;
+          this.x = canvas.width * Math.random() - this.w;
+          this.y = canvas.height * Math.random() - this.h;
+          this.lifeTime = 200;
 
+          if(value){
+            this.image = gameContainer.goodImages;
+            this.point = 100;
+          }
+          else{
+            this.image = gameContainer.badImages;
+            this.point = -25;
+          }
+
+          this.render = function(context){
+            context.drawImage(this.image,this.x,this.y,this.w,this.h);
+          };
+        }
+
+//-----------------------------------------------
+//                     FUNCTIONS
+//-----------------------------------------------
         function addInputControl(object){
           eventBus.on('keys still pressed', function(e){
             var oldPosition = {
@@ -200,6 +282,7 @@ define([
             object.x += object.speed.x;
             object.y += object.speed.y;
             this.angle = getOrientation(object.speed);
+
             if(object.x != oldPosition.x || object.y != oldPosition.y){
                connector.emit('coords', {id:object.id,x:object.x,y:object.y});
             }
