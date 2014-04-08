@@ -43,11 +43,10 @@ define(['event_bus'], function(eventBus) {
     		isPartiallyOutOnX: false,
     		isEntirelyOutOnY: false,
     		isPartiallyOutOnY: false,
-            previewX: params.target.x,
-            previewY: params.target.y,
-            oldX: params.target.oldX,
-            oldY: params.target.oldY
     	};
+        for(var key in params.target){
+            paramsToSend[key] = params.target[key];
+        }
     	//Try to change if forgot to make it w/h
     	if(!target.w){
     		target.w = target.width || 0;

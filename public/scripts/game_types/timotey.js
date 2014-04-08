@@ -132,10 +132,10 @@ define([
                });
                 eventBus.on("outside canvas response",function(params){
                    if(!params.isPartiallyOutOnX){
-                     object.x = params.previewX;
+                     object.x = params.x;
                    }
                    if(!params.isPartiallyOutOnY){
-                     object.y = params.previewY;
+                     object.y = params.y;
                    }
                    if(object.x != params.oldX || object.y != params.oldY){
                     connector.emit('own player has moved', {id:object.id,x:object.x,y:object.y});
