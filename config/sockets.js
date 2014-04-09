@@ -75,6 +75,7 @@ module.exports = function(io) {
             default:
             powerup.modification = {speed: 5};
             powerup.color = "white";
+            break;
         }
         io.sockets.emit("new powerup",powerup);
         powerUp[powerup.id] = powerup;
@@ -100,14 +101,14 @@ module.exports = function(io) {
         socket.on("create player -g", function(data){
             //Si on n'a pas préciser les informations à stocker
             if(!data){
-                var data = {id:socket.id};
+                data = {id:socket.id};
             }
             //Si l'id envoyé est incorrect
-            if(data.id == ""){
+            if(data.id === ""){
                 data.id = socket.id;
             }
             //On stocke chaque valeur contenu dans player dans users[player.id] un objet représentant le joueur
-            users[data.id] = {}
+            users[data.id] = {};
             for(var key in data){
                 users[data.id][key] = data[key];
             }
