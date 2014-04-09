@@ -118,7 +118,11 @@ require(['connector'], function(socket) {
                     $( "header" ).css( "background-color", "#73C8E9" );
                     $( "footer" ).css( "background-color", "#73C8E9" );
                 }
-            })
+            });
+
+            $("#retour").click(function(e) {
+                        console.log('wut')
+                });
 
             $("#gameCreation").submit(function(e) {
                 e.preventDefault();
