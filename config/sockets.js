@@ -133,12 +133,15 @@ module.exports = function(io) {
                 users[data.id][key] = data.info[key];
                 console.log(key+"OF PLAYER ID° "+data.id+" IS NOW "+users[data.id][key]);
             }
+            if(!data.info.id){
+                data.info.id = data.id;
+            }
             //Si votre modification implique d'envoyer une info supplémentaire sur le type de modification
             if(data.eventName){
-                socket.broadcast.emit(data.eventName,data);
+                socket.broadcast.emit(data.eventName,data.info);
             }
             else{
-                socket.broadcast.emit('Synchronization',data);
+                socket.broadcast.emit('Synchronization',data.info);
             }
         });
         //LOAD EVERY USERS IN USERS ARRAY
