@@ -44,6 +44,17 @@ define([
 
         //VarsContainer
         var gameContainer = {
+            //General
+            state : 'Play',
+            winner : '',
+            frame: 500,
+            maxPoints : 100,
+            goodImages : new Image(),
+            badImages : new Image(),
+            idOfPlayer : connector.socket.sessionid,
+            Players : {},
+            nbOfPlayer : 0,
+            //Respawn Settings
             respawnPoints : [ 
                               10,10,
                               paramsCanvas.width-10,paramsCanvas.height-10,
@@ -55,17 +66,10 @@ define([
                               paramsCanvas.width*0.5,paramsCanvas.height*0.5
                             ],
             restartTimer : '',
+            cdNewGame : 45,
+            //Bonus Setting
             intervalRepop : 350,
-            state : 'Play',
-            winner : '',
-            frame: 0,
-            maxPoints : 100,
-            goodImages : new Image(),
-            badImages : new Image(),
             bonus : [],
-            idOfPlayer : '',
-            Players : {},
-            nbOfPlayer : 0,
             colors : ['red','green','blue','purple','orange','brown','yellow'],
         };
 
@@ -85,8 +89,15 @@ define([
                 gameContainer.badImages.src= params[key];
               }
             }
-            connector.emit('create new player');
+            CreateOwnPlayer(connector.socket.sessionid)
         });
+
+        function CreateOwnPlayer(playerID){
+          gameContainer.Players[playerID] = new Player(playerID,gameContainer.colors[gameContainer.nbOfPlayer]);
+          addInputControl(gameContainer.Players[playerID]);
+          connector.emit('create player -g',gameContainer.Players[playerID]);
+          connector.emit('load players -g');
+        }
 //-----------------------------------------------
 //                     MAIN LOOP
 //-----------------------------------------------
@@ -165,37 +176,35 @@ define([
         });
 
         //CREATE OWN PLAYER
-        connector.on("your player",function(playerID){
-          gameContainer.Players[playerID] = new Player(playerID,gameContainer.colors[gameContainer.nbOfPlayer]);
-          gameContainer.idOfPlayer=playerID;
-          addInputControl(gameContainer.Players[playerID]);
-          addSendPositionCapabilities(gameContainer.Players[playerID]);
-        });
-
-        //CREATE NEW PLAYER
-        connector.on("new player", function(playerID){
-          gameContainer.nbOfPlayer++;
-          gameContainer.Players[playerID] = new Player(playerID,gameContainer.colors[gameContainer.nbOfPlayer]);
-        });
-
-        //LOAD ALL Players
-        connector.on('Add all Players',function(UsersID){
-          for(var key in UsersID){
-            if(UsersID[key] != gameContainer.idOfPlayer){
+        connector.on("load players",function(users){
+          for(var key in users){
+            if(users[key].id != gameContainer.idOfPlayer){
               gameContainer.nbOfPlayer++;
-              gameContainer.Players[UsersID[key]] = new Player(UsersID[key],gameContainer.colors[gameContainer.nbOfPlayer]);
+              gameContainer.Players[users[key].id] = new Player(users[key].id,gameContainer.colors[gameContainer.nbOfPlayer]);
+              gameContainer.Players[users[key].id].syncPosFromServer(users[key].x,users[key].y);
+              gameContainer.Players[users[key].id].points = users[key].points;
             }
           } 
         });
 
-        //SEND YOUR NEW POSITION
-        connector.on("new position",function(player){
-            gameContainer.Players[player.id].move(player.x,player.y);
+        //CREATE NEW PLAYER
+        connector.on("new player", function(player){
+          gameContainer.nbOfPlayer++;
+          gameContainer.Players[player.id] = new Player(player.id,gameContainer.colors[gameContainer.nbOfPlayer]);
+          gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
         });
-        //les autres ont bougé
-        connector.on('coords update', function(data) {
-          gameContainer.Players[data.id].x = data.x;
-          gameContainer.Players[data.id].y = data.y;
+
+        //SEND YOUR NEW POSITION
+        connector.on("CoordsUpdate",function(player){
+          console.log(gameContainer.Players,player)
+          if(gameContainer.Players[player.id]){
+            gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
+          }
+          else{
+            gameContainer.nbOfPlayer++;
+            gameContainer.Players[player.id] = new Player(player.id,gameContainer.colors[gameContainer.nbOfPlayer]);
+            gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
+          }
         });
         //WHEN PPL DISCONNECT
         connector.on('player left',function(user){
@@ -222,14 +231,9 @@ define([
           this.speed = {x : 0,y : 0};
           this.color = color;
           //divers 
-          this.syncPosFromServer = function(e){
-           if(e.id = this.id){
-               this.move(e.x,e.y);
-           }
-          };
-          this.move = function(x, y){
-           this.x += x;
-           this.y += y;
+          this.syncPosFromServer = function(x, y){
+           this.x = x;
+           this.y = y;
           };
           this.render = function(context){
             generateParticles({x : this.x , y : this.y, color : this.color, angle : this.angle})
@@ -326,16 +330,10 @@ define([
             this.angle = getOrientation(object.speed);
 
             if(object.x != oldPosition.x || object.y != oldPosition.y){
-               connector.emit('coords', {id:object.id,x:object.x,y:object.y});
+              connector.emit("infoToSync -g",{id:object.id,eventName:'CoordsUpdate',info:{x:object.x,y:object.y}});
             }
           });
         }
-
-        function addSendPositionCapabilities(object){
-          object.sendPositionToServer = function(){
-              connector.emit('position from client',{id:this.id,x:this.x,y:this.y});
-          }
-        };
 
         function CheckCollision(object1,object2){
           if((object1.x < (object2.x + object2.w)) && ((object1.x + object1.w) > object2.x) && 
@@ -372,7 +370,7 @@ define([
             gameContainer.winner = gameContainer.Players[key].color;
           }
           gameContainer.state = 'Over';
-          gameContainer.restartTimer = (new Date().getTime()/1000)+5;
+          gameContainer.restartTimer = (new Date().getTime()/1000)+gameContainer.cdNewGame;
         }
 
         function restartGame(){

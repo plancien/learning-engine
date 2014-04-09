@@ -87,7 +87,6 @@ module.exports = function(io) {
 
     io.sockets.on('connection', function(socket) {
         amountOfConnections++;
-
         /****\
 
         \****/
@@ -101,26 +100,28 @@ module.exports = function(io) {
         socket.on("create player -g", function(data){
             //Si on n'a pas préciser les informations à stocker
             if(!data){
-                var data = {id:socket.sessionid};
+                var data = {id:socket.id};
             }
             //Si l'id envoyé est incorrect
             if(data.id == ""){
-                data.id = socket.sessionid;
+                data.id = socket.id;
             }
             //On stocke chaque valeur contenu dans player dans users[player.id] un objet représentant le joueur
-            for(var key in data.player){
-                users[data.id][key] = data.player[key];
+            users[data.id] = {}
+            for(var key in data){
+                users[data.id][key] = data[key];
             }
+            console.log("PLAYER",data.id," CREATED");
             //On envoie les données contenu dans player à tout les autres
             socket.broadcast.emit("new player",data);
-        })
+        });
+
         //MODIF PLAYER  
-        //BEST WAY TO USE ==> data = {id:monID,eventName:MonEventCustom,player:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
-        socket.on("modification player -g", function(data){
-            console.log("MODIFICATION OF PLAYER ID° ",data.id," START");
+        //BEST WAY TO USE ==> data = {id:monID,eventName:MonEventCustom,info:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
+        socket.on("infoToSync -g", function(data){
             //Si on a oublié de préciser l'id
             if(!data.id){
-                data.id = socket.sessionid;
+                data.id = socket.id;
             }
             //Si cet id n'est pas dans le tableau utilisateurs
             if(!users[data.id]){
@@ -128,31 +129,33 @@ module.exports = function(io) {
                 console.log("UNKNOWN ID OF PLAYER IN USERS");
             }
             //On attribue chaque valeur contenu dans data.player a chaque propriété de user[data.id]
-            for(var key in data.player){
-                users[data.id][key] = data.player[key];
+            for(var key in data.info){
+                users[data.id][key] = data.info[key];
                 console.log(key+"OF PLAYER ID° "+data.id+" IS NOW "+users[data.id][key]);
+            }
+            if(!data.info.id){
+                data.info.id = data.id;
             }
             //Si votre modification implique d'envoyer une info supplémentaire sur le type de modification
             if(data.eventName){
-                socket.broadcast.emit(data.eventName,data);
+                socket.broadcast.emit(data.eventName,data.info);
             }
             else{
-                socket.broadcast.emit('modification player',data);
+                socket.broadcast.emit('Synchronization',data.info);
             }
-            console.log("MODIFICATION ON PLAYER ID° "+data.id+" END");
         });
         //LOAD EVERY USERS IN USERS ARRAY
-        //BEST WAY TO USE ==> Just call it 
+        //BEST WAY TO USE ==> Just call it (y)
         socket.on("load players -g",function(){
+            console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
             socket.emit("load players", users);
-            console.log("PLAYER ID° "+socket.sessionid+" HAS LOAD ALL PLAYERS");
         });
         //DISCONNECT
         //BEST WAY TO USE ==> N/A
         socket.on('disconnect', function(){
-            console.log("PLAYER DISCONNECTED ID° "+socket.sessionid)
-            socket.broadcast.emit('player disconnected',{id:socket.sessionid});
-            delete users[socket.sessionid];
+            console.log("PLAYER DISCONNECTED ID° "+socket.id)
+            socket.broadcast.emit('player disconnected',{id:socket.id});
+            delete users[socket.id];
         });
         /************************************/
 
@@ -184,13 +187,6 @@ module.exports = function(io) {
             //END CREATION EVENT
             socket.emit("creation over", player, users, powerUp);
         });
-        //UPDATE MOVE
-        socket.on("own player has moved",function(ownUser){
-            socket.broadcast.emit("new position",ownUser);
-            
-            users[ownUser.id].x = ownUser.x;
-            users[ownUser.id].y = ownUser.y;
-        });
         
         //CREATE SHOOT
         socket.on("shoot",function(shoot){
@@ -204,6 +200,12 @@ module.exports = function(io) {
         socket.on("own shoot has moved", function(shoot){
             bullets[shoot.id][shoot.i].x = shoot.x;
             bullets[shoot.id][shoot.i].y = shoot.y;
+        });
+        //UPDATE MOVE
+        socket.on("own player has moved", function(user){
+            users[user.id].x = user.x;
+            users[user.id].y = user.y;
+            socket.broadcast.emit("new position",user);
         });
         //COLLISION
         socket.on("hit",function(hit){
