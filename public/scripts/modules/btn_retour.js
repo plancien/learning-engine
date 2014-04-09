@@ -6,17 +6,17 @@ define([
     
     eventBus.on("init", function() {
         
-        function replay() {
+        function retour() {
             location.reload();
         }
-        var cssgameover = "width: 300px;height:80px;position:absolute;cursor:pointer;z-index:15;background: url('../images/retour.png') no-repeat center;";
+        var css = "width: 300px;height:80px;position:absolute;cursor:pointer;z-index:15;background: url('../images/retour.png') no-repeat center;";
         
         eventBus.emit("createElement", {
             elem: "div",
-            stylesheet: cssgameover,
+            stylesheet: css,
             id: "gameOver",
             typeEvent: "click",
-            event: replay
+            event: retour
         });
     });
     
