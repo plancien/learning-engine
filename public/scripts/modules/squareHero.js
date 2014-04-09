@@ -4,6 +4,7 @@
 * Create a Hero class creating hero. Hero listen standardly arrow key.
 * @config => Waiting a object
 * @context => Sent the context 
+* @canvas => Sent canvas for hero stay in the canvas
 * @Gravity => Comming soon
 *
 * nota : See game_types/Simba.js 
@@ -11,9 +12,11 @@
 ***************************************************************************************************************/
 
 
-define(['event_bus', 'modules/key_listener'], function(eventBus) {
+define(['event_bus', 'modules/collisionEngine', 'modules/key_listener'], function(eventBus, collisionEngine) {
+	window.get = collisionEngine;
 	var HeroEngine = function(){
 		this.content = [];
+		this.collisionBoxActivate = false;
 	}
 	HeroEngine.prototype.create = function(config, context, gravity){
 		if (!config)
@@ -39,6 +42,8 @@ define(['event_bus', 'modules/key_listener'], function(eventBus) {
 		target.inputs.down = config.inputs.down || "down";
 		target.haveMoveX = false;
 		target.haveMoveY = false;
+		collisionEngine.addHitbox(target, "rect");
+		collisionEngine.addElement(target, "hero");
 		if (context)
 			target.contextReference = context;
 		else
@@ -58,6 +63,33 @@ define(['event_bus', 'modules/key_listener'], function(eventBus) {
 				target.haveMoveY = true;			
 			}
 		}
+
+		if (this.collisionBoxActivate){
+			target.collisionCallback = {};
+			for (var i = collisionEngine.group.hero.inBox.length - 1 ; i>= 0 ; i--){
+				target.collisionCallback[collisionEngine.group.hero.inBox[i]] = function(side, box){
+					if (side != "in"){
+						if (side == "left")
+							target.x = box.x;
+						else if (side == "right")
+							target.x = box.x + box.width - target.width;
+						else if (side == "up")
+							target.y = box.y;
+						else
+							target.y = box.y + box.height - target.height;
+					}
+				}
+			}
+		}
+
+		if (this.beetwenThemActivate){
+			target.collisionCallback["hero"] = function(){
+				target.x -= target.speedX;
+				target.speedX = 0;
+				target.y -= target.speedY;
+				target.speedY = 0;
+			}
+		}
 		var that = target;
 		eventBus.on("keys still pressed "+target.inputs.left, function(){that.move(-1,0)});
 		eventBus.on("keys still pressed "+target.inputs.right, function(){that.move(1,0)});
@@ -66,6 +98,7 @@ define(['event_bus', 'modules/key_listener'], function(eventBus) {
 
 		eventBus.on("render", function(){that.render()});
 		this.content.push(target);
+		return target;
 	}
 	HeroEngine.prototype.render = function(){
 		for (var i = this.content.length - 1; i >= 0; i--) {
@@ -91,6 +124,12 @@ define(['event_bus', 'modules/key_listener'], function(eventBus) {
 			if (this.content[i].contextReference)
 				this.content[i].contextReference.fillRect(this.content[i].x, this.content[i].y, this.content[i].width, this.content[i].height);
 		}
+	}
+	HeroEngine.prototype.collisionInit = function(name, box, beetwenThem){
+		collisionEngine.addBox(name, box);
+		collisionEngine.addGroup("hero", "all", beetwenThem, [name]);
+		this.collisionBoxActivate = true;
+		this.beetwenThemActivate = beetwenThem;
 	}
 
 	return new HeroEngine();
