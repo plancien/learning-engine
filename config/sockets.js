@@ -87,7 +87,6 @@ module.exports = function(io) {
 
     io.sockets.on('connection', function(socket) {
         amountOfConnections++;
-
         /****\
 
         \****/
@@ -115,7 +114,11 @@ module.exports = function(io) {
             console.log("PLAYER",data.id," CREATED");
             //On envoie les données contenu dans player à tout les autres
             socket.broadcast.emit("new player",data);
+<<<<<<< HEAD
         })
+=======
+        });
+>>>>>>> a3705164da45ed2468b09921e0e43ec64775a8c7
         //MODIF PLAYER  
         //BEST WAY TO USE ==> data = {id:monID,eventName:MonEventCustom,info:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
         socket.on("infoToSync -g", function(data){
@@ -146,11 +149,18 @@ module.exports = function(io) {
         socket.on("load players -g",function(){
             console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
             socket.emit("load players", users);
+<<<<<<< HEAD
+=======
+            console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
+>>>>>>> a3705164da45ed2468b09921e0e43ec64775a8c7
         });
         //DISCONNECT
         //BEST WAY TO USE ==> N/A
         socket.on('disconnect', function(){
+<<<<<<< HEAD
             console.log(socket.id);
+=======
+>>>>>>> a3705164da45ed2468b09921e0e43ec64775a8c7
             console.log("PLAYER DISCONNECTED ID° "+socket.id)
             socket.broadcast.emit('player disconnected',{id:socket.id});
             delete users[socket.id];
@@ -198,6 +208,12 @@ module.exports = function(io) {
         socket.on("own shoot has moved", function(shoot){
             bullets[shoot.id][shoot.i].x = shoot.x;
             bullets[shoot.id][shoot.i].y = shoot.y;
+        });
+        //UPDATE MOVE
+        socket.on("own player has moved", function(user){
+            users[user.id].x = user.x;
+            users[user.id].y = user.y;
+            socket.broadcast.emit("new position");
         });
         //COLLISION
         socket.on("hit",function(hit){
