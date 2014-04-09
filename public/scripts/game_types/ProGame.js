@@ -44,6 +44,17 @@ define([
 
         //VarsContainer
         var gameContainer = {
+            respawnPoints : [ 
+                              10,10,
+                              paramsCanvas.width-10,paramsCanvas.height-10,
+                              paramsCanvas.width-10,10,
+                              10,paramsCanvas.height-10,
+                              paramsCanvas.width*0.5,10,
+                              paramsCanvas.width*0.5,paramsCanvas.height-10,
+                              10,paramsCanvas.height*0.5,
+                              paramsCanvas.width*0.5,paramsCanvas.height*0.5
+                            ],
+            restartTimer : '',
             intervalRepop : 350,
             state : 'Play',
             winner : '',
@@ -88,13 +99,8 @@ define([
               gameContainer.frame++;
             }
             else if(gameContainer.state == 'Over'){
-              var l = ctx.measureText(gameContainer.winner+' WIN!!!').width;
-              ctx.fillText(gameContainer.winner+' WIN!!!',canvas.canvas.width*0.5-l,canvas.canvas.height*0.5);
-              var i = 0;
-              for(var key in gameContainer.Players){
-                i+=100;
-                gameContainer.Players[key].drawScore(ctx,20+i,canvas.canvas.height*0.5+50)
-              }
+              afficheScoreEnd(ctx,canvas.canvas);
+              compteARebour(ctx,canvas.canvas);
             }
         });
 //-----------------------------------------------
@@ -128,6 +134,25 @@ define([
               gameContainer.bonus.splice(i,1);
             }
           };
+        }
+
+        function compteARebour(ctx,canvas){
+          var actualCD = Math.floor(gameContainer.restartTimer - (new Date().getTime()/1000));
+          text = 'Next Game in : '+actualCD+' sec';
+          ctx.fillText(text,canvas.width-ctx.measureText(text).width,30);
+          if(actualCD<=0){
+            restartGame();
+          }
+        }
+
+        function afficheScoreEnd(ctx,canvas){
+            var l = ctx.measureText(gameContainer.winner+' WIN!!!').width;
+            ctx.fillText(gameContainer.winner+' WIN!!!',canvas.width*0.5-l,canvas.height*0.5);
+            var i = 0;
+            for(var key in gameContainer.Players){
+              i+=100;
+              gameContainer.Players[key].drawScore(ctx,20+i,canvas.height*0.5+50)
+            }
         }
 //-----------------------------------------------
 //                     EVENTS
@@ -347,6 +372,19 @@ define([
             gameContainer.winner = gameContainer.Players[key].color;
           }
           gameContainer.state = 'Over';
+          gameContainer.restartTimer = (new Date().getTime()/1000)+5;
+        }
+
+        function restartGame(){
+          i=0
+          for(var key in gameContainer.Players){
+            gameContainer.Players[key].points = 0;
+            gameContainer.Players[key].x = gameContainer.respawnPoints[i];
+            gameContainer.Players[key].y = gameContainer.respawnPoints[i+1];
+            i+=2;
+          }
+          gameContainer.frame=0;
+          gameContainer.state = 'Play';
         }
 //-----------------------------------------------
 //                     VECTORS
