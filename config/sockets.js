@@ -87,20 +87,74 @@ module.exports = function(io) {
 
     io.sockets.on('connection', function(socket) {
         amountOfConnections++;
-        //a clean
-        var user = [];
-        var allUsers = [];
-        //a garder
-        var AllUsersIG = {};
-        var sessionId = socket.id;
-        socket.name = amountOfConnections;
-        socket.set('id', id);
 
         /****\
 
         \****/
 
         moduleBroadcast(io,socket);
+        /**************************************************
+        GENERIC EVENTS STOCKING INFORMATIONS IN USERS OBJECT
+        **************************************************/
+        //CREATE PLAYER
+        //BEST WAY TO USE ==> player = {id:monID,player:{maPropriété1:value1,maPropriété2:value2}};
+        socket.on("create player -g", function(data){
+            //Si on n'a pas préciser les informations à stocker
+            if(!data){
+                var data = {id:socket.sessionid};
+            }
+            //Si l'id envoyé est incorrect
+            if(data.id == ""){
+                data.id = socket.sessionid;
+            }
+            //On stocke chaque valeur contenu dans player dans users[player.id] un objet représentant le joueur
+            for(var key in data.player){
+                users[data.id][key] = data.player[key];
+            }
+            //On envoie les données contenu dans player à tout les autres
+            socket.broadcast.emit("new player",data);
+        })
+        //MODIF PLAYER  
+        //BEST WAY TO USE ==> data = {id:monID,eventName:MonEventCustom,player:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
+        socket.on("modification player -g", function(data){
+            console.log("MODIFICATION OF PLAYER ID° ",data.id," START");
+            //Si on a oublié de préciser l'id
+            if(!data.id){
+                data.id = socket.sessionid;
+            }
+            //Si cet id n'est pas dans le tableau utilisateurs
+            if(!users[data.id]){
+                users[data.id] = {};
+                console.log("UNKNOWN ID OF PLAYER IN USERS");
+            }
+            //On attribue chaque valeur contenu dans data.player a chaque propriété de user[data.id]
+            for(var key in data.player){
+                users[data.id][key] = data.player[key];
+                console.log(key+"OF PLAYER ID° "+data.id+" IS NOW "+users[data.id][key]);
+            }
+            //Si votre modification implique d'envoyer une info supplémentaire sur le type de modification
+            if(data.eventName){
+                socket.broadcast.emit(data.eventName,data);
+            }
+            else{
+                socket.broadcast.emit('modification player',data);
+            }
+            console.log("MODIFICATION ON PLAYER ID° "+data.id+" END");
+        });
+        //LOAD EVERY USERS IN USERS ARRAY
+        //BEST WAY TO USE ==> Just call it 
+        socket.on("load players -g",function(){
+            socket.emit("load players", users);
+            console.log("PLAYER ID° "+socket.sessionid+" HAS LOAD ALL PLAYERS");
+        });
+        //DISCONNECT
+        //BEST WAY TO USE ==> N/A
+        socket.on('disconnect', function(){
+            console.log("PLAYER DISCONNECTED ID° "+socket.sessionid)
+            socket.broadcast.emit('player disconnected',{id:socket.sessionid});
+            delete users[socket.sessionid];
+        });
+        /************************************/
 
         /*Tim Socket
         io.sockets. => pour tout le monde
@@ -108,8 +162,6 @@ module.exports = function(io) {
         socket.broadcast => tout le monde sauf le player
         
         *******************************************/
-        //Créé un perso
-        //CREATE OWN PLAYER Can be used by everyone for stocking player's information in the server
         socket.on("create player",function(player){
             var isExisting = false;
             for(var key in users){
@@ -139,12 +191,7 @@ module.exports = function(io) {
             users[ownUser.id].x = ownUser.x;
             users[ownUser.id].y = ownUser.y;
         });
-        //DISCONNECT
-        socket.on('disconnect', function(){
-            console.log("PLAYER DISCONNECTED ID° "+socket.id)
-            socket.broadcast.emit('player disconnected',{id:socket.id});
-            delete users[socket.id];
-        });
+        
         //CREATE SHOOT
         socket.on("shoot",function(shoot){
             io.sockets.emit("shoot",shoot);
@@ -181,100 +228,14 @@ module.exports = function(io) {
         socket.on("player get powerup", function(data){
             for(var key in data.player){
                 users[data.idPlayer][key] = data.player[key];
+                console.log("PLAYER ID° "+data.idPlayer+" "+key+" IS NOW "+data.player[key]);
             }
             socket.broadcast.emit("player get powerup",data)
             delete powerUp[data.idPowerUp];
         });
 
-        /**************************************************
-        GENERIC EVENTS STOCKING INFORMATIONS IN USERS OBJECT
-        **************************************************/
-        //CREATE PLAYER
-        soocket.on("create player -g", function(player){
-            if(player.id == ""){
-                player.id = socket.sessionid;
-            }
-            for(var key in player){
-                users[player.id] = player[key];
-            }
-            socket.broadcast.emit("new player",player);
-        })
-        //MODIF PLAYER  player = {player:{ALL-PROPERTIES-I-NEED-TO-UPDATE},id:MY-ID}
-        socket.on("modification player -g", function(player){
-            console.log("MODIFICATION OF PLAYER ID° ",player.id," START");
-            for(var key in player.player){
-                users[player.id][key] = player.player[key];
-                console.log(key+"OF PLAYER ID° "+player.id+" IS NOW "+users[player.id][key]);
-            }
-            socket.broadcast.emit("modification player",player);
-            console.log("MODIFICATION ON PLAYER ID° "+player.id+" END");
-        });
-        //LOAD EVERY USERS IN USERS ARRAY
-        socket.on("load players -g",function(){
-            socket.emit("load players", users);
-        });
-        /************************************/
         //     FIN DU CODE DE TIMOTENOOB    //
 
-
-        // Connection du joueur
-        socket.on("create new player",function(){
-            AllUsersIG[sessionId] = sessionId;
-            socket.emit('Add all Players', AllUsersIG);
-            socket.emit("your player", sessionId);
-            socket.broadcast.emit('new player', sessionId);
-        });
-
-        //on envoie les coordonées lors des déplacements
-        socket.on('coords', function(data) {
-            socket.broadcast.emit('coords update', data);
-        });
-        //Lorsque'on se déconnecte
-        socket.on('disconnect', function(){
-            socket.broadcast.emit('player left',sessionId);
-            delete AllUsersIG[sessionId];
-        });
-
-
-        // WIP hope to link the score to users tab
-        socket.on('nouveau_client', function(pseudo) {
-            id++;
-            user.push(id);
-            user.push(pseudo);
-            allUsers.push(user); /* I tought it was forgotten */
-            // socket.set('id', id); 
-            socket.set('users', allUsers);
-            socket.broadcast.emit('nouveau_client');
-        });
-
-        socket.on('StoreXY', function(X, Y, player) {
-            idtest++;
-            if (idtest > id) {
-                idtest = 1;
-            }
-            socket.emit('Update player', X, Y, idtest, player);
-            socket.broadcast.emit('Update player', X, Y, idtest, player);
-        });
-
-        socket.on('tir', function(ArrayShoot) {
-            socket.emit('afficheTir', ArrayShoot);
-            socket.broadcast.emit('afficheTir', ArrayShoot);
-        });
-
-        socket.on('infodeCollision', function(ArrayShoot, player) {
-            socket.broadcast.emit('testCollision', ArrayShoot, player);
-        });
-
-        socket.on('collision', function(IdPlayer, IdShoot, nbrShoot) {
-            socket.emit('collision complete', IdPlayer, IdShoot, nbrShoot);
-            socket.broadcast.emit('collision complete', IdPlayer, IdShoot, nbrShoot);
-        });
-
-        socket.on('MyID', function() {
-            socket.get('id', function(error, id) {
-                socket.emit('create', id);
-            });
-        });
 
         socket.on("ask images names", function() {
             var names = fs.readdirSync("./public/images");

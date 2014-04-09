@@ -146,7 +146,7 @@ define([
             };
             function addSendPositionCapabilities(object){
                object.sendPositionToServer = function(){
-                   connector.emit('position from client',{id:this.id,x:this.x,y:this.y});
+                   connector.emit('modification player -g',{id:this.id,x:this.x,y:this.y});
                }
             };
             function addInputControl(object){
