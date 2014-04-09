@@ -107,12 +107,16 @@ module.exports = function(io) {
             if(data.id == ""){
                 data.id = socket.sessionid;
             }
+            console.log(users,data)
             //On stocke chaque valeur contenu dans player dans users[player.id] un objet représentant le joueur
-            for(var key in data.player){
-                users[data.id][key] = data.player[key];
+            for(var key in data){
+                users[data.id] = {}
+                users[data.id][key] = data[key];
             }
             //On envoie les données contenu dans player à tout les autres
             socket.broadcast.emit("new player",data);
+            //On envoie les joueurs a lactuel connecté:
+            socket.emit("creation over", users);
         })
         //MODIF PLAYER  
         //BEST WAY TO USE ==> data = {id:monID,eventName:MonEventCustom,player:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
@@ -140,6 +144,12 @@ module.exports = function(io) {
                 socket.broadcast.emit('modification player',data);
             }
             console.log("MODIFICATION ON PLAYER ID° "+data.id+" END");
+        });
+        //UPDATE SPECIFIC FOR MOVE
+        socket.on("coords -g",function(ownUser){
+            socket.broadcast.emit("new position",ownUser);
+            users[ownUser.id].x = ownUser.x;
+            users[ownUser.id].y = ownUser.y;
         });
         //LOAD EVERY USERS IN USERS ARRAY
         //BEST WAY TO USE ==> Just call it 
@@ -183,13 +193,6 @@ module.exports = function(io) {
             socket.broadcast.emit('new player', player);
             //END CREATION EVENT
             socket.emit("creation over", player, users, powerUp);
-        });
-        //UPDATE MOVE
-        socket.on("own player has moved",function(ownUser){
-            socket.broadcast.emit("new position",ownUser);
-            
-            users[ownUser.id].x = ownUser.x;
-            users[ownUser.id].y = ownUser.y;
         });
         
         //CREATE SHOOT
