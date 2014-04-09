@@ -14,7 +14,7 @@ define([
         eventBus.emit("createElement", {
             elem: "div",
             stylesheet: css,
-            id: "gameOver",
+            id: "btn_retour",
             typeEvent: "click",
             event: retour
         });
