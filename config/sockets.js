@@ -185,8 +185,22 @@ module.exports = function(io) {
             socket.broadcast.emit("player get powerup",data)
             delete powerUp[data.idPowerUp];
         });
+
+        /**************************************************
+        GENERIC EVENTS STOCKING INFORMATIONS IN USERS OBJECT
+        **************************************************/
+        //CREATE PLAYER
+        soocket.on("create player -g", function(player){
+            if(player.id == ""){
+                player.id = socket.sessionid;
+            }
+            for(var key in player){
+                users[player.id] = player[key];
+            }
+            socket.broadcast.emit("new player",player);
+        })
         //MODIF PLAYER  player = {player:{ALL-PROPERTIES-I-NEED-TO-UPDATE},id:MY-ID}
-        socket.on("modification player", function(player){
+        socket.on("modification player -g", function(player){
             console.log("MODIFICATION OF PLAYER ID° ",player.id," START");
             for(var key in player.player){
                 users[player.id][key] = player.player[key];
@@ -196,7 +210,7 @@ module.exports = function(io) {
             console.log("MODIFICATION ON PLAYER ID° "+player.id+" END");
         });
         //LOAD EVERY USERS IN USERS ARRAY
-        socket.on("load players",function(){
+        socket.on("load players -g",function(){
             socket.emit("load players", users);
         });
         /************************************/
@@ -206,8 +220,8 @@ module.exports = function(io) {
         // Connection du joueur
         socket.on("create new player",function(){
             AllUsersIG[sessionId] = sessionId;
+            socket.emit('Add all Players', AllUsersIG);
             socket.emit("your player", sessionId);
-            socket.emit('Add all Players', AllUsersIG)
             socket.broadcast.emit('new player', sessionId);
         });
 
