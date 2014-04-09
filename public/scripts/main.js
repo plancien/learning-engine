@@ -86,7 +86,12 @@ require(['connector'], function(socket) {
                     }
                 });
             }
-
+            $('</br><button id="logout" class="button">Deconnexion</button>').appendTo("#eventList");
+                        $("#logout").click(function(e) {
+                            localStorage.clear();
+                            $("#mainMenu").css('display', 'none');
+                            $("#socialBar").fadeIn('normal');
+                        });
             $("#gameSelect button").click(function(e) {
                 $("#mainMenu").hide();
 

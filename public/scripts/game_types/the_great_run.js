@@ -17,8 +17,7 @@ define([
     'modules/image_loader',
     'modules/frames',
     'modules/key_listener',
-    'modules/score',
-    'modules/btn_retour'
+    'modules/score'
 ], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule) {
 
     

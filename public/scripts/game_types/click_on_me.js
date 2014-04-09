@@ -14,7 +14,8 @@ define([
     'event_bus',
     'modules/score',
     'modules/bonus_chooser',
-    'modules/bonus_fader'
+    'modules/bonus_fader',
+    'modules/btn_retour'
 ], function(eventBus) {
 
     return function(params) {
