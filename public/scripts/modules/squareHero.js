@@ -48,7 +48,7 @@ define(['event_bus', 'modules/collisionEngine', 'modules/key_listener'], functio
 			target.contextReference = context;
 		else
 			console.warn("squareHero need a canvas context to run. Please, sent it in second argument");
-
+	
 		target.move = function(x, y){
 			if (x != 0){
 				target.speedX += (x * target.acceleration);
@@ -77,6 +77,8 @@ define(['event_bus', 'modules/collisionEngine', 'modules/key_listener'], functio
 							target.y = box.y;
 						else
 							target.y = box.y + box.height - target.height;
+						target.speedX = 0;
+						target.speedY = 0;
 					}
 				}
 			}
@@ -93,12 +95,18 @@ define(['event_bus', 'modules/collisionEngine', 'modules/key_listener'], functio
 		var that = target;
 		eventBus.on("keys still pressed "+target.inputs.left, function(){that.move(-1,0)});
 		eventBus.on("keys still pressed "+target.inputs.right, function(){that.move(1,0)});
-		eventBus.on("keys still pressed "+target.inputs.up, function(){that.move(0,-1)});
-		eventBus.on("keys still pressed "+target.inputs.down, function(){that.move(0,1)});
+		if (gravity){
+			target.gravity = true;
+		    gravityEngine.addElement(target);
+		}
+		else{
+			eventBus.on("keys still pressed "+target.inputs.down, function(){that.move(0,1)});
+			eventBus.on("keys still pressed "+target.inputs.up, function(){that.move(0,-1)});
+		}
 
 		eventBus.on("render", function(){that.render()});
 		this.content.push(target);
-		return target;
+		return this.content[this.content.length-1];
 	}
 	HeroEngine.prototype.render = function(){
 		for (var i = this.content.length - 1; i >= 0; i--) {
@@ -109,7 +117,7 @@ define(['event_bus', 'modules/collisionEngine', 'modules/key_listener'], functio
 					this.content[i].speedX += (this.content[i].speedX > 0) ? -this.content[i].deceleration: this.content[i].deceleration;
 				}
 			}
-			if (!this.content[i].haveMoveY){
+			if (!this.content[i].haveMoveY && !this.content[i].gravity){
 				if (Math.abs(this.content[i].speedY) <= this.content[i].deceleration)
 					this.content[i].speedY = 0;
 				else{
@@ -127,7 +135,7 @@ define(['event_bus', 'modules/collisionEngine', 'modules/key_listener'], functio
 	}
 	HeroEngine.prototype.collisionInit = function(name, box, beetwenThem){
 		collisionEngine.addBox(name, box);
-		collisionEngine.addGroup("hero", "all", beetwenThem, [name]);
+		collisionEngine.addGroup("hero", false, beetwenThem, [name]);
 		this.collisionBoxActivate = true;
 		this.beetwenThemActivate = beetwenThem;
 	}

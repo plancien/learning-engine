@@ -8,7 +8,7 @@ define(['event_bus'], function(eventBus) {
 		if (!this.group[name]){
 			this.group[name] = {};
 			this.group[name].content = [];
-			this.group[name].target = target || "all";
+			this.group[name].target = target || [];
 			this.group[name].inBox = box || [];
 			this.group[name].betweenThem = betweenThem || false;
 		}
@@ -20,6 +20,9 @@ define(['event_bus'], function(eventBus) {
 		if (!target.collisionCallback)
 			target.collisionCallback = {};
 		target.collisionCallback.general = (callback) ? callback : function(){};
+
+		if (!target.hitbox)
+			this.addHitbox(target);
 
 		this.group[name].content.push(target);	 
 	}
@@ -72,6 +75,18 @@ define(['event_bus'], function(eventBus) {
 								}
 							}
 						};
+					}
+					for (var m = this.group[name].target.length - 1 ; m >= 0 ; m--){
+						var currentGroup = this.group[this.group[name].target[m]];
+						for (var k = currentGroup.content.length - 1 ; k >= 0 ; k--){
+							var opponent = currentGroup.content[k];
+							for (var l = opponent.hitbox.length - 1 ; l >= 0 ; l--){
+								var opponentHitbox = opponent.hitbox[l];
+								if (this.rectCollision(target, targetHitbox, opponent, opponentHitbox)){
+									target.collisionCallback[this.group[name].target[m]](opponent);
+								}
+							}
+						}
 					}
 				}
 			}
