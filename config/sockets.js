@@ -101,30 +101,27 @@ module.exports = function(io) {
         socket.on("create player -g", function(data){
             //Si on n'a pas préciser les informations à stocker
             if(!data){
-                var data = {id:socket.sessionid};
+                var data = {id:socket.id};
             }
             //Si l'id envoyé est incorrect
             if(data.id == ""){
-                data.id = socket.sessionid;
+                data.id = socket.id;
             }
-            console.log(users,data)
             //On stocke chaque valeur contenu dans player dans users[player.id] un objet représentant le joueur
+            users[data.id] = {}
             for(var key in data){
-                users[data.id] = {}
                 users[data.id][key] = data[key];
             }
+            console.log("PLAYER",data.id," CREATED");
             //On envoie les données contenu dans player à tout les autres
             socket.broadcast.emit("new player",data);
-            //On envoie les joueurs a lactuel connecté:
-            socket.emit("creation over", users);
         })
         //MODIF PLAYER  
-        //BEST WAY TO USE ==> data = {id:monID,eventName:MonEventCustom,player:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
-        socket.on("modification player -g", function(data){
-            console.log("MODIFICATION OF PLAYER ID° ",data.id," START");
+        //BEST WAY TO USE ==> data = {id:monID,eventName:MonEventCustom,info:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
+        socket.on("infoToSync -g", function(data){
             //Si on a oublié de préciser l'id
             if(!data.id){
-                data.id = socket.sessionid;
+                data.id = socket.id;
             }
             //Si cet id n'est pas dans le tableau utilisateurs
             if(!users[data.id]){
@@ -132,8 +129,8 @@ module.exports = function(io) {
                 console.log("UNKNOWN ID OF PLAYER IN USERS");
             }
             //On attribue chaque valeur contenu dans data.player a chaque propriété de user[data.id]
-            for(var key in data.player){
-                users[data.id][key] = data.player[key];
+            for(var key in data.info){
+                users[data.id][key] = data.info[key];
                 console.log(key+"OF PLAYER ID° "+data.id+" IS NOW "+users[data.id][key]);
             }
             //Si votre modification implique d'envoyer une info supplémentaire sur le type de modification
@@ -141,28 +138,22 @@ module.exports = function(io) {
                 socket.broadcast.emit(data.eventName,data);
             }
             else{
-                socket.broadcast.emit('modification player',data);
+                socket.broadcast.emit('Synchronization',data);
             }
-            console.log("MODIFICATION ON PLAYER ID° "+data.id+" END");
-        });
-        //UPDATE SPECIFIC FOR MOVE
-        socket.on("coords -g",function(ownUser){
-            socket.broadcast.emit("new position",ownUser);
-            users[ownUser.id].x = ownUser.x;
-            users[ownUser.id].y = ownUser.y;
         });
         //LOAD EVERY USERS IN USERS ARRAY
-        //BEST WAY TO USE ==> Just call it 
+        //BEST WAY TO USE ==> Just call it (y)
         socket.on("load players -g",function(){
+            console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
             socket.emit("load players", users);
-            console.log("PLAYER ID° "+socket.sessionid+" HAS LOAD ALL PLAYERS");
         });
         //DISCONNECT
         //BEST WAY TO USE ==> N/A
         socket.on('disconnect', function(){
-            console.log("PLAYER DISCONNECTED ID° "+socket.sessionid)
-            socket.broadcast.emit('player disconnected',{id:socket.sessionid});
-            delete users[socket.sessionid];
+            console.log(socket.id);
+            console.log("PLAYER DISCONNECTED ID° "+socket.id)
+            socket.broadcast.emit('player disconnected',{id:socket.id});
+            delete users[socket.id];
         });
         /************************************/
 
