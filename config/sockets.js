@@ -107,19 +107,27 @@ module.exports = function(io) {
             if(!data.id){
                 data.id = socket.id;
             }
+            //Si on a oublié de préciser la table a modifié
             if(!data.objectKey){
                 data.objectKey = "users";
             }
-            //Si cet id n'est pas dans le tableau utilisateurs
+            //Si c'est la première fois qu'on modifie cette table, on la créé ainsi que l'id lui correspondant
+            if(!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey]){
+                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey] = {};
+                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id] = {};
+                console.log("UNKNOWN ID "+data.id+" In "+data.objectKey+" CREATING IT.");
+            }
+            //Si cet id n'est pas connu de l'objet
             if(!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id]){
                 PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id] = {};
-                console.log("UNKNOWN ID "+data.id+" In "+data.objectKey);
+                console.log("UNKNOWN ID "+data.id+" In "+data.objectKey+" CREATING IT.");
             }
             //On attribue chaque valeur contenu dans data.player a chaque propriété de user[data.id]
             for(var key in data.info){
                 PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key] = data.info[key];
                 console.log(key+"OF "+data.objectKey+" ID° "+data.id+" IS NOW "+PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key]);
             }
+            //Si on a pas préciser l'id dans les info
             if(!data.info.id){
                 data.info.id = data.id;
             }
@@ -133,94 +141,31 @@ module.exports = function(io) {
         });
         //LOAD EVERY USERS IN USERS ARRAY
         //BEST WAY TO USE ==> Just call it (y)
-        socket.on("load players -g",function(){
-            console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
-            socket.emit("load players", PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]);
-        });
-
-        function bonusGenerate(arg){
-            for(var key in arg['arg']){
-                eval(arg['arg'][key]);
-                console.log(x)
+        socket.on("load players -g",function(keyToLoad){
+            if(!keyToLoad){
+                console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
+                socket.emit("load players", PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]);
             }
-        }
+            else{
+                console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL "+keyToLoad);
+                socket.emit("load "+keyToLoad, PublicServerStockingSpace[PublicServerStockingSpaceKey[keyToLoad]]);
+            }
+        });
         //DISCONNECT
         //BEST WAY TO USE ==> N/A
         socket.on('disconnect', function(){
-            console.log("PLAYER DISCONNECTED ID° "+socket.id+PublicServerStockingSpaceKey)
+            console.log("PLAYER DISCONNECTED ID° "+socket.id)
             socket.broadcast.emit('player disconnected',{id:socket.id});
-            delete PublicServerStockingSpace[PublicServerStockingSpaceKey][socket.id];
+            if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id]){
+                console.log("PLAYER ID° "+socket.id+" DELETED FROM USERS");
+                delete PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id];
+            }
         });
         /************************************/
-
-        /*Tim Socket
-        io.sockets. => pour tout le monde
-        socket. => juste le player
-        socket.broadcast => tout le monde sauf le player
-        
+        /*io.sockets. => pour tout le monde
+          socket. => juste le player
+          socket.broadcast => tout le monde sauf le player
         *******************************************/
-        socket.on("create player",function(player){
-            var isExisting = false;
-            for(var key in PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]){
-                if(key == player.localName){
-                    isExisting = true;
-                    PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][player.id] = player;
-                    break;
-                }
-            }
-            if(!isExisting && player.localName != ""){
-                PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][player.localName] = player;
-                player.id = player.localName;
-                socket.id = player.id;
-            }
-            else{
-                PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][player.id] = player;
-            }
-            console.log("PLAYER CONNECTED ID° "+player.id)
-            //CREATE OWN PLAYER FOR OTHERS
-            socket.broadcast.emit('new player', player);
-            //END CREATION EVENT
-            socket.emit("creation over", player, PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"], PublicServerStockingSpace[PublicServerStockingSpaceKey]["powerUp"]);
-        });
-        
-        //CREATE SHOOT
-        socket.on("shoot",function(shoot){
-            io.sockets.emit("shoot",shoot);
-            if(!PublicServerStockingSpace[PublicServerStockingSpaceKey]["bullets"][shoot.id]){
-                PublicServerStockingSpace[PublicServerStockingSpaceKey]["bullets"][shoot.id] = [];
-            }
-            PublicServerStockingSpace[PublicServerStockingSpaceKey]["bullets"][shoot.id].push(shoot);
-        });
-        //UPDATE SHOOT
-        socket.on("own shoot has moved", function(shoot){
-            PublicServerStockingSpace[PublicServerStockingSpaceKey]["bullets"][shoot.id][shoot.i].x = shoot.x;
-            PublicServerStockingSpace[PublicServerStockingSpaceKey]["bullets"][shoot.id][shoot.i].y = shoot.y;
-        });
-        //UPDATE MOVE
-        socket.on("own player has moved", function(user){
-            PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][user.id].x = user.x;
-            PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][user.id].y = user.y;
-            socket.broadcast.emit("new position",user);
-        });
-        //COLLISION
-        socket.on("hit",function(hit){
-            socket.broadcast.emit("hit",hit);
-            PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][hit.id].health -= hit.amountOfDamage;
-            console.log("HIT ",hit.id," HEALTH=",PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][hit.id].health);
-        });
-        //DEATH
-        socket.on("death", function(death){
-            socket.broadcast.emit("death",death);
-            PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][death.id].alive = false;
-            console.log("DEATH OF ",death.id," HEALTH=",PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][death.id].health);
-        });
-        //RESPAWN
-        socket.on("respawn", function(player){
-            socket.broadcast.emit("respawn",player);
-            PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][player.id].alive = true;
-            PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][player.id].health = player.health;
-            console.log("RESPAWN OF ",player.id," HEALTH=",PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][player.id].health);
-        });
         //POWER UP
         socket.on("player get powerup", function(data){
             for(var key in data.player){
@@ -228,7 +173,7 @@ module.exports = function(io) {
                 console.log("PLAYER ID° "+data.idPlayer+" "+key+" IS NOW "+data.player[key]);
             }
             socket.broadcast.emit("player get powerup",data)
-            delete PublicServerStockingSpace[PublicServerStockingSpaceKey]["powerUp"][data.idPowerUp];
+            delete PublicServerStockingSpace[PublicServerStockingSpaceKey]["powerUps"][data.idPowerUp];
         });
 
         //     FIN DU CODE DE TIMOTENOOB    //

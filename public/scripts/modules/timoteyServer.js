@@ -1,6 +1,6 @@
 module.exports = function(io,socket,PublicServerStockingSpacePrivate){
-    if(!PublicServerStockingSpacePrivate["powerUp"]){
-    	PublicServerStockingSpacePrivate["powerUp"] = {};
+    if(!PublicServerStockingSpacePrivate["powerUps"]){
+    	PublicServerStockingSpacePrivate["powerUps"] = {};
     }
     if(!PublicServerStockingSpacePrivate["users"]){
     	PublicServerStockingSpacePrivate["users"] = {};
@@ -36,7 +36,7 @@ module.exports = function(io,socket,PublicServerStockingSpacePrivate){
         break;
     }
     io.sockets.emit("new powerup",powerup);
-    PublicServerStockingSpacePrivate["powerUp"][powerup.id] = powerup;
+    PublicServerStockingSpacePrivate["powerUps"][powerup.id] = powerup;
     console.log("NEW POWERUP ID° "+powerup.id);
-},25*1000);
+},100*1000);
 };
