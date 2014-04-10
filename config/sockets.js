@@ -40,6 +40,7 @@ module.exports = function(io) {
 
     var idtest = 0;
     var id = 0;
+    var popIsEnable = false;
     var users = {};
     var amountOfConnections = 0;
     //TIM
@@ -151,6 +152,24 @@ module.exports = function(io) {
             console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
             socket.emit("load players", users);
         });
+         //BONUS
+        //BONUS
+        socket.on("generating bonus -g",function(arg){
+            var arguments = arg
+            if(!popIsEnable){
+                bonusGenerate(arg)
+                setInterval(function(){
+                    bonusGenerate(arg['arg']);
+                },arg['time']);
+            }
+        });
+
+        function bonusGenerate(arg){
+            for(var key in arg['arg']){
+                eval(arg['arg'][key]);
+                console.log(x)
+            }
+        }
         //DISCONNECT
         //BEST WAY TO USE ==> N/A
         socket.on('disconnect', function(){

@@ -78,6 +78,7 @@ define([
 //-----------------------------------------------
         eventBus.on('init', function() {
             particles();
+            bonusGenerate();
             canvas = canvasCreate.create(paramsCanvas);
             ctx = canvas.context;
             ctx.font = '14pt Calibri';
@@ -193,7 +194,9 @@ define([
           gameContainer.Players[player.id] = new Player(player.id,gameContainer.colors[gameContainer.nbOfPlayer]);
           gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
         });
-
+        connector.on("bonus generate -g",function(arg){
+          console.log(arg)
+        });
         //SEND YOUR NEW POSITION
         connector.on("CoordsUpdate",function(player){
           console.log(gameContainer.Players,player)
@@ -207,9 +210,9 @@ define([
           }
         });
         //WHEN PPL DISCONNECT
-        connector.on('player left',function(user){
+        connector.on('player disconnected',function(user){
           gameContainer.nbOfPlayer--;
-          delete gameContainer.Players[user];
+          delete gameContainer.Players[user.id];
         });
         
 //-----------------------------------------------
@@ -383,6 +386,19 @@ define([
           }
           gameContainer.frame=0;
           gameContainer.state = 'Play';
+        }
+        function bonusGenerate(){
+          connector.emit("generating bonus -g",
+          {
+            arg : {
+              1 : 'var x = 0;',
+              2 : 'var y = 0;',
+              3 : 'x = Math.random()*1200',
+              4 : 'y = Math.random()*1200',
+              5 : 'io.sockets.emit("bonus generate -g", {x : x,y : y})',
+            },
+            time : 1200
+          });
         }
 //-----------------------------------------------
 //                     VECTORS
