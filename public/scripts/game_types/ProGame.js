@@ -78,7 +78,7 @@ define([
 //-----------------------------------------------
         eventBus.on('init', function() {
             particles();
-            bonusGenerate();
+            connector.emit("load routine server -g", "fedeServer")
             canvas = canvasCreate.create(paramsCanvas);
             ctx = canvas.context;
             ctx.font = '14pt Calibri';
@@ -386,19 +386,6 @@ define([
           }
           gameContainer.frame=0;
           gameContainer.state = 'Play';
-        }
-        function bonusGenerate(){
-          connector.emit("generating bonus -g",
-          {
-            arg : {
-              1 : 'var x = 0;',
-              2 : 'var y = 0;',
-              3 : 'x = Math.random()*1200',
-              4 : 'y = Math.random()*1200',
-              5 : 'io.sockets.emit("bonus generate -g", {x : x,y : y})',
-            },
-            time : 1200
-          });
         }
 //-----------------------------------------------
 //                     VECTORS
