@@ -104,7 +104,6 @@ define([
         eventBus.on("new frame", function() {
             ctx.clearRect(0,0,canvas.canvas.width,canvas.canvas.height);
             if(gameContainer.state == 'Play'){
-              GenerateBonus(canvas.canvas);
               PlayerManage(ctx,canvas.canvas);
               BonusManage(ctx);
               gameContainer.frame++;
@@ -117,13 +116,6 @@ define([
 //-----------------------------------------------
 //              MAIN LOOP ELEMENTS
 //-----------------------------------------------
-        function GenerateBonus(canvas){
-          if(gameContainer.frame % gameContainer.intervalRepop == 0){
-            gameContainer.bonus.push(new Bonus(true,canvas));
-            gameContainer.bonus.push(new Bonus(false,canvas));
-          }
-        }
-
         function PlayerManage(ctx,canvas){
           var i = 0;
           for(var key in gameContainer.Players){
@@ -193,12 +185,13 @@ define([
           gameContainer.Players[player.id] = new Player(player.id,gameContainer.colors[gameContainer.nbOfPlayer]);
           gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
         });
-        connector.on("bonus generate -g",function(arg){
+        connector.on("New Bonus fedeGame",function(arg){
+            gameContainer.bonus.push(new Bonus(arg['x1'],arg['y1'],true,canvas));
+            gameContainer.bonus.push(new Bonus(arg['x2'],arg['y2'],false,canvas));
           console.log(arg)
         });
         //SEND YOUR NEW POSITION
         connector.on("CoordsUpdate",function(player){
-          console.log(gameContainer.Players,player)
           if(gameContainer.Players[player.id]){
             gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
           }
@@ -281,7 +274,7 @@ define([
 //-----------------------------------------------
 //                     BONUS
 //-----------------------------------------------
-        function Bonus(value,canvas){
+        function Bonus(x,y,value,canvas){
           this.w = 40;
           this.h = 60;
           this.x = canvas.width * Math.random() - this.w;

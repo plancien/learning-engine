@@ -75,7 +75,7 @@ module.exports = function(io) {
                 };
             }
             if(!routineServerLoaded){
-                var routineG = require("../public/scripts/modules/"+info['path'])(io,socket,PublicServerStockingSpace[info['path']],info['toto']);
+                var routineG = require("../public/scripts/modules/"+info['path'])(io,socket,PublicServerStockingSpace[info['path']],info['info']);
                 routineServerLoaded = true;
             }
         })
