@@ -88,7 +88,7 @@ define([
                 gameContainer.badImages.src= params[key];
               }
             }
-            connector.emit("load routine server -g", {path:"fedeServer",info:{xMax:canvas.width,yMax:canvas.height}},"FedericoStockingKey")
+            connector.emit("load routine server -g", {path:"fedeServer",info:{xMax:paramsCanvas.width,yMax:paramsCanvas.height}},"FedericoStockingKey")
             CreateOwnPlayer(connector.socket.sessionid)
         });
 
@@ -186,9 +186,8 @@ define([
           gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
         });
         connector.on("New Bonus fedeGame",function(arg){
-            gameContainer.bonus.push(new Bonus(arg['x1'],arg['y1'],true,canvas));
-            gameContainer.bonus.push(new Bonus(arg['x2'],arg['y2'],false,canvas));
-          console.log(arg)
+            gameContainer.bonus.push(new Bonus(arg['x1'],arg['y1'],true));
+            gameContainer.bonus.push(new Bonus(arg['x2'],arg['y2'],false));
         });
         //SEND YOUR NEW POSITION
         connector.on("CoordsUpdate",function(player){
@@ -274,11 +273,11 @@ define([
 //-----------------------------------------------
 //                     BONUS
 //-----------------------------------------------
-        function Bonus(x,y,value,canvas){
+        function Bonus(x,y,value){
           this.w = 40;
           this.h = 60;
-          this.x = canvas.width * Math.random() - this.w;
-          this.y = canvas.height * Math.random() - this.h;
+          this.x = x;
+          this.y = y;
           this.lifeTime = 200;
 
           if(value){
