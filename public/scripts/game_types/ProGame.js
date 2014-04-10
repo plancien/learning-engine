@@ -68,7 +68,6 @@ define([
             restartTimer : '',
             cdNewGame : 45,
             //Bonus Setting
-            intervalRepop : 350,
             bonus : [],
             colors : ['red','green','blue','purple','orange','brown','yellow'],
         };
@@ -78,7 +77,6 @@ define([
 //-----------------------------------------------
         eventBus.on('init', function() {
             particles();
-            connector.emit("load routine server -g", "fedeServer")
             canvas = canvasCreate.create(paramsCanvas);
             ctx = canvas.context;
             ctx.font = '14pt Calibri';
@@ -90,6 +88,7 @@ define([
                 gameContainer.badImages.src= params[key];
               }
             }
+            connector.emit("load routine server -g", {path:"fedeServer",info:{xMax:canvas.width,yMax:canvas.height}},"FedericoStockingKey")
             CreateOwnPlayer(connector.socket.sessionid)
         });
 

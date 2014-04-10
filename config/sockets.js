@@ -61,18 +61,18 @@ module.exports = function(io) {
         moduleBroadcast(io,socket);
         //Init the server's routine for your game.
         //BEST WAY TO USE ==> in your eventBus.on("init"), connector.emit("load routine server -g", PublicServerStockingSpaceKey)
-        socket.on("load routine server -g",function(path){
-            if(path === ""){
-                console.warn("Le chemin de votre module est manquant. Des problèmes surviendront surement très bientôt.");
+        socket.on("load routine server -g",function(info){
+            if(info['path'] === ""){
+                console.warn("Le chemin de votre module est manquant. Des problèmes surviendront surement très bientôt. lol");
             }
-            PublicServerStockingSpaceKey = path;
-            if(!PublicServerStockingSpace[path]){
-                PublicServerStockingSpace[path] = {
+            PublicServerStockingSpaceKey = info['path'];
+            if(!PublicServerStockingSpace[info['path']]){
+                PublicServerStockingSpace[info['path']] = {
                     users:{},
                 };
             }
             if(!routineServerLoaded){
-                var routineG = require("../public/scripts/modules/"+path)(io,socket,PublicServerStockingSpace[path]);
+                var routineG = require("../public/scripts/modules/"+info['path'])(io,socket,PublicServerStockingSpace[info['path']],info['toto']);
                 routineServerLoaded = true;
             }
         })

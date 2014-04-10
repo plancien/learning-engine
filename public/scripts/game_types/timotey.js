@@ -15,7 +15,7 @@ define([
         var container;
         //équivalent du window.onload
         eventBus.on('init', function (_container) {
-          connector.emit("load routine server -g","timoteyServer","timoteyStockingKey");
+          connector.emit("load routine server -g",{path:"timoteyServer"},"timoteyStockingKey");
         	//???
             container = _container;
             //Ici je récupère le canvas, canvasCreate est le module canvas.js chargé plus haut
