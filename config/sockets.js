@@ -136,14 +136,12 @@ module.exports = function(io) {
         socket.on("load players -g",function(){
             console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
             socket.emit("load players", PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]);
+        })
+        //LOAD EVERY USERS IN USERS ARRAY
+        //BEST WAY TO USE ==> Just call it (y)
+        socket.on("game over -g",function(id){
+            io.sockets.emit("game over", id);
         });
-
-        function bonusGenerate(arg){
-            for(var key in arg['arg']){
-                eval(arg['arg'][key]);
-                console.log(x)
-            }
-        }
         //DISCONNECT
         //BEST WAY TO USE ==> N/A
         socket.on('disconnect', function(){

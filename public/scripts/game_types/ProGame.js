@@ -48,7 +48,7 @@ define([
             state : 'Play',
             winner : '',
             frame: 500,
-            maxPoints : 100,
+            maxPoints : 1000,
             goodImages : new Image(),
             badImages : new Image(),
             idOfPlayer : connector.socket.sessionid,
@@ -68,7 +68,7 @@ define([
             restartTimer : '',
             cdNewGame : 45,
             //Bonus Setting
-            bonus : [],
+            bonus : {},
             colors : ['red','green','blue','purple','orange','brown','yellow'],
         };
 
@@ -124,17 +124,17 @@ define([
             gameContainer.Players[key].drawScore(ctx,20+i,30)
             gameContainer.Players[key].deceleration();
             gameContainer.Players[key].collision(canvas,gameContainer.bonus);
-            if(gameContainer.Players[key].points>=gameContainer.maxPoints){
-              EndGame(key);
-            }
+          }
+          if(gameContainer.Players[gameContainer.idOfPlayer].points>=gameContainer.maxPoints){
+            connector.emit('game over -g',gameContainer.idOfPlayer);
           }
         }
         function BonusManage(ctx){
-          for (var i = gameContainer.bonus.length - 1; i >= 0; i--){
-            gameContainer.bonus[i].render(ctx);
-            gameContainer.bonus[i].lifeTime--;
-            if(gameContainer.bonus[i].lifeTime<0){
-              gameContainer.bonus.splice(i,1);
+          for (var key in gameContainer.bonus){
+            gameContainer.bonus[key].render(ctx);
+            gameContainer.bonus[key].lifeTime--;
+            if(gameContainer.bonus[key].lifeTime<0){
+              delete gameContainer.bonus[key];
             }
           };
         }
@@ -186,8 +186,8 @@ define([
           gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
         });
         connector.on("New Bonus fedeGame",function(arg){
-            gameContainer.bonus.push(new Bonus(arg['x1'],arg['y1'],true));
-            gameContainer.bonus.push(new Bonus(arg['x2'],arg['y2'],false));
+            gameContainer.bonus[arg['bonus']['id1']] = new Bonus(arg['bonus']['x1'],arg['bonus']['y1'],true,arg['bonus']['id1']);
+            gameContainer.bonus[arg['bonus']['id2']] = new Bonus(arg['bonus']['x2'],arg['bonus']['y2'],true,arg['bonus']['id2']);
         });
         //SEND YOUR NEW POSITION
         connector.on("CoordsUpdate",function(player){
@@ -200,9 +200,19 @@ define([
             gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
           }
         });
+        //WHEN PPL WIN
+        connector.on('game over',function(id){
+          EndGame(id)
+        });
+        //WHEN PPL WIN
+        connector.on('BonusTake',function(info){
+          gameContainer.Players[info.id].points += gameContainer.bonus[info.bonusid].point;
+          delete gameContainer.bonus[info.bonusid];
+        });
         //WHEN PPL DISCONNECT
         connector.on('player disconnected',function(user){
           gameContainer.nbOfPlayer--;
+          console.log(gameContainer.Players[user.id])
           delete gameContainer.Players[user.id];
         });
         
@@ -261,11 +271,11 @@ define([
             if(this.y<0 || this.y>canvas.height-this.h){
               this.y += -(this.speed.y)*5;
             }
-            for (var i = 0; i < bonus.length; i++) {
-              if(CheckCollision(this,bonus[i])){
-                this.points += bonus[i].point;
-                bonus.splice(i,1);
-                i--;
+            for (var key in bonus) {
+              if(CheckCollision(this,bonus[key])){
+                connector.emit("infoToSync -g",{id:this.id,eventName:'BonusTake',info:{id:this.id,bonusid:bonus[key].id}});
+                this.points += bonus[key].point;
+                delete bonus[key];
               }
             };
           }
@@ -273,7 +283,8 @@ define([
 //-----------------------------------------------
 //                     BONUS
 //-----------------------------------------------
-        function Bonus(x,y,value){
+        function Bonus(x,y,value,id){
+          this.id = id
           this.w = 40;
           this.h = 60;
           this.x = x;
