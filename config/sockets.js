@@ -42,7 +42,7 @@ module.exports = function(io) {
     var id = 0;
     var users = {};
     var amountOfConnections = 0;
-    //TIM
+    //-GForce API
     /*******************************/
     var routineServerLoaded = false;
     var PublicServerStockingSpace = {};
@@ -59,6 +59,9 @@ module.exports = function(io) {
         \****/
 
         moduleBroadcast(io,socket);
+        /**************************************************
+                    -GForce API
+        **************************************************/
         //Init the server's routine for your game.
         //BEST WAY TO USE ==> in your eventBus.on("init"), connector.emit("load routine server -g", PublicServerStockingSpaceKey)
         socket.on("load routine server -g",function(info){
@@ -76,9 +79,6 @@ module.exports = function(io) {
                 routineServerLoaded = true;
             }
         })
-        /**************************************************
-        GENERIC EVENTS STOCKING INFORMATIONS IN USERS OBJECT
-        **************************************************/
         //CREATE PLAYER
         //BEST WAY TO USE ==> player = {id:monID,player:{maPropriété1:value1,maPropriété2:value2}};
         socket.on("create player -g", function(data){
@@ -101,21 +101,24 @@ module.exports = function(io) {
         });
 
         //MODIF PLAYER  
-        //BEST WAY TO USE ==> data = {id:monID,eventName:MonEventCustom,info:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
+        //BEST WAY TO USE ==> data = {id:IDDeLObjetAModifier,eventName:MonEventCustom,objectKey:LObjetAModifier,info:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
         socket.on("infoToSync -g", function(data){
             //Si on a oublié de préciser l'id
             if(!data.id){
                 data.id = socket.id;
             }
+            if(!data.objectKey){
+                data.objectKey = "users";
+            }
             //Si cet id n'est pas dans le tableau utilisateurs
-            if(!PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.id]){
-                PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.id] = {};
-                console.log("UNKNOWN ID OF PLAYER IN USERS");
+            if(!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id]){
+                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id] = {};
+                console.log("UNKNOWN ID "+data.id+" In "+data.objectKey);
             }
             //On attribue chaque valeur contenu dans data.player a chaque propriété de user[data.id]
             for(var key in data.info){
-                PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.id][key] = data.info[key];
-                console.log(key+"OF PLAYER ID° "+data.id+" IS NOW "+PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.id][key]);
+                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key] = data.info[key];
+                console.log(key+"OF "+data.objectKey+" ID° "+data.id+" IS NOW "+PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key]);
             }
             if(!data.info.id){
                 data.info.id = data.id;
