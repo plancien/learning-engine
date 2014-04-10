@@ -35,6 +35,7 @@ body{
 
 #retour {
 	position: absolute;
+	top: 0;
 }
 /* Timer style made to work with commented elem in clickOnMe.html */
 /*#hour, #minute, #second {
