@@ -202,7 +202,7 @@ define([
           gameContainer.cdNewGame = data;
         });
 
-        eventBus.on('countdown finish', function(data) {
+        eventBus.on('countdown finish', function() {
           restartGame();
         });
         //WHEN PPL WIN
@@ -387,6 +387,7 @@ define([
           i=0
           for(var key in gameContainer.Players){
             gameContainer.Players[key].points = 0;
+            gameContainer.Players[key].speed = {x : 0,y : 0};
             gameContainer.Players[key].x = gameContainer.respawnPoints[i];
             gameContainer.Players[key].y = gameContainer.respawnPoints[i+1];
             i+=2;
