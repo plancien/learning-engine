@@ -35,8 +35,8 @@ module.exports = function(io,socket,PublicServerStockingSpacePrivate){
         powerup.color = "white";
         break;
     }
-    io.sockets.emit("new powerup",powerup);
     PublicServerStockingSpacePrivate["powerUps"][powerup.id] = powerup;
+    io.sockets.emit("new powerup",powerup);
     console.log("NEW POWERUP ID° "+powerup.id);
-},100*1000);
+},10*1000);
 };

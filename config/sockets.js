@@ -104,7 +104,7 @@ module.exports = function(io) {
             io.sockets.emit('game over',data);
         });
         //MODIF PLAYER  
-        //BEST WAY TO USE ==> data = {id:IDDeLObjetAModifier,eventName:MonEventCustom,objectKey:LObjetAModifier,info:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
+        //BEST WAY TO USE ==> data = {id:IDDeLObjetAModifier,eventName:MonEventCustom,objectKey:LObjetAModifier,update:{maPropriétéAStocker:value1,...},send:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
         socket.on("infoToSync -g", function(data){
             //Si on a oublié de préciser l'id
             if(!data.id){
@@ -126,32 +126,43 @@ module.exports = function(io) {
                 console.log("UNKNOWN ID "+data.id+" In "+data.objectKey+" CREATING IT.");
             }
             //On attribue chaque valeur contenu dans data.player a chaque propriété de user[data.id]
-            for(var key in data.info){
-                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key] = data.info[key];
+            for(var key in data.update){
+                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key] = data.update[key];
                 console.log(key+"OF "+data.objectKey+" ID° "+data.id+" IS NOW "+PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key]);
             }
             //Si on a pas préciser l'id dans les info
-            if(!data.info.id){
-                data.info.id = data.id;
+            if(!data.send){
+                data.send = {id:data.id};
+            }
+            if(!data.send.id){
+                data.send.id = data.id;
             }
             //Si votre modification implique d'envoyer une info supplémentaire sur le type de modification
             if(data.eventName){
-                socket.broadcast.emit(data.eventName,data.info);
+                socket.broadcast.emit(data.eventName,data.send);
             }
             else{
-                socket.broadcast.emit('Synchronization',data.info);
+                socket.broadcast.emit('Synchronization',data.send);
             }
         });
         //LOAD EVERY USERS IN USERS ARRAY
         //BEST WAY TO USE ==> Just call it (y)
-        socket.on("load players -g",function(keyToLoad){
+        socket.on("load -g",function(keyToLoad){
             if(!keyToLoad){
                 console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
                 socket.emit("load players", PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]);
             }
             else{
                 console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL "+keyToLoad);
-                socket.emit("load "+keyToLoad, PublicServerStockingSpace[PublicServerStockingSpaceKey[keyToLoad]]);
+                socket.emit("load "+keyToLoad, PublicServerStockingSpace[PublicServerStockingSpaceKey][keyToLoad]);
+            }
+        });
+        socket.on("delete info -g",function(data){
+            if(!!data && data.objectKey && data.idObject){
+                if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.idObject]){
+                    console.log("DELETE "+data.idObject+ " OF "+data.objectKey+" DONE.");
+                    delete PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.idObject];
+                }
             }
         });
         //DISCONNECT

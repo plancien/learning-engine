@@ -58,13 +58,21 @@ define([
                 this.modification[key] = modification[key];
               }
               this.useOnPlayer = function(player){
-                var modificationKey = [];
-                var data = {idPlayer:player.id,idPowerUp:this.id,player:{}};
+                // player = Player()
+                // dataUpdate = modif to player
+                // dataSend = modif to player + id power up a suppr
+                var dataUpdate = {id:player.id};
+                var dataSend = {idPlayer:player.id, idPowerUp:this.id, playerModification:{}};
                 for(var key in this.modification){
                   player[key] += this.modification[key];
-                  data.player[key] = player[key];
+                  dataUpdate[key] = player[key];
+                  dataSend.playerModification[key] = player[key];
                 }
-                connector.emit("player get powerup",data);  // ***W.I.P***
+                connector.emit("infoToSync -g",{id:player.id,eventName:"player get powerup",objectKey:"users",
+                  update:dataUpdate,
+                  send:dataSend
+                });
+                connector.emit("delete info -g",{objectKey:"powerUps",idObject:this.id});
               };
               this.draw = function(context){
                 context.fillStyle = this.color;
@@ -180,7 +188,13 @@ define([
                      object.y = params.y;
                    }
                    if(object.x != params.oldX || object.y != params.oldY){
-                    connector.emit('infoToSync -g', {id:object.id,eventName:"new position",objectKey:"users",info:{x:object.x,y:object.y}});
+                    connector.emit('infoToSync -g', {id:object.id,eventName:"new position",objectKey:"users",update:{
+                        x:object.x,y:object.y
+                      },
+                      send:{
+                        x:object.x,y:object.y
+                      }
+                    });
                    }
                 });
                eventBus.on("mouse left is clicking",function(mouse){
@@ -198,8 +212,15 @@ define([
             };
             function addShootCapabilities(object){
               object.shoot = function(vector){
-                bullets[object.id].push(new Bullet( this.x+this.w*0.5, this.y+this.h*0.5, vector, this.bulletSpeed, object.id, object.color, object.bulletDamage));
-                connector.emit("infoToSync -g", {id:object.id,eventName:"player shoot",info:{x:this.x+this.w*0.5,y:this.y+this.h*0.5,speed:this.bulletSpeed,vectorSend:{x:vector.x,y:vector.y},id:this.id,color:this.color,damage: this.bulletDamage}});
+                bullets[this.id].push(new Bullet( this.x+this.w*0.5, this.y+this.h*0.5, vector, this.bulletSpeed, this.id, this.color, this.bulletDamage));
+                connector.emit("infoToSync -g", {id:this.id,eventName:"player shoot",objectKey:"bullets",
+                  update:{
+                    x: this.x+this.w*0.5, y: this.y+this.h*0.5, speed: this.bulletSpeed, vectorSend: {x:vector.x,y:vector.y}, id: this.id, color: this.color, damage: this.bulletDamage
+                  },
+                  send:{
+                    x: this.x+this.w*0.5, y: this.y+this.h*0.5, speed: this.bulletSpeed, vectorSend: {x:vector.x,y:vector.y}, id: this.id, color: this.color, damage: this.bulletDamage
+                  }
+                });
               };
             };
             function addSendDeathCapabilities(object){
@@ -207,14 +228,28 @@ define([
               object.frameSinceDeath = 0;
               object.takeDamage = function(amountOfDamage,iOfBullet){
                 this.health -= amountOfDamage;
-                connector.emit("infoToSync -g",{id:object.id,eventName:"player hit",info:{id:object.id,health:this.health}});
+                connector.emit("infoToSync -g",{id:object.id,eventName:"player hit",objectKey:"users",
+                  update:{
+                    id: object.id, health: object.health
+                  },
+                  send:{
+                    id: object.id, health: object.health
+                  }
+                });
                 if(this.health <= 0){
                   object.kill()
                 }
               }
               object.kill = function(){
                 this.alive = false;
-                connector.emit("infoToSync -g",{id:object.id, eventName:"player kill",info:{id:object.id,alive:false}});
+                connector.emit("infoToSync -g",{id:object.id, eventName:"player kill",
+                  update:{
+                    id: object.id, alive: false
+                  },
+                  send:{
+                    id: object.id
+                  }
+                });
               }
               object.collision = function(targetArray){
                 var arrayColliding = [];
@@ -237,7 +272,14 @@ define([
                   this.x = Math.random()*700;
                   this.y = Math.random()*500;
                   this.health = this.maxHealth;
-                  connector.emit("infoToSync -g",{id:this.id,eventName:"player respawn",info:{x:this.x,y:this.y,health:this.maxHealth,id:this.id,alive:true}});
+                  connector.emit("infoToSync -g",{id:this.id,eventName:"player respawn",
+                    update:{
+                      x:this.x,y:this.y,health:this.maxHealth,id:this.id,alive:true
+                    },
+                    send:{
+                      x:this.x,y:this.y,health:this.maxHealth,id:this.id,
+                    }
+                  });
                 }
               }
             };
@@ -260,10 +302,10 @@ define([
               }
             });
             //LOAD POWER UP
-            connector.on("load powerups",function(powerUps){
+            connector.on("load powerUps",function(powerUps){
               console.log("LOAD POWER UPS",powerUps);
               for(var key in powerUps){
-                powerUp[powerUps[key].id] = new PowerUp( powerUps[key].x,powerUps[key].y,powerUps[key].w,powerUps[key].h,powerUps[key].color,powerUps[key].id,powerUps[key].type,powerUps[key].modification);
+                powerUp[powerUps[key].id] = new PowerUp( powerUps[key].x, powerUps[key].y, powerUps[key].w, powerUps[key].h, powerUps[key].color, powerUps[key].id, powerUps[key].type, powerUps[key].modification);
               }
             });
             //EMIT OWN PLAYER CREATED
@@ -278,27 +320,8 @@ define([
               alive:players[ownPlayerId].alive,
               color:players[ownPlayerId].color
             });
-            connector.emit("load players -g");
-            connector.emit("load players -g","powerUps");
-            //CREATE OWN PLAYER
-            /*connector.on("creation over",function(player, users, powerups){
-              console.log(player,users,powerups)
-               for(var key in users){
-                   players[users[key].id] = new NPC(users[key].x, users[key].y, users[key].w, users[key].h, users[key].id, users[key].health, users[key].maxHealth, users[key].alive, users[key].color);
-                   bullets[users[key].id] = [];
-               }
-               for(var key in powerups){
-                powerUp[key] = new PowerUp(powerups[key].x, powerups[key].y, powerups[key].w, powerups[key].h, powerups[key].color, powerups[key].id, powerups[key].type, powerups[key].modification);
-               }
-               players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.maxHealth, player.alive, player.color);
-               ownPlayerId = player.id;
-               addSendPositionCapabilities(players[player.id]);
-               addShootCapabilities(players[player.id]);
-               addSendDeathCapabilities(players[player.id]);
-               bullets[ownPlayerId] = [];
-               console.log("OWN PLAYER CREATED, ID° "+player.id);
-            });*/
-            //CREATE NEW PLAYER
+            connector.emit("load -g");
+            connector.emit("load -g","powerUps");
             connector.on("new player", function(player){
                players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.maxHealth, player.alive, player.color);
                bullets[player.id] = [];
@@ -352,8 +375,8 @@ define([
             });
             connector.on("player get powerup",function(data){
               console.log("PLAYER ID° "+data.idPlayer+" GOT A POWER UP", data);
-              for(var key in data.player){
-                players[data.idPlayer][key] = data.player[key];
+              for(var key in data.playerModification){
+                players[data.idPlayer][key] = data.playerModification[key];
               }
               delete powerUp[data.idPowerUp];
             });

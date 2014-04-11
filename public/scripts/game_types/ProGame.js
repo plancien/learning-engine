@@ -98,7 +98,7 @@ define([
           gameContainer.Players[playerID] = new Player(playerID,gameContainer.colors[gameContainer.nbOfPlayer]);
           addInputControl(gameContainer.Players[playerID]);
           connector.emit('create player -g',gameContainer.Players[playerID]);
-          connector.emit('load players -g');
+          connector.emit('load -g');
         }
 //-----------------------------------------------
 //                     MAIN LOOP
@@ -278,7 +278,7 @@ define([
             }
             for (var key in bonus) {
               if(CheckCollision(this,bonus[key])){
-                connector.emit("infoToSync -g",{id:this.id,eventName:'BonusTake',info:{id:this.id,bonusid:bonus[key].id}});
+                connector.emit("infoToSync -g",{id:this.id,eventName:'BonusTake',update:{id:this.id,bonusid:bonus[key].id},send:{id:this.id,bonusid:bonus[key].id}});
                 this.points += bonus[key].point;
                 delete bonus[key];
               }
@@ -340,7 +340,7 @@ define([
             this.angle = getOrientation(object.speed);
 
             if(object.x != oldPosition.x || object.y != oldPosition.y){
-              connector.emit("infoToSync -g",{id:object.id,eventName:'CoordsUpdate',info:{x:object.x,y:object.y}});
+              connector.emit("infoToSync -g",{id:object.id,eventName:'CoordsUpdate',update:{x:object.x,y:object.y},send:{x:object.x,y:object.y}});
             }
           });
         }
