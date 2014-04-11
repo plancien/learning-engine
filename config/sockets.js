@@ -99,7 +99,10 @@ module.exports = function(io) {
             //On envoie les données contenu dans player à tout les autres
             socket.broadcast.emit("new player",data);
         });
-
+        //GAME OVER
+        socket.on("game over -g", function(data){
+            io.sockets.emit('game over',data);
+        });
         //MODIF PLAYER  
         //BEST WAY TO USE ==> data = {id:IDDeLObjetAModifier,eventName:MonEventCustom,objectKey:LObjetAModifier,info:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
         socket.on("infoToSync -g", function(data){

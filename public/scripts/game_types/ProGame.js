@@ -20,7 +20,8 @@ define([
     'connector',
     'modules/bonus_chooser',
     'modules/key_listener',
-    'modules/add_canvasBoundingBox'
+    'modules/add_canvasBoundingBox',
+    'modules/countdown',
 ], function(eventBus, canvasCreate, frames, render, mouse, particles,connector, keyListner){
 
     return function(params) {
@@ -48,7 +49,7 @@ define([
             state : 'Play',
             winner : '',
             frame: 500,
-            maxPoints : 1000,
+            maxPoints : 100,
             goodImages : new Image(),
             badImages : new Image(),
             idOfPlayer : connector.socket.sessionid,
@@ -66,7 +67,8 @@ define([
                               paramsCanvas.width*0.5,paramsCanvas.height*0.5
                             ],
             restartTimer : '',
-            cdNewGame : 45,
+            cdNewGame : 0,
+            Timer : 45,
             //Bonus Setting
             bonus : {},
             colors : ['red','green','blue','purple','orange','brown','yellow'],
@@ -106,7 +108,6 @@ define([
             if(gameContainer.state == 'Play'){
               PlayerManage(ctx,canvas.canvas);
               BonusManage(ctx);
-              gameContainer.frame++;
             }
             else if(gameContainer.state == 'Over'){
               afficheScoreEnd(ctx,canvas.canvas);
@@ -126,7 +127,7 @@ define([
             gameContainer.Players[key].collision(canvas,gameContainer.bonus);
           }
           if(gameContainer.Players[gameContainer.idOfPlayer].points>=gameContainer.maxPoints){
-            connector.emit('game over -g',gameContainer.idOfPlayer);
+            connector.emit("game over -g",gameContainer.idOfPlayer)
           }
         }
         function BonusManage(ctx){
@@ -140,12 +141,8 @@ define([
         }
 
         function compteARebour(ctx,canvas){
-          var actualCD = Math.floor(gameContainer.restartTimer - (new Date().getTime()/1000));
-          text = 'Next Game in : '+actualCD+' sec';
+          text = 'Next Game in : '+gameContainer.cdNewGame+' sec';
           ctx.fillText(text,canvas.width-ctx.measureText(text).width,30);
-          if(actualCD<=0){
-            restartGame();
-          }
         }
 
         function afficheScoreEnd(ctx,canvas){
@@ -187,7 +184,7 @@ define([
         });
         connector.on("New Bonus fedeGame",function(arg){
             gameContainer.bonus[arg['bonus']['id1']] = new Bonus(arg['bonus']['x1'],arg['bonus']['y1'],true,arg['bonus']['id1']);
-            gameContainer.bonus[arg['bonus']['id2']] = new Bonus(arg['bonus']['x2'],arg['bonus']['y2'],true,arg['bonus']['id2']);
+            gameContainer.bonus[arg['malus']['id2']] = new Bonus(arg['malus']['x2'],arg['malus']['y2'],false,arg['malus']['id2']);
         });
         //SEND YOUR NEW POSITION
         connector.on("CoordsUpdate",function(player){
@@ -199,6 +196,14 @@ define([
             gameContainer.Players[player.id] = new Player(player.id,gameContainer.colors[gameContainer.nbOfPlayer]);
             gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
           }
+        });
+
+        eventBus.on('time remaning', function(data) {
+          gameContainer.cdNewGame = data;
+        });
+
+        eventBus.on('countdown finish', function(data) {
+          restartGame();
         });
         //WHEN PPL WIN
         connector.on('game over',function(id){
@@ -375,7 +380,7 @@ define([
             gameContainer.winner = gameContainer.Players[key].color;
           }
           gameContainer.state = 'Over';
-          gameContainer.restartTimer = (new Date().getTime()/1000)+gameContainer.cdNewGame;
+          eventBus.emit('start countdown', gameContainer.Timer);
         }
 
         function restartGame(){
@@ -386,7 +391,7 @@ define([
             gameContainer.Players[key].y = gameContainer.respawnPoints[i+1];
             i+=2;
           }
-          gameContainer.frame=0;
+          gameContainer.bonus = {};
           gameContainer.state = 'Play';
         }
 //-----------------------------------------------
