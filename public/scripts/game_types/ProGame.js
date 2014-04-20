@@ -20,7 +20,8 @@ define([
     'connector',
     'modules/bonus_chooser',
     'modules/key_listener',
-    'modules/add_canvasBoundingBox'
+    'modules/add_canvasBoundingBox',
+    'modules/countdown',
 ], function(eventBus, canvasCreate, frames, render, mouse, particles,connector, keyListner){
 
     return function(params) {
@@ -66,10 +67,10 @@ define([
                               paramsCanvas.width*0.5,paramsCanvas.height*0.5
                             ],
             restartTimer : '',
-            cdNewGame : 45,
+            cdNewGame : 0,
+            Timer : 45,
             //Bonus Setting
-            intervalRepop : 350,
-            bonus : [],
+            bonus : {},
             colors : ['red','green','blue','purple','orange','brown','yellow'],
         };
 
@@ -89,6 +90,7 @@ define([
                 gameContainer.badImages.src= params[key];
               }
             }
+            connector.emit("load routine server -g", {path:"fedeServer",info:{xMax:paramsCanvas.width,yMax:paramsCanvas.height}},"FedericoStockingKey")
             CreateOwnPlayer(connector.socket.sessionid)
         });
 
@@ -96,7 +98,7 @@ define([
           gameContainer.Players[playerID] = new Player(playerID,gameContainer.colors[gameContainer.nbOfPlayer]);
           addInputControl(gameContainer.Players[playerID]);
           connector.emit('create player -g',gameContainer.Players[playerID]);
-          connector.emit('load players -g');
+          connector.emit('load -g');
         }
 //-----------------------------------------------
 //                     MAIN LOOP
@@ -104,10 +106,8 @@ define([
         eventBus.on("new frame", function() {
             ctx.clearRect(0,0,canvas.canvas.width,canvas.canvas.height);
             if(gameContainer.state == 'Play'){
-              GenerateBonus(canvas.canvas);
               PlayerManage(ctx,canvas.canvas);
               BonusManage(ctx);
-              gameContainer.frame++;
             }
             else if(gameContainer.state == 'Over'){
               afficheScoreEnd(ctx,canvas.canvas);
@@ -117,13 +117,6 @@ define([
 //-----------------------------------------------
 //              MAIN LOOP ELEMENTS
 //-----------------------------------------------
-        function GenerateBonus(canvas){
-          if(gameContainer.frame % gameContainer.intervalRepop == 0){
-            gameContainer.bonus.push(new Bonus(true,canvas));
-            gameContainer.bonus.push(new Bonus(false,canvas));
-          }
-        }
-
         function PlayerManage(ctx,canvas){
           var i = 0;
           for(var key in gameContainer.Players){
@@ -132,28 +125,24 @@ define([
             gameContainer.Players[key].drawScore(ctx,20+i,30)
             gameContainer.Players[key].deceleration();
             gameContainer.Players[key].collision(canvas,gameContainer.bonus);
-            if(gameContainer.Players[key].points>=gameContainer.maxPoints){
-              EndGame(key);
-            }
+          }
+          if(gameContainer.Players[gameContainer.idOfPlayer].points>=gameContainer.maxPoints){
+            connector.emit("game over -g",gameContainer.idOfPlayer)
           }
         }
         function BonusManage(ctx){
-          for (var i = gameContainer.bonus.length - 1; i >= 0; i--){
-            gameContainer.bonus[i].render(ctx);
-            gameContainer.bonus[i].lifeTime--;
-            if(gameContainer.bonus[i].lifeTime<0){
-              gameContainer.bonus.splice(i,1);
+          for (var key in gameContainer.bonus){
+            gameContainer.bonus[key].render(ctx);
+            gameContainer.bonus[key].lifeTime--;
+            if(gameContainer.bonus[key].lifeTime<0){
+              delete gameContainer.bonus[key];
             }
           };
         }
 
         function compteARebour(ctx,canvas){
-          var actualCD = Math.floor(gameContainer.restartTimer - (new Date().getTime()/1000));
-          text = 'Next Game in : '+actualCD+' sec';
+          text = 'Next Game in : '+gameContainer.cdNewGame+' sec';
           ctx.fillText(text,canvas.width-ctx.measureText(text).width,30);
-          if(actualCD<=0){
-            restartGame();
-          }
         }
 
         function afficheScoreEnd(ctx,canvas){
@@ -193,10 +182,12 @@ define([
           gameContainer.Players[player.id] = new Player(player.id,gameContainer.colors[gameContainer.nbOfPlayer]);
           gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
         });
-
+        connector.on("New Bonus fedeGame",function(arg){
+            gameContainer.bonus[arg['bonus']['id1']] = new Bonus(arg['bonus']['x1'],arg['bonus']['y1'],true,arg['bonus']['id1']);
+            gameContainer.bonus[arg['malus']['id2']] = new Bonus(arg['malus']['x2'],arg['malus']['y2'],false,arg['malus']['id2']);
+        });
         //SEND YOUR NEW POSITION
         connector.on("CoordsUpdate",function(player){
-          console.log(gameContainer.Players,player)
           if(gameContainer.Players[player.id]){
             gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
           }
@@ -206,10 +197,28 @@ define([
             gameContainer.Players[player.id].syncPosFromServer(player.x,player.y);
           }
         });
+
+        eventBus.on('time remaning', function(data) {
+          gameContainer.cdNewGame = data;
+        });
+
+        eventBus.on('countdown finish', function() {
+          restartGame();
+        });
+        //WHEN PPL WIN
+        connector.on('game over',function(id){
+          EndGame(id)
+        });
+        //WHEN PPL WIN
+        connector.on('BonusTake',function(info){
+          gameContainer.Players[info.id].points += gameContainer.bonus[info.bonusid].point;
+          delete gameContainer.bonus[info.bonusid];
+        });
         //WHEN PPL DISCONNECT
-        connector.on('player left',function(user){
+        connector.on('player disconnected',function(user){
           gameContainer.nbOfPlayer--;
-          delete gameContainer.Players[user];
+          console.log(gameContainer.Players[user.id])
+          delete gameContainer.Players[user.id];
         });
         
 //-----------------------------------------------
@@ -267,11 +276,11 @@ define([
             if(this.y<0 || this.y>canvas.height-this.h){
               this.y += -(this.speed.y)*5;
             }
-            for (var i = 0; i < bonus.length; i++) {
-              if(CheckCollision(this,bonus[i])){
-                this.points += bonus[i].point;
-                bonus.splice(i,1);
-                i--;
+            for (var key in bonus) {
+              if(CheckCollision(this,bonus[key])){
+                connector.emit("infoToSync -g",{id:this.id,eventName:'BonusTake',update:{id:this.id,bonusid:bonus[key].id},send:{id:this.id,bonusid:bonus[key].id}});
+                this.points += bonus[key].point;
+                delete bonus[key];
               }
             };
           }
@@ -279,11 +288,12 @@ define([
 //-----------------------------------------------
 //                     BONUS
 //-----------------------------------------------
-        function Bonus(value,canvas){
+        function Bonus(x,y,value,id){
+          this.id = id
           this.w = 40;
           this.h = 60;
-          this.x = canvas.width * Math.random() - this.w;
-          this.y = canvas.height * Math.random() - this.h;
+          this.x = x;
+          this.y = y;
           this.lifeTime = 200;
 
           if(value){
@@ -330,7 +340,7 @@ define([
             this.angle = getOrientation(object.speed);
 
             if(object.x != oldPosition.x || object.y != oldPosition.y){
-              connector.emit("infoToSync -g",{id:object.id,eventName:'CoordsUpdate',info:{x:object.x,y:object.y}});
+              connector.emit("infoToSync -g",{id:object.id,eventName:'CoordsUpdate',update:{x:object.x,y:object.y},send:{x:object.x,y:object.y}});
             }
           });
         }
@@ -370,18 +380,19 @@ define([
             gameContainer.winner = gameContainer.Players[key].color;
           }
           gameContainer.state = 'Over';
-          gameContainer.restartTimer = (new Date().getTime()/1000)+gameContainer.cdNewGame;
+          eventBus.emit('start countdown', gameContainer.Timer);
         }
 
         function restartGame(){
           i=0
           for(var key in gameContainer.Players){
             gameContainer.Players[key].points = 0;
+            gameContainer.Players[key].speed = {x : 0,y : 0};
             gameContainer.Players[key].x = gameContainer.respawnPoints[i];
             gameContainer.Players[key].y = gameContainer.respawnPoints[i+1];
             i+=2;
           }
-          gameContainer.frame=0;
+          gameContainer.bonus = {};
           gameContainer.state = 'Play';
         }
 //-----------------------------------------------

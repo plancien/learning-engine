@@ -32,6 +32,11 @@ body{
 	right: 0;
 	z-index: 1;
 }
+
+#retour {
+	position: absolute;
+	top: 0;
+}
 /* Timer style made to work with commented elem in clickOnMe.html */
 /*#hour, #minute, #second {
     width: 20px;

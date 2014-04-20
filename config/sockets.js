@@ -42,45 +42,11 @@ module.exports = function(io) {
     var id = 0;
     var users = {};
     var amountOfConnections = 0;
-    //TIM
+    //-GForce API
     /*******************************/
-    var bullets = {};
-    var powerUp = {};
-    /******************************
-    Cette boucle est appelée toute les 30 secondes
-    elle rajoute un power Up sur la map et dans le tableau de power up
-    ******************************/
-    setInterval(function(){
-        var powerup = {
-            type:((Math.random()*3)|0)+1,
-            x:Math.random()*700,
-            y:Math.random()*500,
-            w: 30,
-            h: 30,
-            id:(Math.random()*100000000)|0
-        };
-        switch(powerup.type){
-            case 1:
-            powerup.modification = {health: 30};
-            powerup.color = "green";
-            break;
-            case 2:
-            powerup.modification = {bulletDamage: 10};
-            powerup.color = "rouge";
-            break;
-            case 3:
-            powerup.modification = {h:20,w:20,bulletDamage:20};
-            powerup.color = "orange";
-            break;
-            default:
-            powerup.modification = {speed: 5};
-            powerup.color = "white";
-            break;
-        }
-        io.sockets.emit("new powerup",powerup);
-        powerUp[powerup.id] = powerup;
-        console.log("NEW POWERUP ID° "+powerup.id);
-    },25*1000);
+    var routineServerLoaded = false;
+    var PublicServerStockingSpace = {};
+    var PublicServerStockingSpaceKey = "default";
     /*******************************/
     // LORS DE LA CONNEXION
     //On bind chaque event a l'élément socket retourné dans le callback
@@ -94,8 +60,25 @@ module.exports = function(io) {
 
         moduleBroadcast(io,socket);
         /**************************************************
-        GENERIC EVENTS STOCKING INFORMATIONS IN USERS OBJECT
+                    -GForce API
         **************************************************/
+        //Init the server's routine for your game.
+        //BEST WAY TO USE ==> in your eventBus.on("init"), connector.emit("load routine server -g", PublicServerStockingSpaceKey)
+        socket.on("load routine server -g",function(info){
+            if(info['path'] === ""){
+                console.warn("Le chemin de votre module est manquant. Des problèmes surviendront surement très bientôt. lol");
+            }
+            PublicServerStockingSpaceKey = info['path'];
+            if(!PublicServerStockingSpace[info['path']]){
+                PublicServerStockingSpace[info['path']] = {
+                    users:{},
+                };
+            }
+            if(!routineServerLoaded){
+                var routineG = require("../public/scripts/modules/"+info['path'])(io,socket,PublicServerStockingSpace[info['path']],info['info']);
+                routineServerLoaded = true;
+            }
+        })
         //CREATE PLAYER
         //BEST WAY TO USE ==> player = {id:monID,player:{maPropriété1:value1,maPropriété2:value2}};
         socket.on("create player -g", function(data){
@@ -108,133 +91,103 @@ module.exports = function(io) {
                 data.id = socket.id;
             }
             //On stocke chaque valeur contenu dans player dans users[player.id] un objet représentant le joueur
-            users[data.id] = {};
+            PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.id] = {};
             for(var key in data){
-                users[data.id][key] = data[key];
+                PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.id][key] = data[key];
             }
             console.log("PLAYER",data.id," CREATED");
             //On envoie les données contenu dans player à tout les autres
             socket.broadcast.emit("new player",data);
         });
-
+        //GAME OVER
+        socket.on("game over -g", function(data){
+            io.sockets.emit('game over',data);
+        });
         //MODIF PLAYER  
-        //BEST WAY TO USE ==> data = {id:monID,eventName:MonEventCustom,info:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
+        //BEST WAY TO USE ==> data = {id:IDDeLObjetAModifier,eventName:MonEventCustom,objectKey:LObjetAModifier,update:{maPropriétéAStocker:value1,...},send:{maPropriétéAUpdata1:value1,maPropriétéAUpdate2:value2}}
         socket.on("infoToSync -g", function(data){
             //Si on a oublié de préciser l'id
             if(!data.id){
                 data.id = socket.id;
             }
-            //Si cet id n'est pas dans le tableau utilisateurs
-            if(!users[data.id]){
-                users[data.id] = {};
-                console.log("UNKNOWN ID OF PLAYER IN USERS");
+            //Si on a oublié de préciser la table a modifié
+            if(!data.objectKey){
+                data.objectKey = "users";
+            }
+            //Si c'est la première fois qu'on modifie cette table, on la créé ainsi que l'id lui correspondant
+            if(!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey]){
+                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey] = {};
+                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id] = {};
+                console.log("UNKNOWN ID "+data.id+" In "+data.objectKey+" CREATING IT.");
+            }
+            //Si cet id n'est pas connu de l'objet
+            if(!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id]){
+                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id] = {};
+                console.log("UNKNOWN ID "+data.id+" In "+data.objectKey+" CREATING IT.");
             }
             //On attribue chaque valeur contenu dans data.player a chaque propriété de user[data.id]
-            for(var key in data.info){
-                users[data.id][key] = data.info[key];
-                console.log(key+"OF PLAYER ID° "+data.id+" IS NOW "+users[data.id][key]);
+            for(var key in data.update){
+                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key] = data.update[key];
+                console.log(key+"OF "+data.objectKey+" ID° "+data.id+" IS NOW "+PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key]);
             }
-            if(!data.info.id){
-                data.info.id = data.id;
+            //Si on a pas préciser l'id dans les info
+            if(!data.send){
+                data.send = {id:data.id};
+            }
+            if(!data.send.id){
+                data.send.id = data.id;
             }
             //Si votre modification implique d'envoyer une info supplémentaire sur le type de modification
             if(data.eventName){
-                socket.broadcast.emit(data.eventName,data.info);
+                socket.broadcast.emit(data.eventName,data.send);
             }
             else{
-                socket.broadcast.emit('Synchronization',data.info);
+                socket.broadcast.emit('Synchronization',data.send);
             }
         });
         //LOAD EVERY USERS IN USERS ARRAY
         //BEST WAY TO USE ==> Just call it (y)
-        socket.on("load players -g",function(){
-            console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
-            socket.emit("load players", users);
+        socket.on("load -g",function(keyToLoad){
+            if(!keyToLoad){
+                console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
+                socket.emit("load players", PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]);
+            }
+            else{
+                console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL "+keyToLoad);
+                socket.emit("load "+keyToLoad, PublicServerStockingSpace[PublicServerStockingSpaceKey][keyToLoad]);
+            }
+        });
+        socket.on("delete info -g",function(data){
+            if(!!data && data.objectKey && data.idObject){
+                if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.idObject]){
+                    console.log("DELETE "+data.idObject+ " OF "+data.objectKey+" DONE.");
+                    delete PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.idObject];
+                }
+            }
         });
         //DISCONNECT
         //BEST WAY TO USE ==> N/A
         socket.on('disconnect', function(){
             console.log("PLAYER DISCONNECTED ID° "+socket.id)
             socket.broadcast.emit('player disconnected',{id:socket.id});
-            delete users[socket.id];
+            if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id]){
+                console.log("PLAYER ID° "+socket.id+" DELETED FROM USERS");
+                delete PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id];
+            }
         });
         /************************************/
-
-        /*Tim Socket
-        io.sockets. => pour tout le monde
-        socket. => juste le player
-        socket.broadcast => tout le monde sauf le player
-        
+        /*io.sockets. => pour tout le monde
+          socket. => juste le player
+          socket.broadcast => tout le monde sauf le player
         *******************************************/
-        socket.on("create player",function(player){
-            var isExisting = false;
-            for(var key in users){
-                if(key == player.localName){
-                    isExisting = true;
-                    users[player.id] = player;
-                    break;
-                }
-            }
-            if(!isExisting && player.localName != ""){
-                users[player.localName] = player;
-                player.id = player.localName;
-            }
-            else{
-                users[player.id] = player;
-            }
-            console.log("PLAYER CONNECTED ID° "+player.id)
-            //CREATE OWN PLAYER FOR OTHERS
-            socket.broadcast.emit('new player', player);
-            //END CREATION EVENT
-            socket.emit("creation over", player, users, powerUp);
-        });
-        
-        //CREATE SHOOT
-        socket.on("shoot",function(shoot){
-            io.sockets.emit("shoot",shoot);
-            if(!bullets[shoot.id]){
-                bullets[shoot.id] = [];
-            }
-            bullets[shoot.id].push(shoot);
-        });
-        //UPDATE SHOOT
-        socket.on("own shoot has moved", function(shoot){
-            bullets[shoot.id][shoot.i].x = shoot.x;
-            bullets[shoot.id][shoot.i].y = shoot.y;
-        });
-        //UPDATE MOVE
-        socket.on("own player has moved", function(user){
-            users[user.id].x = user.x;
-            users[user.id].y = user.y;
-            socket.broadcast.emit("new position",user);
-        });
-        //COLLISION
-        socket.on("hit",function(hit){
-            socket.broadcast.emit("hit",hit);
-            users[hit.id].health -= hit.amountOfDamage;
-            console.log("HIT ",hit.id," HEALTH=",users[hit.id].health);
-        });
-        //DEATH
-        socket.on("death", function(death){
-            socket.broadcast.emit("death",death);
-            users[death.id].alive = false;
-            console.log("DEATH OF ",death.id," HEALTH=",users[death.id].health);
-        });
-        //RESPAWN
-        socket.on("respawn", function(player){
-            socket.broadcast.emit("respawn",player);
-            users[player.id].alive = true;
-            users[player.id].health = player.health;
-            console.log("RESPAWN OF ",player.id," HEALTH=",users[player.id].health);
-        });
         //POWER UP
         socket.on("player get powerup", function(data){
             for(var key in data.player){
-                users[data.idPlayer][key] = data.player[key];
+                PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.idPlayer][key] = data.player[key];
                 console.log("PLAYER ID° "+data.idPlayer+" "+key+" IS NOW "+data.player[key]);
             }
             socket.broadcast.emit("player get powerup",data)
-            delete powerUp[data.idPowerUp];
+            delete PublicServerStockingSpace[PublicServerStockingSpaceKey]["powerUps"][data.idPowerUp];
         });
 
         //     FIN DU CODE DE TIMOTENOOB    //

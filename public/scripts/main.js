@@ -86,7 +86,6 @@ require(['connector'], function(socket) {
                     }
                 });
             }
-
             $("#gameSelect button").click(function(e) {
                 $("#mainMenu").hide();
 
@@ -118,7 +117,7 @@ require(['connector'], function(socket) {
                     $( "header" ).css( "background-color", "#73C8E9" );
                     $( "footer" ).css( "background-color", "#73C8E9" );
                 }
-            })
+            });
 
             $("#gameCreation").submit(function(e) {
                 e.preventDefault();
