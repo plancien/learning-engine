@@ -120,7 +120,7 @@ define(['event_bus'], function(eventBus) {
 		if (realY < box.y)
 			return "up";
 		if ((realY + target.height > box.y + box.height))
-			return "down"
+			return "down";
 		
 		return "in";
 	}
