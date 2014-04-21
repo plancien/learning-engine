@@ -26,7 +26,7 @@ define([
     game.canvas.context.fillStyle = "rgba(30,30,30,0.8)";
 
     cameraRender.init(game.canvas, true);
-    collisionEngine.addGroup("wall", false, false, false);       //créer un group mur, qui collisione avec le groupe hero, ne collisionne pas entre eux, ne sont pas a l'interieur d'une box 
+    collisionEngine.addGroup("wall", false, false, false);       
 
     eventBus.on("wall create", function(target){
         cameraRender.add(target, 10);
@@ -38,7 +38,7 @@ define([
     wall.create(60, 200, 300, 30, config.wallColor);
 
     var inputsPika = {"left":"Q", "right":"D", "up":"Z", "down":"S"};   //On applique des inputs pour ce hero
-    var configPika = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 5, "deceleration" : 10, "color" : "rgba(0,200,255,1)", "width" : 45, "height" : 90, "inputs" : inputsPika};
+    var configPika = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 5, "deceleration" : 10, "color" : "rgba(0,200,255,1)", "width" : 56, "height" : 30, "inputs" : inputsPika};
     game.pikachu = heroEngine.create(configPika, game.canvas.context, true);
     collisionEngine.addGroup("pikachu", ["wall"], false, false);
     collisionEngine.addElement(game.pikachu, "pikachu");
@@ -53,6 +53,15 @@ define([
 
 
     cameraRender.fixedCameraOn(game.pikachu);
+
+    var pikaSpriteConfig = {};
+    pikaSpriteConfig.idle = {"width" : 56, "height" : 30, "nbAnim" : 4, "loop" : -1, "fps" : 3, "offsetY" : 0};
+    pikaSpriteConfig.run = {"width" : 56, "height" : 30, "nbAnim" : 4, "loop" : -1, "fps" : 30, "offsetY" : 100};
+
+    cameraRender.addSprite("pikachu", "./images/pikachu.png", pikaSpriteConfig);
+    cameraRender.putSpriteOn(game.pikachu, "pikachu");
+    game.pikachu.changeAnimation("idle");
+
 
     cameraRender.add(game.pikachu, 11);
 

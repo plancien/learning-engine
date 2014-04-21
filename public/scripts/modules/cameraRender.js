@@ -5,8 +5,15 @@ define(['event_bus'], function(eventBus) {
 	CameraRender.prototype.content = [];
 	CameraRender.prototype.x = 0;
 	CameraRender.prototype.y = 0
+	CameraRender.prototype.images = {};
+	CameraRender.prototype.sprites = {};
 	CameraRender.prototype.init = function(canvas, quad, color){
 		this.canvas = canvas;
+		this.buffer = document.createElement("canvas");
+		this.buffer.width = canvas.width;
+		this.buffer.height = canvas.height;
+		this.buffer.context = this.buffer.getContext("2d");
+		// this.buffer.style.display = "hidden";
 		this.noColorElement = color || "rgba(255,0,0,1)";
 		if (quad){
 			this.quadTree = [];
@@ -30,7 +37,6 @@ define(['event_bus'], function(eventBus) {
 			var endX = ((this.x + this.canvas.width) / this.quadTreeWidth)|0;
 			var endY = ((this.y + this.canvas.height) / this.quadTreeHeight)|0;
 			var tabQueu = [];
-			window.get = tabQueu;
 			for (var i = quadX ; i <= endX ; i++){
 				if (!this.quadTree[i])
 					continue;
@@ -55,16 +61,27 @@ define(['event_bus'], function(eventBus) {
 					}
 				}
 			}
+			// this.buffer.context.clearRect(0,0,this.buffer.width, this.buffer.height);
 			for (var i = 0, max = tabQueu.length ; i < max ; i++){
-				this.canvas.context.fillStyle = tabQueu[i].color || this.noColorElement;
-				this.canvas.context.fillRect(tabQueu[i].x-this.x, tabQueu[i].y-this.y, tabQueu[i].width, tabQueu[i].height);	
+				if (tabQueu[i].sprite){
+					this.animSprite(tabQueu[i]);
+				}
+				else{
+					this.canvas.context.fillStyle = tabQueu[i].color || this.noColorElement;
+					this.canvas.context.fillRect(tabQueu[i].x-this.x, tabQueu[i].y-this.y, tabQueu[i].width, tabQueu[i].height);	
+				}
 			}
+			// var imageData = this.buffer.context.getImageData(0,0,this.buffer.width, this.buffer.height);
+			// this.canvas.context.putImageData(imageData, 0, 0);
 		}
 		else{
 			for (var i = 0, max = this.content.length; i < max; i++) {
 				var target = this.content[i];
 				this.canvas.context.fillStyle = target.color || this.noColorElement;
-				if (this.content[i].radius){
+				if (target.sprite){
+					this.animSprite(this.content[i]);
+				}
+				else if (target.radius){
 					this.content[key].canvas.context.beginPath();
 					this.content[key].canvas.context.arc(target.x+target.radius, target.pos.y+target.radius, target.radius, 0, 2 * Math.PI);
 					this.content[key].canvas.context.fill();
@@ -138,6 +155,66 @@ define(['event_bus'], function(eventBus) {
 				}
 			}
 		}
+	}
+	CameraRender.prototype.addImage = function(name, src){
+		if (!this.images[name]){
+			this.images[name] = new Image();
+			this.images[name].src = src;
+		}
+		else
+			console.warn("cameraRender.addImage : Envoie d'une image avec un nom deja utilise. ("+name+")");
+	}
+	CameraRender.prototype.addSprite = function(name, src, config){
+		this.addImage(name, src);
+		if (this.sprites[name])
+			console.warn("cameraRender.addSprite : Envoie d'un sprite avec un nom deja utilise. ("+name+")");
+		else{
+			this.sprites[name] = {};
+			for (var key in config)
+				this.sprites[name][key] = config[key];
+		}
+	}
+	CameraRender.prototype.putSpriteOn = function(element, name, anim){
+		if (!this.sprites[name])
+			console.log("cameraRender.putSprite : tentative d'appliquer un sprite non stocke ("+name+"). Utilise addSprite(name:string, src:string, config:object)");
+		else{
+			element.sprite = name;
+			element.currentAnim = anim || "idle";
+			element.currentIndex = 0;
+			element.spriteFrame = 0;
+			element.spriteNbLoop = 0;
+			var that = this;
+			element.changeAnimation = function(name){
+				if (that.sprites[this.sprite][name]){
+					this.currentIndex = 0;
+					this.currentAnim = name;
+				}
+				else
+					console.warn("L'animation '"+name+"' n'existe pas sur cet element");
+			}
+		}
+	}
+	CameraRender.prototype.animSprite = function(element){
+		element.spriteFrame++;
+		var target = this.sprites[element.sprite][element.currentAnim];
+		if (element.spriteFrame >= target.fps){
+			element.currentIndex++;
+			element.spriteFrame = 0;
+			if (element.currentIndex >= target.nbAnim){
+				element.spriteNbLoop++;
+				element.currentIndex = 0;
+				if (element.spriteNbLoop == target.loop){
+					element.spriteNbLoop = 0;
+					element.currentAnim = "idle";
+					element.spriteFrame = 0;
+					element.width = target.width;
+					element.height = target.height;
+				}
+			}
+		}
+		var indexOfAnim = target.offsetY;
+		this.canvas.context.drawImage(this.images[element.sprite], element.width * element.currentIndex, indexOfAnim, element.width, element.height, 
+									element.x-this.x, element.y-this.y, element.width, element.height);
 	}
 	return new CameraRender();
 });
