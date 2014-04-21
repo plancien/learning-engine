@@ -10,8 +10,8 @@ define(['event_bus'], function(eventBus) {
 		this.noColorElement = color || "rgba(255,0,0,1)";
 		if (quad){
 			this.quadTree = [];
-			this.quadTreeWidth = canvas.width/3;
-			this.quadTreeHeight = canvas.height/3;
+			this.quadTreeWidth = canvas.width/2;
+			this.quadTreeHeight = canvas.height/2;
 			this.frame = 0;
 		}
 	}
@@ -29,7 +29,8 @@ define(['event_bus'], function(eventBus) {
 
 			var endX = ((this.x + this.canvas.width) / this.quadTreeWidth)|0;
 			var endY = ((this.y + this.canvas.height) / this.quadTreeHeight)|0;
-
+			var tabQueu = [];
+			window.get = tabQueu;
 			for (var i = quadX ; i <= endX ; i++){
 				if (!this.quadTree[i])
 					continue;
@@ -40,11 +41,23 @@ define(['event_bus'], function(eventBus) {
 						var target = this.quadTree[i][j][k];
 						if (target.cameraRender.frame != this.frame){
 							target.cameraRender.frame = this.frame;
-							this.canvas.context.fillStyle = target.color || this.noColorElement;
-							this.canvas.context.fillRect(target.x-this.x, target.y-this.y, target.width, target.height);	
+							var found = false;
+							for (var l = tabQueu.length-1 ; l>=0 ; l--){
+								if (tabQueu[l].cameraRender.zIndex < target.cameraRender.zIndex){
+									tabQueu.splice(l+1,0,target);
+									found = true;
+									break;
+								}
+							}
+							if (!found)
+								tabQueu.unshift(target);
 						}
 					}
 				}
+			}
+			for (var i = 0, max = tabQueu.length ; i < max ; i++){
+				this.canvas.context.fillStyle = tabQueu[i].color || this.noColorElement;
+				this.canvas.context.fillRect(tabQueu[i].x-this.x, tabQueu[i].y-this.y, tabQueu[i].width, tabQueu[i].height);	
 			}
 		}
 		else{
@@ -64,6 +77,9 @@ define(['event_bus'], function(eventBus) {
 	}
 	CameraRender.prototype.add = function(element, zIndex){
 		this.content.push(element);
+		if (!element.cameraRender)
+			element.cameraRender = {};
+		element.cameraRender.zIndex = zIndex || 0;
 		if (this.quadTree){
 			var quadX = (element.x / this.quadTreeWidth)|0;
 			var quadY = (element.y / this.quadTreeHeight)|0;
@@ -80,7 +96,6 @@ define(['event_bus'], function(eventBus) {
 					this.quadTree[i][j].push(element);
 				}
 			}
-			element.cameraRender = {};
 			element.cameraRender.frame = this.frame;
 			element.cameraRender.startX = quadX;
 			element.cameraRender.endX = endX;
@@ -112,7 +127,7 @@ define(['event_bus'], function(eventBus) {
 	}
 	CameraRender.prototype.recalculQuadOf = function(element){
 		this.removeElement(element);
-		this.add(element);
+		this.add(element, element.cameraRender.zIndex);
 	}
 	CameraRender.prototype.removeElement = function(element){
 		this.content.splice(this.content.indexOf(element), 1);

@@ -29,7 +29,7 @@ define([
     collisionEngine.addGroup("wall", false, false, false);       //créer un group mur, qui collisione avec le groupe hero, ne collisionne pas entre eux, ne sont pas a l'interieur d'une box 
 
     eventBus.on("wall create", function(target){
-        cameraRender.add(target);
+        cameraRender.add(target, 10);
         collisionEngine.addElement(target, "wall");     
     });
 
@@ -54,7 +54,7 @@ define([
 
     cameraRender.fixedCameraOn(game.pikachu);
 
-    cameraRender.add(game.pikachu);
+    cameraRender.add(game.pikachu, 11);
 
 
     var run = function(game){
@@ -64,8 +64,8 @@ define([
         game.canvas.context.fillStyle = config.backgroundColor;
         game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
 
-        collisionEngine.calcul();
         gravityEngine.calcul();
+        collisionEngine.calcul();
         cameraRender.render();
         cameraRender.showQuadTree();
         // wall.render(game.canvas.context);
