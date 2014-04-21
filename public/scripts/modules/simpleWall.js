@@ -11,6 +11,7 @@
 		wall.height = height || 50;
 		wall.color = color || "black";
 		this.content.push(wall);
+		eventBus.emit("wall create", wall);
 	}
 	WallEngine.prototype.render = function(context){
 		for (var i = this.content.length - 1; i >= 0; i--) {

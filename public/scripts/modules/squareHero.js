@@ -12,7 +12,7 @@
 ***************************************************************************************************************/
 
 
-define(['event_bus', 'modules/collisionEngine', 'modules/key_listener'], function(eventBus, collisionEngine) {
+define(['event_bus', 'modules/collisionEngine', 'modules/key_listener', 'modules/gravityEngine'], function(eventBus, collisionEngine, key_listener, gravityEngine) {
 	window.get = collisionEngine;
 	var HeroEngine = function(){
 		this.content = [];
