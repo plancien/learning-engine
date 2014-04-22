@@ -68,7 +68,9 @@ define([
     game.pikachu.collisionCallback["wall"] = function(opponent){
         if (game.pikachu.y > opponent.y){
             game.pikachu.y = opponent.y + opponent.height;
-                game.pikachu.accrochage= true;
+                if(!game.pikachu.desaccrochage){
+                    game.pikachu.accrochage= true;
+                }
              if(game.pikachu.currentAnim=="runLeft"){
                 game.pikachu.speedY=-5;
                 game.pikachu.changeAnimation("runLeftReverse");
@@ -79,7 +81,8 @@ define([
              }
         }
         else{
-            game.pikachu.accrochage= false;
+             game.pikachu.desaccrochage=false;
+             game.pikachu.accrochage= false;
              game.pikachu.y = opponent.y - game.pikachu.height; 
             
         }
@@ -93,6 +96,9 @@ define([
         game.pikachu.changeAnimation("runRight") });
     eventBus.on("key pressed D", function(){ 
         game.pikachu.changeAnimation("runLeft") });
+    eventBus.on("key pressed S", function(){ 
+        game.pikachu.desaccrochage=true
+        game.pikachu.speedY+=5 });
 
     cameraRender.fixedCameraOn(game.pikachu);
 
@@ -116,6 +122,8 @@ define([
     var run = function(game){
         requestAnimationFrame(function(){run(game)});
         game.frame++;
+
+       game.pikachu.accrochage=false;
         heroEngine.render();
         game.canvas.context.fillStyle = config.backgroundColor;
         game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
