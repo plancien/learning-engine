@@ -133,7 +133,8 @@ define([
                 this.alive = false;
                }
             };
-            function Bullet(x, y, vector, speed, id, color, damage){
+            //BULLETS
+            function Bullet(x, y, vector, speed, id, idInArray, color, damage){
               this.x = x;
               this.y = y;
               this.w = 4;
@@ -141,10 +142,13 @@ define([
               this.vector = vector;
               this.speed = speed;
               this.id = id;
+              this.idInArray = idInArray;
               this.color = color
               this.damage = damage || 10;
+              this.alive = true;
 
               this.move = function(){
+                var oldPosition = { x: this.x, y: this.y};
                    this.x += this.vector.x*this.speed;
                    this.y += this.vector.y*this.speed;
                };
@@ -166,16 +170,16 @@ define([
                    };
                    var previewX = object.x;
                    var previewY = object.y;
-                   if(e == "left"){
+                   if(e == "Q"){
                       previewX = object.x - object.speed;
                    }
-                   if(e == "right"){
+                   if(e == "D"){
                       previewX = object.x + object.speed;
                    }
-                   if(e == "up"){
+                   if(e == "Z"){
                       previewY = object.y - object.speed;
                    }
-                   if(e == "down"){
+                   if(e == "S"){
                       previewY = object.y + object.speed;
                    }
                    eventBus.emit("outside canvas",{canvas:canvas.canvas,target:{oldX:oldPosition.x,oldY:oldPosition.y,x:previewX,y:previewY,w:object.w,h:object.h}});
@@ -212,13 +216,13 @@ define([
             };
             function addShootCapabilities(object){
               object.shoot = function(vector){
-                bullets[this.id].push(new Bullet( this.x+this.w*0.5, this.y+this.h*0.5, vector, this.bulletSpeed, this.id, this.color, this.bulletDamage));
+                bullets[this.id].push(new Bullet( this.x+this.w*0.5, this.y+this.h*0.5, vector, this.bulletSpeed, this.id, bullets[this.id].length, this.color, this.bulletDamage));
                 connector.emit("infoToSync -g", {id:this.id,eventName:"player shoot",objectKey:"bullets",
                   update:{
-                    x: this.x+this.w*0.5, y: this.y+this.h*0.5, speed: this.bulletSpeed, vectorSend: {x:vector.x,y:vector.y}, id: this.id, color: this.color, damage: this.bulletDamage
+                    x: this.x+this.w*0.5, y: this.y+this.h*0.5, speed: this.bulletSpeed, vectorSend: {x:vector.x,y:vector.y}, id: this.id, idInArray: bullets[this.id].length-1, color: this.color, damage: this.bulletDamage
                   },
                   send:{
-                    x: this.x+this.w*0.5, y: this.y+this.h*0.5, speed: this.bulletSpeed, vectorSend: {x:vector.x,y:vector.y}, id: this.id, color: this.color, damage: this.bulletDamage
+                    x: this.x+this.w*0.5, y: this.y+this.h*0.5, speed: this.bulletSpeed, vectorSend: {x:vector.x,y:vector.y}, id: this.id, idInArray: bullets[this.id].length-1, color: this.color, damage: this.bulletDamage
                   }
                 });
               };
@@ -320,8 +324,10 @@ define([
               alive:players[ownPlayerId].alive,
               color:players[ownPlayerId].color
             });
+
             connector.emit("load -g");
             connector.emit("load -g","powerUps");
+
             connector.on("new player", function(player){
                players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.maxHealth, player.alive, player.color);
                bullets[player.id] = [];
@@ -352,10 +358,9 @@ define([
               if(!bullets[shoot.id]){
                 bullets[shoot.id] = [];
               }
-              bullets[shoot.id].push(new Bullet(shoot.x,shoot.y,shoot.vectorSend,shoot.speed,shoot.id,shoot.color));
+              bullets[shoot.id].push(new Bullet(shoot.x,shoot.y,shoot.vectorSend,shoot.speed,shoot.id, shoot.idInArray,shoot.color));
             });
             connector.on("player respawn", function(player){
-              console.log("RESPAWN OF "+player.id)
               players[player.id].alive = true;
               players[player.id].x = player.x;
               players[player.id].y = player.y;
@@ -380,6 +385,11 @@ define([
               }
               delete powerUp[data.idPowerUp];
             });
+            connector.on("collision bullet", function(data){
+              for(var i = 0; i < data.arrayColliding.length; i++){
+                bullets[data.arrayColliding[i].bullet.id].splice(data.arrayColliding[i].bullet.idInArray,1);
+              }
+            });
 
             context.fillStyle = "black";
             context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
@@ -395,8 +405,9 @@ define([
                 for(var i = 0; i < bullets[key].length; i++){
                   bullets[key][i].move();
                   bullets[key][i].draw(context);
-                  if(key == ownPlayerId){
-                    //connector.emit("own shoot has moved",{id:ownPlayerId,i:i,x:bullets[key][i].x,y:bullets[key][i].y});
+                  if(!bullets[key][i].alive){
+                    bullets[key].splice(i,1);
+                    i--;
                   }
                 }
               }
@@ -411,9 +422,21 @@ define([
                     if(key != ownPlayerId){
                       var arrayColliding = players[ownPlayerId].collision(bullets[key]);
                       for(var i = 0; i < arrayColliding.length; i++){
-                        players[ownPlayerId].takeDamage(arrayColliding[i].bullet.damage,arrayColliding[i].i);
-                        console.log(players[ownPlayerId].health)
-                        bullets[key].splice(arrayColliding[i].i,1);
+                        players[ownPlayerId].takeDamage(arrayColliding[i].bullet.damage,arrayColliding[i].idInArray);
+                        bullets[key].splice(arrayColliding[i].idInArray,1);
+                      }
+                      if(arrayColliding.length > 0){
+                        //DESTRUCTION DES BULLET POUR TOUT LE MONDE
+                        connector.emit("infoToSync -g",{
+                          id:ownPlayerId,
+                          eventName:"collision bullet",
+                          objectKey:"bullets",
+                          update:{
+                          },
+                          send:{
+                            arrayColliding:arrayColliding
+                          }
+                        });
                       }
                     }
                   }

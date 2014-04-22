@@ -146,7 +146,7 @@ module.exports = function(io) {
             }
         });
         //LOAD EVERY USERS IN USERS ARRAY
-        //BEST WAY TO USE ==> Just call it (y)
+        //BEST WAY TO USE ==> .emit without parameters to load the users or with parameters to load any other array
         socket.on("load -g",function(keyToLoad){
             if(!keyToLoad){
                 console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
@@ -157,6 +157,8 @@ module.exports = function(io) {
                 socket.emit("load "+keyToLoad, PublicServerStockingSpace[PublicServerStockingSpaceKey][keyToLoad]);
             }
         });
+        //DELETE THE OBJECT -> SERVER-SIDE
+        //BEST WAY TO USE ==> {idObject:ID-IN-THE-OBJECTKEY-ARRAY,objectKey:NAME-OF-THE-ARRAY}
         socket.on("delete info -g",function(data){
             if(!!data && data.objectKey && data.idObject){
                 if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.idObject]){
