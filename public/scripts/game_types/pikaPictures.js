@@ -93,7 +93,8 @@ define([
     cameraRender.fixedCameraOn(game.pikachu);
 
     var pikaSpriteConfig = {};
-    pikaSpriteConfig.idle = {"width" : 39, "height" :41, "nbAnim" : 4, "loop" : -1, "fps" : 3, "offsetY" : 100};
+    pikaSpriteConfig.idle = {"width" : 36, "height" :38, "nbAnim" : 1, "loop" : -1, "fps" : 3, "offsetY" : 64};
+    pikaSpriteConfig.idle2 = {"width" : 36, "height" :38, "nbAnim" : 1, "loop" : -1, "fps" : 3, "offsetY" : 320};
     pikaSpriteConfig.runLeft = {"width" : 56, "height" : 30, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 32};
     pikaSpriteConfig.runRight = {"width" : 56, "height" : 28, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 0};
     pikaSpriteConfig.runLeftReverse = {"width" : 55, "height" : 34, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 255};
