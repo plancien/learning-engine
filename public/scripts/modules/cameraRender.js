@@ -66,6 +66,9 @@ define(['event_bus'], function(eventBus) {
 				if (tabQueu[i].sprite){
 					this.animSprite(tabQueu[i]);
 				}
+				else if (tabQueu[i].image){
+					this.canvas.context.drawImage(this.images[tabQueu[i].image], tabQueu[i].x-this.x, tabQueu[i].y-this.y, tabQueu[i].width, tabQueu[i].height);
+				}
 				else{
 					this.canvas.context.fillStyle = tabQueu[i].color || this.noColorElement;
 					this.canvas.context.fillRect(tabQueu[i].x-this.x, tabQueu[i].y-this.y, tabQueu[i].width, tabQueu[i].height);	

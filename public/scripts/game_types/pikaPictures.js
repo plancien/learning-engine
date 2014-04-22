@@ -8,10 +8,13 @@ define([
     'modules/canvas',
     'modules/image_loader',
     'modules/frames',
-    'modules/cameraRender'
-], function(eventBus, heroEngine, collisionEngine, wall, gravityEngine, Canvas, frames, Mouse, cameraRender) {
+    'modules/cameraRender',
+    'modules/image_loader',
+    'modules/simpleElement'
+], function(eventBus, heroEngine, collisionEngine, wall, gravityEngine, Canvas, frames, Mouse, cameraRender, imageLoader, element) {
     window.cameraRender = cameraRender;
     window.collisionEngine = collisionEngine;
+    window.element = element;
     var game = {};
     window.pGame = game;
 
@@ -25,6 +28,17 @@ define([
     game.canvas.height = 600;
     game.canvas.context.fillStyle = "rgba(30,30,30,0.8)";
 
+    eventBus.emit("load images");
+    eventBus.on("images loaded", function(images) {
+        console.log(images);
+        cameraRender.images.goodImage = images["flag_french"];
+        cameraRender.images.badImage = images["flag_romanian"];
+
+        // cameraRender.addImage("bonus1", game.goodImage);
+        // cameraRender.addImage("malus1", game.badImage);
+        collisionEngine.addGroup("bonus", ["pikachu"], false, false);
+    });
+
     cameraRender.init(game.canvas, true);
     collisionEngine.addGroup("wall", false, false, false);       
 
@@ -32,10 +46,20 @@ define([
         cameraRender.add(target, 10);
         collisionEngine.addElement(target, "wall");     
     });
+    eventBus.on("bonus create", function(target){
+        console.log("i'm call");
+        target.image = "goodImage";
+        cameraRender.add(target, 20);
+        collisionEngine.addElement(target, "bonus");
+        target.collisionCallback["pikachu"] = function(opponent){
+            opponent.speedY = -20;
+        }
+    });
 
 
     wall.create(10, 400, 600, 30, config.wallColor);
     wall.create(60, 200, 300, 30, config.wallColor);
+    element.create(30, 350, 50, 50, "bonus");
 
     var inputsPika = {"left":"Q", "right":"D", "up":"Z", "down":"S"};   //On applique des inputs pour ce hero
     var configPika = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 5, "deceleration" : 10, "color" : "rgba(0,200,255,1)", "width" : 56, "height" : 30, "inputs" : inputsPika};
