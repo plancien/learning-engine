@@ -75,10 +75,12 @@ define([
              if(game.pikachu.currentAnim=="runLeft"){
                 game.pikachu.speedY=-5;
                 game.pikachu.changeAnimation("runLeftReverse");
+                
              }
              else if(game.pikachu.currentAnim=="runRight"){
                 game.pikachu.speedY=-5;
                 game.pikachu.changeAnimation("runRightReverse");
+                
              }
         }
         else{
@@ -98,7 +100,7 @@ define([
     eventBus.on("key pressed D", function(){ 
         game.pikachu.changeAnimation("runLeft") });
     eventBus.on("key pressed S", function(){ 
-        game.pikachu.desaccrochage=true
+        game.pikachu.desaccrochage=true;
         game.pikachu.speedY+=5 });
 
     cameraRender.fixedCameraOn(game.pikachu);
@@ -106,10 +108,12 @@ define([
     var pikaSpriteConfig = {};
     pikaSpriteConfig.idle = {"width" : 36, "height" :38, "nbAnim" : 1, "loop" : -1, "fps" : 3, "offsetY" : 64};
     pikaSpriteConfig.idle2 = {"width" : 36, "height" :38, "nbAnim" : 1, "loop" : -1, "fps" : 3, "offsetY" : 320};
-    pikaSpriteConfig.runLeft = {"width" : 56, "height" : 30, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 32};
-    pikaSpriteConfig.runRight = {"width" : 56, "height" : 28, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 0};
-    pikaSpriteConfig.runLeftReverse = {"width" : 55, "height" : 34, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 255};
-    pikaSpriteConfig.runRightReverse = {"width" : 55, "height" : 34, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 289};
+    pikaSpriteConfig.runLeft = {"width" : 56, "height" : 30, "nbAnim" : 4, "loop" : -1, "fps" : 5, "offsetY" : 32};
+    pikaSpriteConfig.runRight = {"width" : 56, "height" : 28, "nbAnim" : 4, "loop" : -1, "fps" : 5, "offsetY" : 0};
+    pikaSpriteConfig.runLeftReverse = {"width" : 55, "height" : 34, "nbAnim" : 4, "loop" : -1, "fps" : 5, "offsetY" : 255};
+    pikaSpriteConfig.runRightReverse = {"width" : 55, "height" : 34, "nbAnim" : 4, "loop" : -1, "fps" : 5, "offsetY" : 289};
+    pikaSpriteConfig.idleLeftReverse={"width" : 46, "height" : 40, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 359};
+    pikaSpriteConfig.idleRightReverse={"width" : 46, "height" : 40, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 401};
 
 
     cameraRender.addSprite("pikachu", "./images/pikachu.png", pikaSpriteConfig);
@@ -133,8 +137,13 @@ define([
         collisionEngine.calcul();
         cameraRender.render();
         cameraRender.showQuadTree();
-        if(game.pikachu.speedX==0&& game.pikachu.currentAnim!="idle"){
-            game.pikachu.changeAnimation("idle");
+        if(game.pikachu.speedX==0&&(  game.pikachu.currentAnim!="idle"||game.pikachu.currentAnim!="idleRightReverse")){
+            if(game.pikachu.accrochage){
+                game.pikachu.changeAnimation("idleRightReverse");
+            }
+            else{
+                game.pikachu.changeAnimation("idle");
+            }
         }
         if(game.pikachu.accrochage){
              game.pikachu.speedY=-5;
