@@ -62,6 +62,15 @@ define(['event_bus'], function(eventBus) {
 				}
 			}
 			// this.buffer.context.clearRect(0,0,this.buffer.width, this.buffer.height);
+			if (this.parralax){
+				this.canvas.context.globalAlpha = this.parralax.remanance;
+				var x = -(this.x/this.parralax.diviseur % this.parralax.image.width);
+				this.canvas.context.drawImage(this.parralax.image, x, 0, this.parralax.image.width, this.parralax.image.height);
+				if (x + this.parralax.image.width < this.canvas.width)
+					this.canvas.context.drawImage(this.parralax.image, x + this.parralax.image.width, 0, this.parralax.image.width, this.parralax.image.height);
+
+				this.canvas.context.globalAlpha = 1;
+			}
 			for (var i = 0, max = tabQueu.length ; i < max ; i++){
 				if (tabQueu[i].sprite){
 					this.animSprite(tabQueu[i]);
@@ -220,6 +229,13 @@ define(['event_bus'], function(eventBus) {
 		var indexOfAnim = target.offsetY;
 		this.canvas.context.drawImage(this.images[element.sprite], element.width * element.currentIndex, indexOfAnim, element.width, element.height, 
 									element.x-this.x, element.y-this.y, element.width, element.height);
+	}
+	CameraRender.prototype.backgroundParralax = function(src, diviseur, remanance){
+		this.parralax = {};
+		this.parralax.image = new Image();
+		this.parralax.image.src = src;
+		this.parralax.diviseur = diviseur || 10;
+		this.parralax.remanance = remanance || 1;
 	}
 	return new CameraRender();
 });

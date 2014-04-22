@@ -19,7 +19,7 @@ define([
     window.pGame = game;
 
     var config = {};
-    config.wallColor = "rgba(200,200,200,1)";
+    config.wallColor = "rgba(20,20,20,1)";
     config.backgroundColor = "rgba(30,30,30,1)";
 
     game.frame = 0;
@@ -39,6 +39,7 @@ define([
     });
 
     cameraRender.init(game.canvas, true);
+    cameraRender.backgroundParralax("./images/pikachuParallax.png", 1, 0.5);
     collisionEngine.addGroup("wall", false, false, false);       
     collisionEngine.addGroup("bonus", ["pikachu"], false, false);
 
@@ -126,7 +127,7 @@ define([
        game.pikachu.accrochage=false;
         heroEngine.render();
         game.canvas.context.fillStyle = config.backgroundColor;
-        game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+        //game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
 
         gravityEngine.calcul();
         collisionEngine.calcul();
