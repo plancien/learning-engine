@@ -56,12 +56,12 @@ define([
         }
     });
 
-    wall.create(10, 400, 600, 30, config.wallColor);
-    wall.create(60, 200, 10000, 30, config.wallColor);
-    element.create(30, 350, 50, 50, "bonus");
+    wall.create(1000, 400, 600, 30, config.wallColor);
+    wall.create(6000, 200, 10000, 30, config.wallColor);
+    element.create(3000, 350, 50, 50, "bonus");
 
     var inputsPika = {"left":"Q", "right":"D", "up":"Z", "down":"S"};   //On applique des inputs pour ce hero
-    var configPika = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 5, "deceleration" : 10, "color" : "rgba(0,200,255,1)", "width" : 39, "height" : 41, "inputs" : inputsPika};
+    var configPika = { "x" : 2000, "y" : 100, "maxSpeed" : 30, "acceleration" : 5, "deceleration" : 10, "color" : "rgba(0,200,255,1)", "width" : 39, "height" : 41, "inputs" : inputsPika};
     game.pikachu = heroEngine.create(configPika, game.canvas.context, true);
     collisionEngine.addGroup("pikachu", ["wall"], false, false);
     collisionEngine.addElement(game.pikachu, "pikachu");
