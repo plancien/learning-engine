@@ -33,9 +33,6 @@ define([
         console.log(images);
         cameraRender.images.goodImage = images["flag_french"];
         cameraRender.images.badImage = images["flag_romanian"];
-
-        // cameraRender.addImage("bonus1", game.goodImage);
-        // cameraRender.addImage("malus1", game.badImage);
     });
 
     cameraRender.init(game.canvas, true);
@@ -56,12 +53,6 @@ define([
         }
     });
 
-    wall.create(1100, 1400, 600, 30, config.wallColor);
-    wall.create(1600, 100, 10000, 700, config.wallColor);
-    wall.create(850, 0, 60, 1600, config.wallColor);
-    wall.create(850, 1600, 20000, 60, config.wallColor);
-    element.create(1600, 1350, 50, 50, "bonus");
-
     var inputsPika = {"left":"Q", "right":"D", "up":"Z", "down":"S"};   //On applique des inputs pour ce hero
     var configPika = { "x" : 1200, "y" : 1100, "maxSpeed" : 30, "acceleration" : 4, "deceleration" : 2, "color" : "rgba(0,200,255,1)", "width" : 39, "height" : 41, "inputs" : inputsPika};
     game.pikachu = heroEngine.create(configPika, game.canvas.context, true);
@@ -69,6 +60,10 @@ define([
     collisionEngine.addElement(game.pikachu, "pikachu");
     game.pikachu.collisionCallBack = {};
     game.pikachu.collisionCallback["wall"] = function(opponent){
+        if (game.pikachu.x + game.pikachu.width > opponent.x && game.pikachu.x < opponent.x)
+            game.pikachu.x = opponent.x - game.pikachu.width;
+        else if (game.pikachu.x < opponent.x + opponent.width && game.pikachu.x + game.pikachu.width > opponent.x + opponent.width)
+            game.pikachu.x = opponent.x + opponent.width;
         if (game.pikachu.y > opponent.y){
             game.pikachu.y = opponent.y + opponent.height;
                 if(!game.pikachu.desaccrochage){
@@ -121,6 +116,11 @@ define([
 
     cameraRender.add(game.pikachu, 11);
 
+    wall.create(1100, 1400, 600, 30, config.wallColor);
+    wall.create(1600, 100, 10000, 700, config.wallColor);
+    wall.create(850, 0, 60, 1600, config.wallColor);
+    wall.create(850, 1600, 20000, 60, config.wallColor);
+    element.create(1600, 1350, 50, 50, "bonus");
 
     var run = function(game){
         requestAnimationFrame(function(){run(game)});
@@ -134,7 +134,7 @@ define([
         gravityEngine.calcul();
         collisionEngine.calcul();
         cameraRender.render();
-        cameraRender.showQuadTree();
+        // cameraRender.showQuadTree();
         if(game.pikachu.speedX==0&& game.pikachu.currentAnim!="idle"){
             game.pikachu.changeAnimation("idle");
         }
