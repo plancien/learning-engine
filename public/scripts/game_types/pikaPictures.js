@@ -98,8 +98,10 @@ define([
         game.pikachu.speedY = -10
           });
     eventBus.on("key pressed Q", function(){
+         game.pikachu.canIdle=false;
         game.pikachu.changeAnimation("runRight") });
     eventBus.on("key pressed D", function(){ 
+        game.pikachu.canIdle=false;
         game.pikachu.changeAnimation("runLeft") });
     eventBus.on("key pressed S", function(){ 
         game.pikachu.desaccrochage=true;
@@ -138,13 +140,16 @@ define([
         collisionEngine.calcul();
         cameraRender.render();
         cameraRender.showQuadTree();
-        if(game.pikachu.speedX==0&&(game.pikachu.currentAnim!="idle"||game.pikachu.currentAnim!="idleRightReverse")){
-            if(game.pikachu.accrochage){
-                game.pikachu.changeAnimation("idleRightReverse");
-            }
-            else{
-                game.pikachu.changeAnimation("idle");
-            }
+        if(game.pikachu.speedX==0){
+            game.pikachu.canIdle=true;
+        }
+            if((game.pikachu.currentAnim!="idle"||game.pikachu.currentAnim!="idleRightReverse")&&game.pikachu.canIdle){
+                if(game.pikachu.accrochage){
+                    game.pikachu.changeAnimation("idleRightReverse");
+                }
+                else{
+                    game.pikachu.changeAnimation("idle");
+                }
         }
         if(game.pikachu.accrochage){
              game.pikachu.speedY=-5;
