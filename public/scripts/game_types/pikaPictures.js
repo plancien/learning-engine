@@ -56,31 +56,49 @@ define([
         }
     });
 
-
     wall.create(10, 400, 600, 30, config.wallColor);
     wall.create(60, 200, 300, 30, config.wallColor);
     element.create(30, 350, 50, 50, "bonus");
 
     var inputsPika = {"left":"Q", "right":"D", "up":"Z", "down":"S"};   //On applique des inputs pour ce hero
-    var configPika = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 5, "deceleration" : 10, "color" : "rgba(0,200,255,1)", "width" : 56, "height" : 30, "inputs" : inputsPika};
+    var configPika = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 5, "deceleration" : 10, "color" : "rgba(0,200,255,1)", "width" : 39, "height" : 41, "inputs" : inputsPika};
     game.pikachu = heroEngine.create(configPika, game.canvas.context, true);
     collisionEngine.addGroup("pikachu", ["wall"], false, false);
     collisionEngine.addElement(game.pikachu, "pikachu");
     game.pikachu.collisionCallBack = {};
     game.pikachu.collisionCallback["wall"] = function(opponent){
-        if (game.pikachu.y > opponent.y)
+        if (game.pikachu.y > opponent.y){
             game.pikachu.y = opponent.y + opponent.height;
-        else
-            game.pikachu.y = opponent.y - game.pikachu.height; 
-    }
-    eventBus.on("key pressed Z", function(){ game.pikachu.speedY = -10 });
+             if(game.pikachu.currentAnim=="runLeft"){
+                game.pikachu.changeAnimation("runLeftReverse");
+             }
+             if(game.pikachu.currentAnim=="runRight"){
+                game.pikachu.changeAnimation("runRightReverse");
+             }
+        }
+        else{
+             game.pikachu.y = opponent.y - game.pikachu.height; 
+            
+        }
 
+    }
+    eventBus.on("key pressed Z", function(){ 
+        game.pikachu.speedY = -10
+         game.pikachu.changeAnimation("runRight") });
+    eventBus.on("key pressed Q", function(){
+        game.pikachu.changeAnimation("runRight") });
+    eventBus.on("key pressed D", function(){ 
+        game.pikachu.changeAnimation("runLeft") });
 
     cameraRender.fixedCameraOn(game.pikachu);
 
     var pikaSpriteConfig = {};
-    pikaSpriteConfig.idle = {"width" : 56, "height" : 30, "nbAnim" : 4, "loop" : -1, "fps" : 3, "offsetY" : 0};
-    pikaSpriteConfig.run = {"width" : 56, "height" : 30, "nbAnim" : 4, "loop" : -1, "fps" : 30, "offsetY" : 100};
+    pikaSpriteConfig.idle = {"width" : 39, "height" :41, "nbAnim" : 4, "loop" : -1, "fps" : 3, "offsetY" : 100};
+    pikaSpriteConfig.runLeft = {"width" : 56, "height" : 30, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 32};
+    pikaSpriteConfig.runRight = {"width" : 56, "height" : 28, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 0};
+    pikaSpriteConfig.runLeftReverse = {"width" : 55, "height" : 34, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 255};
+    pikaSpriteConfig.runRightReverse = {"width" : 55, "height" : 34, "nbAnim" : 4, "loop" : -1, "fps" : 10, "offsetY" : 289};
+
 
     cameraRender.addSprite("pikachu", "./images/pikachu.png", pikaSpriteConfig);
     cameraRender.putSpriteOn(game.pikachu, "pikachu");
@@ -101,6 +119,10 @@ define([
         collisionEngine.calcul();
         cameraRender.render();
         cameraRender.showQuadTree();
+        if(game.pikachu.speedX==0&& game.pikachu.currentAnim!="idle"){
+            game.pikachu.changeAnimation("idle");
+            console.log("ca passe");
+        }
         // wall.render(game.canvas.context);
     };
     requestAnimationFrame(function(){run(game)});

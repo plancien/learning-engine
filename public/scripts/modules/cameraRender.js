@@ -191,6 +191,8 @@ define(['event_bus'], function(eventBus) {
 				if (that.sprites[this.sprite][name]){
 					this.currentIndex = 0;
 					this.currentAnim = name;
+					this.width=that.sprites[this.sprite][name].width;
+					this.height=that.sprites[this.sprite][name].height;
 				}
 				else
 					console.warn("L'animation '"+name+"' n'existe pas sur cet element");
