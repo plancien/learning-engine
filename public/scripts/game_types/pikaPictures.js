@@ -17,6 +17,14 @@ define([
     window.element = element;
     var game = {};
     window.pGame = game;
+    //-----------------Chargement des sounds
+    game.sounds={
+        jump : document.createElement('audio'),
+        
+    }
+    game.sounds.jump.setAttribute('src', "./sounds/jump.ogg");
+    game.sounds.jump.setAttribute('preload','true');
+    //------------------------------------------
 
     var config = {};
     config.wallColor = "rgba(20,20,20,1)";
@@ -95,6 +103,7 @@ define([
     }
 
     eventBus.on("key pressed Z", function(){ 
+        game.sounds.jump.play();
         game.pikachu.speedY = -10
           });
     eventBus.on("key pressed Q", function(){
