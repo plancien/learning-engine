@@ -68,14 +68,18 @@ define([
     game.pikachu.collisionCallback["wall"] = function(opponent){
         if (game.pikachu.y > opponent.y){
             game.pikachu.y = opponent.y + opponent.height;
+                game.pikachu.accrochage= true;
              if(game.pikachu.currentAnim=="runLeft"){
+                game.pikachu.speedY=-5;
                 game.pikachu.changeAnimation("runLeftReverse");
              }
-             if(game.pikachu.currentAnim=="runRight"){
+             else if(game.pikachu.currentAnim=="runRight"){
+                game.pikachu.speedY=-5;
                 game.pikachu.changeAnimation("runRightReverse");
              }
         }
         else{
+            game.pikachu.accrochage= false;
              game.pikachu.y = opponent.y - game.pikachu.height; 
             
         }
@@ -122,6 +126,9 @@ define([
         cameraRender.showQuadTree();
         if(game.pikachu.speedX==0&& game.pikachu.currentAnim!="idle"){
             game.pikachu.changeAnimation("idle");
+        }
+        if(game.pikachu.accrochage){
+             game.pikachu.speedY=-5;
         }
         // wall.render(game.canvas.context);
     };
