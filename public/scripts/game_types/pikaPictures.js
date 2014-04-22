@@ -36,28 +36,27 @@ define([
 
         // cameraRender.addImage("bonus1", game.goodImage);
         // cameraRender.addImage("malus1", game.badImage);
-        collisionEngine.addGroup("bonus", ["pikachu"], false, false);
     });
 
     cameraRender.init(game.canvas, true);
     collisionEngine.addGroup("wall", false, false, false);       
+    collisionEngine.addGroup("bonus", ["pikachu"], false, false);
 
     eventBus.on("wall create", function(target){
         cameraRender.add(target, 10);
         collisionEngine.addElement(target, "wall");     
     });
     eventBus.on("bonus create", function(target){
-        console.log("i'm call");
         target.image = "goodImage";
         cameraRender.add(target, 20);
         collisionEngine.addElement(target, "bonus");
         target.collisionCallback["pikachu"] = function(opponent){
-            opponent.speedY = -20;
+            opponent.speedY = -10;
         }
     });
 
     wall.create(10, 400, 600, 30, config.wallColor);
-    wall.create(60, 200, 300, 30, config.wallColor);
+    wall.create(60, 200, 10000, 30, config.wallColor);
     element.create(30, 350, 50, 50, "bonus");
 
     var inputsPika = {"left":"Q", "right":"D", "up":"Z", "down":"S"};   //On applique des inputs pour ce hero
@@ -82,6 +81,7 @@ define([
         }
 
     }
+
     eventBus.on("key pressed Z", function(){ 
         game.pikachu.speedY = -10
          game.pikachu.changeAnimation("runRight") });
@@ -121,7 +121,6 @@ define([
         cameraRender.showQuadTree();
         if(game.pikachu.speedX==0&& game.pikachu.currentAnim!="idle"){
             game.pikachu.changeAnimation("idle");
-            console.log("ca passe");
         }
         // wall.render(game.canvas.context);
     };
