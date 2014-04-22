@@ -52,16 +52,18 @@ define([
         cameraRender.add(target, 20);
         collisionEngine.addElement(target, "bonus");
         target.collisionCallback["pikachu"] = function(opponent){
-            opponent.speedY = -10;
+            opponent.speedY = -16;
         }
     });
 
-    wall.create(10, 400, 600, 30, config.wallColor);
-    wall.create(60, 200, 10000, 30, config.wallColor);
-    element.create(30, 350, 50, 50, "bonus");
+    wall.create(1100, 1400, 600, 30, config.wallColor);
+    wall.create(1600, 100, 10000, 700, config.wallColor);
+    wall.create(850, 0, 60, 1600, config.wallColor);
+    wall.create(850, 1600, 20000, 60, config.wallColor);
+    element.create(1600, 1350, 50, 50, "bonus");
 
     var inputsPika = {"left":"Q", "right":"D", "up":"Z", "down":"S"};   //On applique des inputs pour ce hero
-    var configPika = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 5, "deceleration" : 10, "color" : "rgba(0,200,255,1)", "width" : 39, "height" : 41, "inputs" : inputsPika};
+    var configPika = { "x" : 1200, "y" : 1100, "maxSpeed" : 30, "acceleration" : 4, "deceleration" : 2, "color" : "rgba(0,200,255,1)", "width" : 39, "height" : 41, "inputs" : inputsPika};
     game.pikachu = heroEngine.create(configPika, game.canvas.context, true);
     collisionEngine.addGroup("pikachu", ["wall"], false, false);
     collisionEngine.addElement(game.pikachu, "pikachu");
