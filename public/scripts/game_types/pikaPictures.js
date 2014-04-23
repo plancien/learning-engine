@@ -17,6 +17,14 @@ define([
     window.element = element;
     var game = {};
     window.pGame = game;
+    //-----------------Chargement des sounds
+    game.sounds={
+        jump : document.createElement('audio'),
+        
+    }
+    game.sounds.jump.setAttribute('src', "./sounds/jump.ogg");
+    game.sounds.jump.setAttribute('preload','true');
+    //------------------------------------------
 
     var config = {};
     config.wallColor = "rgba(20,20,20,1)";
@@ -90,11 +98,14 @@ define([
     }
 
     eventBus.on("key pressed Z", function(){ 
+        game.sounds.jump.play();
         game.pikachu.speedY = -10
           });
     eventBus.on("key pressed Q", function(){
+         game.pikachu.canIdle=false;
         game.pikachu.changeAnimation("runRight") });
     eventBus.on("key pressed D", function(){ 
+        game.pikachu.canIdle=false;
         game.pikachu.changeAnimation("runLeft") });
     eventBus.on("key pressed S", function(){ 
         game.pikachu.desaccrochage=true;
@@ -137,14 +148,17 @@ define([
         gravityEngine.calcul();
         collisionEngine.calcul();
         cameraRender.render();
-        // cameraRender.showQuadTree();
-        if(game.pikachu.speedX==0&&(game.pikachu.currentAnim!="idle"||game.pikachu.currentAnim!="idleRightReverse")){
-            if(game.pikachu.accrochage){
-                game.pikachu.changeAnimation("idleRightReverse");
-            }
-            else{
-                game.pikachu.changeAnimation("idle");
-            }
+        cameraRender.showQuadTree();
+        if(game.pikachu.speedX==0){
+            game.pikachu.canIdle=true;
+        }
+            if((game.pikachu.currentAnim!="idle"||game.pikachu.currentAnim!="idleRightReverse")&&game.pikachu.canIdle){
+                if(game.pikachu.accrochage){
+                    game.pikachu.changeAnimation("idleRightReverse");
+                }
+                else{
+                    game.pikachu.changeAnimation("idle");
+                }
         }
         if(game.pikachu.accrochage){
              game.pikachu.speedY=-5;

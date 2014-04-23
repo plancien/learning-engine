@@ -1,12 +1,12 @@
-module.exports = function(io,socket,PublicServerStockingSpacePrivate){
-    if(!PublicServerStockingSpacePrivate["powerUps"]){
-    	PublicServerStockingSpacePrivate["powerUps"] = {};
+module.exports = function(io,socket,StockingSpace){
+    if(!StockingSpace["powerUps"]){
+    	StockingSpace["powerUps"] = {};
     }
-    if(!PublicServerStockingSpacePrivate["users"]){
-    	PublicServerStockingSpacePrivate["users"] = {};
+    if(!StockingSpace["users"]){
+    	StockingSpace["users"] = {};
     }
-    if(!PublicServerStockingSpacePrivate["bullets"]){
-    	PublicServerStockingSpacePrivate["bullets"] = {};
+    if(!StockingSpace["bullets"]){
+    	StockingSpace["bullets"] = {};
     }
 	setInterval(function(){
     var powerup = {
@@ -35,7 +35,7 @@ module.exports = function(io,socket,PublicServerStockingSpacePrivate){
         powerup.color = "white";
         break;
     }
-    PublicServerStockingSpacePrivate["powerUps"][powerup.id] = powerup;
+    StockingSpace["powerUps"][powerup.id] = powerup;
     io.sockets.emit("new powerup",powerup);
     console.log("NEW POWERUP ID° "+powerup.id);
 },10*1000);
