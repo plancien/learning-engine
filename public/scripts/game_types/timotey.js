@@ -91,7 +91,7 @@ define([
               }
             };
 
-            function NPC(x, y, w, h, id, health, maxHealth, alive, color){
+            function NPC(x, y, w, h, id, health, maxHealth, alive, color, score){
                this.x = x || 0;
                this.y = y || 0;
                this.w = w || 30;
@@ -106,9 +106,9 @@ define([
                this.bulletDamage = 5;
                this.color = color || "white";
                this.deathColor = "black";
+               this.score = score || 0;
                
                this.syncPosFromServer = function(e){
-                   console.log(e.id,this.id)
                    if(e.id = this.id){
                        this.move(e.x,e.y);
                    }
@@ -132,6 +132,18 @@ define([
                this.killNPC = function(){
                 this.alive = false;
                }
+               this.respawn = function(){
+                this.alive = true;
+                this.x = Math.random() * 700;
+                this.y = Math.random() * 500;
+                this.w = 30;
+                this.h = 30;
+
+                this.health = this.maxHealth;
+                this.speed = 10;
+                this.bulletSpeed = 10;
+                this.bulletDamage = 5;
+               };
             };
             //BULLETS
             function Bullet(x, y, vector, speed, id, idInArray, color, damage){
@@ -227,10 +239,46 @@ define([
                 });
               };
             };
+            function createScoreDOM(id, score, own){
+              var domScore = document.createElement("p");
+              domScore.id = id;
+              domScore.style.color = players[id].color;
+              domScore.innerHTML = id + " : "+ score;
+              document.body.appendChild(domScore);
+              if(own){
+                var changeName = document.createElement("input");
+                changeName.id = id;
+                document.body.appendChild(changeName);
+                var btn = document.createElement("input");
+                btn.type = "button";
+                btn.id = id;
+                btn.value = "send";
+                btn.onclick = function(){
+                  domScore.innerHTML = changeName.value + " : " + score;
+                  players[id].name = changeName.value;
+                  connector.emit("infoToSync -g", {id:id,eventName:"name changed",objectKey:"users",
+                    update:{
+                      id:id,
+                      name:players[id].name
+                    },
+                    send:{
+                      id:id,
+                      name:players[id].name
+                    }
+                  });
+                };
+                document.body.appendChild(btn);
+              }
+            };
+            function updateScoreDOM(id){
+              var player = players[id];
+              var element = document.getElementById(player.id);
+              element.innerHTML = (player.name || player.id) + " : "+ player.score; 
+            };
             function addSendDeathCapabilities(object){
               object.respawnDelay = 180;
               object.frameSinceDeath = 0;
-              object.takeDamage = function(amountOfDamage,iOfBullet){
+              object.takeDamage = function(amountOfDamage,idKiller){
                 this.health -= amountOfDamage;
                 connector.emit("infoToSync -g",{id:object.id,eventName:"player hit",objectKey:"users",
                   update:{
@@ -241,19 +289,23 @@ define([
                   }
                 });
                 if(this.health <= 0){
-                  object.kill()
+                  object.kill(idKiller)
                 }
               }
-              object.kill = function(){
+              object.kill = function(idKiller){
                 this.alive = false;
                 connector.emit("infoToSync -g",{id:object.id, eventName:"player kill",
                   update:{
-                    id: object.id, alive: false
+                    id: object.id,
+                    alive: false
                   },
                   send:{
-                    id: object.id
+                    id: object.id,
+                    idKiller:idKiller
                   }
                 });
+                players[idKiller].score+=100;
+                updateScoreDOM(idKiller);
               }
               object.collision = function(targetArray){
                 var arrayColliding = [];
@@ -271,43 +323,39 @@ define([
               object.waitForSpawn = function(){
                 this.frameSinceDeath++;
                 if(this.frameSinceDeath >= this.respawnDelay){
-                  this.alive = true;
                   this.frameSinceDeath = 0;
-                  this.x = Math.random()*700;
-                  this.y = Math.random()*500;
-                  this.health = this.maxHealth;
+                  this.respawn();
                   connector.emit("infoToSync -g",{id:this.id,eventName:"player respawn",
                     update:{
-                      x:this.x,y:this.y,health:this.maxHealth,id:this.id,alive:true
+                      x:this.x,y:this.y,w:this.w,h:this.h,bulletSpeed:this.bulletSpeed,bulletDamage:this.bulletDamage,speed:this.speed,health:this.maxHealth,id:this.id,alive:true
                     },
                     send:{
-                      x:this.x,y:this.y,health:this.maxHealth,id:this.id,
+                      x:this.x,y:this.y,w:this.w,h:this.h,bulletSpeed:this.bulletSpeed,bulletDamage:this.bulletDamage,speed:this.speed,health:this.maxHealth,id:this.id,alive:true
                     }
                   });
                 }
               }
             };
             //OWN PLAYER
-            players[ownPlayerId] = new NPC( (Math.random()*canvas.canvas.width-30)|0, (Math.random()*canvas.canvas.height-30)|0, 30, 30, ownPlayerId, 30, 30, true, randomColorRGBA());
+            players[ownPlayerId] = new NPC( (Math.random()*canvas.canvas.width-30)|0, (Math.random()*canvas.canvas.height-30)|0, 30, 30, ownPlayerId, 30, 30, true, randomColorRGBA(), 0);
             addInputControl(players[ownPlayerId]);
             addSendPositionCapabilities(players[ownPlayerId]);
             addShootCapabilities(players[ownPlayerId]);
             addSendDeathCapabilities(players[ownPlayerId]);
             bullets[ownPlayerId] = [];
+            createScoreDOM(ownPlayerId,players[ownPlayerId].score,true);
             //LOAD PLAYERS
             connector.on("load players",function(users){
-              console.log("LOAD PLAYERS",users);
               for(var key in users){
                 if(users[key].id != ownPlayerId){
-                  players[users[key].id] = new NPC( users[key].x, users[key].y, users[key].w, users[key].h, users[key].id, users[key].health, users[key].maxHealth, users[key].alive, users[key].color);
+                  players[users[key].id] = new NPC( users[key].x, users[key].y, users[key].w, users[key].h, users[key].id, users[key].health, users[key].maxHealth, users[key].alive, users[key].color, users[key].score);
                   bullets[users[key].id] = [];
-                  console.log(players[users[key].id]);
+                  createScoreDOM(users[key].id,users[key].score);
                 }
               }
             });
             //LOAD POWER UP
             connector.on("load powerUps",function(powerUps){
-              console.log("LOAD POWER UPS",powerUps);
               for(var key in powerUps){
                 powerUp[powerUps[key].id] = new PowerUp( powerUps[key].x, powerUps[key].y, powerUps[key].w, powerUps[key].h, powerUps[key].color, powerUps[key].id, powerUps[key].type, powerUps[key].modification);
               }
@@ -322,35 +370,32 @@ define([
               health:players[ownPlayerId].health,
               maxHealth:players[ownPlayerId].maxHealth,
               alive:players[ownPlayerId].alive,
-              color:players[ownPlayerId].color
+              color:players[ownPlayerId].color,
+              score:players[ownPlayerId].score
             });
 
             connector.emit("load -g");
             connector.emit("load -g","powerUps");
 
+
+            connector.on("name changed", function(data){
+              players[data.id].name = data.name;
+              updateScoreDOM(data.id);
+            });
             connector.on("new player", function(player){
-               players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.maxHealth, player.alive, player.color);
+               players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.maxHealth, player.alive, player.color, player.score);
                bullets[player.id] = [];
-               console.log("PLAYER ID° "+player.id+"CONNECTED.")
+               createScoreDOM(player.id,player.score);
             });
             //INIT ALL BULLETS
-            /*connector.on("init all bullets",function(bulletsSend){
-              for(var key in bulletsSend){
-                if(!bullets[key]){
-                  bullets[key] = [];
-                }
-                for(var i = 0; i < bulletsSend[key].length; i++){
-                  bullets[key].push(new Bullet(bulletsSend[key][i].x,bulletsSend[key][i].y,bulletsSend[key][i].vectorSend,bulletsSend[key][i].speed,bulletsSend[key][i].id,bulletsSend[key][i].color));
-                }
-              }
-            });*/
             //MOVE PARTS
             connector.on("new position",function(player){
                players[player.id].move(player.x,player.y);
             });
             //Deconnexion d'un joueur
             connector.on('player disconnected',function(user){
-               console.log("PLAYER ID° "+user.id+"DISCONNECTED.")
+               var element = document.getElementById(user.id);
+               document.body.removeChild(element);
                delete players[user.id];
             });
             //New Shoot fired by someone
@@ -364,22 +409,27 @@ define([
               players[player.id].alive = true;
               players[player.id].x = player.x;
               players[player.id].y = player.y;
-              players[player.id].health = player.health;
+              players[player.id].w = player.w;
+              players[player.id].h = player.h;
+              players[player.id].speed = player.speed;
+              players[player.id].bulletSpeed = player.bulletSpeed;
+              players[player.id].bulletDamage = player.bulletDamage;
             });
             connector.on("player hit", function(data){
               players[data.id].health = data.health;
             });
             connector.on("player kill",function(death){
               players[death.id].alive = false;
-              console.log("DEATH OF "+death.id);
+              if(death.idKiller == ownPlayerId){
+                players[ownPlayerId].score +=100;
+                updateScoreDOM(ownPlayerId);
+              }
               //eventBus.emit("CreateParticles",{x:players[death.id].x+(players[death.id].w*0.5),y:players[death.id].y+(players[death.id].h*0.5),size:4,style:true,lifeTime:180,color:players[death.id].color,count:20});
             });
             connector.on("new powerup", function(data){
-              console.log("New Power UP !")
               powerUp[data.id] = new PowerUp(data.x, data.y, data.w, data.h, data.color, data.id, data.type,data.modification);
             });
             connector.on("player get powerup",function(data){
-              console.log("PLAYER ID° "+data.idPlayer+" GOT A POWER UP", data);
               for(var key in data.playerModification){
                 players[data.idPlayer][key] = data.playerModification[key];
               }
@@ -422,7 +472,7 @@ define([
                     if(key != ownPlayerId){
                       var arrayColliding = players[ownPlayerId].collision(bullets[key]);
                       for(var i = 0; i < arrayColliding.length; i++){
-                        players[ownPlayerId].takeDamage(arrayColliding[i].bullet.damage,arrayColliding[i].idInArray);
+                        players[ownPlayerId].takeDamage(arrayColliding[i].bullet.damage,arrayColliding[i].bullet.id);
                         bullets[key].splice(arrayColliding[i].idInArray,1);
                       }
                       if(arrayColliding.length > 0){

@@ -24,7 +24,7 @@ module.exports = function(io,socket,StockingSpace){
         break;
         case 2:
         powerup.modification = {bulletDamage: 10};
-        powerup.color = "rouge";
+        powerup.color = "red";
         break;
         case 3:
         powerup.modification = {h:20,w:20,bulletDamage:20};
