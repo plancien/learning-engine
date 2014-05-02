@@ -43,12 +43,12 @@ define([
         var config = { "x" : this.x, "y" : 10, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
         game.cubeTombant = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce cube
         collisionEngine.addHitbox(game.cubeTombant, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
-        game.cubeTombant.collisionCallback['specialBox'] = function (side, box){ //On lui créer son callback sur la collision avec ce groupe
+        //game.cubeTombant.collisionCallback['specialBox'] = function (side, box){ //On lui créer son callback sur la collision avec ce groupe
             this.move = function(){
                 game.cubeTombant.x = this.x;
                 game.cubeTombant.y += 3;
             }
-        }
+        //}
         /*if (side != "in"){
                 game.cubeTombant.x = this.x;
                 game.cubeTombant.y += 3;
@@ -83,26 +83,25 @@ define([
     var run = function(game){
 	    requestAnimationFrame(function(){run(game)});
         game.frame++;
-        cubes.push (new creerCubeTombant(100 + Math.floor(Math.random() * 5) * 125));
-        game.canvas.context.fillStyle = "rgba(220,0,220,0.8)";
-	    game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+        if (game.frame % 60 == 0){
+            cubes.push (new creerCubeTombant(100 + Math.floor(Math.random() * 5) * 125));
+        }
+        //game.canvas.context.fillStyle = "rgba(220,0,220,0.8)";
+	    //game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+        game.canvas.context.clearRect(0, 0, game.canvas.width, game.canvas.height);
         game.canvas.context.fillStyle = specialBox.color;
         game.canvas.context.fillRect(specialBox.x, specialBox.y, specialBox.width, specialBox.height);
 
-        /*for (var i = 0; i < enemies_2.length; i++) {
-            //execution  des commandes de ennemi 2
-            enemies_2[i].draw();
-            enemies_2[i].move();
-            if (enemies_2[i].death == true ||
-                enemies_2[i].x < -150){
-                //disparition des ennemis 2
-                enemies_2.splice (i, 1);
+        for (var i = 0; i < cubes.length; i++) {
+            //execution  des commandes du cube
+            cubes[i].move();
+            if (cubes[i].x > 200){
+                //disparition du cube
+                console.log('kill');
+                cubes.splice (i, 1);
                 i--;
             }
-        }*/
-        /*for(i = 0; i < 5; i++){
-            creerCubeTombant();
-        }*/
+        }
         
         collisionEngine.calcul();
         gravityEngine.calcul();
