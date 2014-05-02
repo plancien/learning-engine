@@ -2,8 +2,9 @@
 define([
     'event_bus',
     'modules/cameraRender',
-    'modules/canvas'
-], function(eventBus, cameraRender, Canvas) { // init,
+    'modules/canvas',
+    'modules/collisionEngine'
+], function(eventBus, cameraRender, Canvas, collisionEngine) { // init,
 
     var init = function(game){
         game.frame = 0;

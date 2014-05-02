@@ -1,8 +1,8 @@
  define(['event_bus'], function(eventBus) {
 
     var ElementEngine = function(){
-        this.content = [];
     }
+    ElementEngine.prototype.content = [];
     ElementEngine.prototype.create = function(x,y,width,height, type, color){
         var element = {};
         element.x = x || 0;
