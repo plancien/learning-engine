@@ -23,7 +23,7 @@ define([
     'game_types/RunTicles/Player',
     'modules/bonus_chooser',
     'modules/add_canvasBoundingBox',
-    'modules/countdown',
+    'modules/countdown'
 ], function(eventBus, canvasCreate, frames, render, mouse, particles, connector, keyListner, Bonus, Player){
 
      //Canvas
@@ -67,58 +67,94 @@ define([
           restartTimer : '',
           cdNewGame : 0,
           Timer : 45,
-          //Bonus Setting
           bonus : {},
-          colors : ['red','green','blue','purple','orange','brown','yellow'],
+          colors : ['red','green','blue','purple','orange','brown','yellow']
       };
 
       function initGame(params){
           eventBus.on('init', function() {
               particles();
+              
               canvas = canvasCreate.create(paramsCanvas);
               ctx = canvas.context;
               ctx.font = '14pt Calibri';
-              for(var key in params){
-                  if(key == "bonusUrl"){
-                      gameContainer.goodImages.src = params[key];
+              
+              gameContainer.goodImages.src = params.bonusUrl;
+              gameContainer.badImages.src  = params.malusUrl;
+              
+              connector.emit("load routine server -g", {
+                  path: "runTiclesServer",
+                  info: {
+                      xMax:paramsCanvas.width,
+                      yMax:paramsCanvas.height
                   }
-                  else if (key == "malusUrl"){
-                      gameContainer.badImages.src= params[key];
-                  }
-              }
-              connector.emit("load routine server -g", {path:"runTiclesServer",info:{xMax:paramsCanvas.width,yMax:paramsCanvas.height}},"RunTiclesStockingKey")
-              CreateOwnPlayer(connector.socket.sessionid)
+              }, "RunTiclesStockingKey");
+              
+              createOwnPlayer(connector.socket.sessionid);
           });
 
-          function CreateOwnPlayer(playerID){
-              gameContainer.Players[playerID] = new Player(playerID,gameContainer.colors[gameContainer.nbOfPlayer]);
+          function createOwnPlayer(playerID) {
+              gameContainer.Players[playerID] = new Player(playerID, gameContainer.colors[gameContainer.nbOfPlayer]);
               addInputControl(gameContainer.Players[playerID]);
               connector.emit('create player -g',gameContainer.Players[playerID]);
               connector.emit('load -g');
           };
+          
+          function addInputControl(object){
+              eventBus.on('keys still pressed', function(e){
+                  var oldPosition = {
+                     x:object.x,
+                     y:object.y
+                  };
+                  if(Math.abs(object.speed.x) < object.MAXSPEED){
+                      if(e == "left"){
+                          object.speed.x -= object.accel;
+                      }
+                      if(e == "right"){
+                          object.speed.x += object.accel;
+                      }
+                  }
+                  if(Math.abs(object.speed.y) < object.MAXSPEED){
+                      if(e == "up"){
+                          object.speed.y -= object.accel;
+                      }
+                      if(e == "down"){
+                          object.speed.y += object.accel;
+                      }
+                  }
+                  object.x += object.speed.x;
+                  object.y += object.speed.y;
+                  object.angle = object.getAngle(object.speed);
+
+                  if(object.x != oldPosition.x || object.y != oldPosition.y){
+                      connector.emit("infoToSync -g",{id:object.id,eventName:'CoordsUpdate',update:{x:object.x,y:object.y},send:{x:object.x,y:object.y}});
+                  }
+              });
+          };
+          
       }
 
-      function mainLoopElements(){
+      function addMainLoopEvent(){
           eventBus.on("new frame", function() {
               ctx.clearRect(0,0,canvas.canvas.width,canvas.canvas.height);
-              if(gameContainer.state == 'Play'){
-                  playerManage(ctx,canvas.canvas);
+              if(gameContainer.state === 'Play'){
+                  playersManage(ctx,canvas.canvas);
                   bonusManage(ctx);
               }
-              else if(gameContainer.state == 'Over'){
+              else if(gameContainer.state === 'Game Over'){
                   afficheScoreEnd(ctx,canvas.canvas);
                   compteARebour(ctx,canvas.canvas);
               }
           });
 
-          function playerManage(ctx,canvas){
+          function playersManage(ctx,canvas){
               var i = 0;
               for(var key in gameContainer.Players){
                   i+=50;
                   gameContainer.Players[key].loop(ctx,i,canvas,gameContainer);
               }
               if(gameContainer.Players[gameContainer.idOfPlayer].points>=gameContainer.maxPoints){
-                  connector.emit("game over -g",gameContainer.idOfPlayer)
+                  connector.emit("game over -g",gameContainer.idOfPlayer);
               }
           };
 
@@ -129,7 +165,7 @@ define([
                   if(gameContainer.bonus[key].lifeTime<0){
                       delete gameContainer.bonus[key];
                   }
-              };
+              }
           };
 
           function compteARebour(ctx,canvas){
@@ -199,7 +235,7 @@ define([
           });
           //WHEN PPL WIN
           connector.on('game over',function(id){
-              EndGame(id)
+              EndGame(id);
           });
           //WHEN PPL WIN
           connector.on('BonusTake',function(info){
@@ -216,37 +252,7 @@ define([
 //-----------------------------------------------
 //                     FUNCTIONS
 //-----------------------------------------------
-        function addInputControl(object){
-            eventBus.on('keys still pressed', function(e){
-                var oldPosition = {
-                   x:object.x,
-                   y:object.y
-                };
-                if(Math.abs(object.speed.x) < object.MAXSPEED){
-                    if(e == "left"){
-                        object.speed.x -= object.accel;
-                    }
-                    if(e == "right"){
-                        object.speed.x += object.accel;
-                    }
-                }
-                if(Math.abs(object.speed.y) < object.MAXSPEED){
-                    if(e == "up"){
-                        object.speed.y -= object.accel;
-                    }
-                    if(e == "down"){
-                        object.speed.y += object.accel;
-                    }
-                }
-                object.x += object.speed.x;
-                object.y += object.speed.y;
-                object.angle = object.getAngle(object.speed);
 
-                if(object.x != oldPosition.x || object.y != oldPosition.y){
-                    connector.emit("infoToSync -g",{id:object.id,eventName:'CoordsUpdate',update:{x:object.x,y:object.y},send:{x:object.x,y:object.y}});
-                }
-            });
-        };
 
 
 
@@ -270,12 +276,12 @@ define([
             else{
                 gameContainer.winner = gameContainer.Players[key].color;
             }
-            gameContainer.state = 'Over';
+            gameContainer.state = 'Game Over';
             eventBus.emit('start countdown', gameContainer.Timer);
         };
 
         function restartGame(){
-            i=0
+            var i=0;
             for(var key in gameContainer.Players){
                 gameContainer.Players[key].points = 0;
                 gameContainer.Players[key].speed = {x : 0,y : 0};
@@ -293,6 +299,6 @@ define([
 
         addEvents();
 
-        mainLoopElements();
+        addMainLoopEvent();
     };
 });

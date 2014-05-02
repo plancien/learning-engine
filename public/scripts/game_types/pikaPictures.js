@@ -49,7 +49,7 @@ define([
         game.pikachu.speedY+=5 
     });
     cameraRender.fixedCameraOn(game.pikachu);
-    cameraRender.addSprite("pikachu", "./images/pikachu.png", pikachu.pikaSpriteConfig);
+    cameraRender.addSprite("pikachu", "./images/green_guy_sprites.png", pikachu.pikaSpriteConfig);
     cameraRender.putSpriteOn(game.pikachu, "pikachu");
     cameraRender.add(game.pikachu, 11);
 

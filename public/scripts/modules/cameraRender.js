@@ -195,6 +195,8 @@ define(['event_bus'], function(eventBus) {
             element.currentIndex = 0;
             element.spriteFrame = 0;
             element.spriteNbLoop = 0;
+            element.spriteAnchorX = element.width/2 || 0;
+            element.spriteAnchorY = element.height/2 || 0;
             var that = this;
             element.changeAnimation = function(name){
                 if (that.sprites[this.sprite][name]){
@@ -227,8 +229,16 @@ define(['event_bus'], function(eventBus) {
             }
         }
         var indexOfAnim = target.offsetY;
+        this.canvas.context.save();
+        this.canvas.context.translate(element.x-this.x+element.width/2, element.y-this.y+element.height/2);
+        if (target.scaleX && target.scaleY)
+            this.canvas.context.scale(target.scaleX, target.scaleY);
+        if (target.rotation)
+            this.canvas.context.rotate(target.rotation);
         this.canvas.context.drawImage(this.images[element.sprite], element.width * element.currentIndex, indexOfAnim, element.width, element.height, 
-                                    element.x-this.x, element.y-this.y, element.width, element.height);
+                                    -element.width/2, -element.height/2, element.width, element.height);
+
+        this.canvas.context.restore();
     }
     CameraRender.prototype.backgroundParralax = function(src, diviseur, remanance){
         this.parralax = {};
