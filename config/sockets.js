@@ -43,6 +43,7 @@ module.exports = function(io) {
     var id = 0;
     var users = {};
     var amountOfConnections = 0;
+
     //-GForce API
     /*******************************/
     var routineServerLoaded = false;
@@ -72,42 +73,51 @@ module.exports = function(io) {
         **************************************************/
         //Init the server's routine for your game.
         //BEST WAY TO USE ==> in your eventBus.on("init"), connector.emit("load routine server -g", PublicServerStockingSpaceKey)
-        socket.on("load routine server -g", function(info){
-            if(info['path'] === ""){
+        socket.on("load routine server -g", function(routine){
+
+            if(routine['path'] === ""){
                 console.warn("Le chemin de votre module est manquant. Des problèmes surviendront surement très bientôt. lol");
             }
-            PublicServerStockingSpaceKey = info['path'];
-            if(!PublicServerStockingSpace[info['path']]){
-                PublicServerStockingSpace[info['path']] = {
+
+            PublicServerStockingSpaceKey = routine['path'];
+
+            if(!PublicServerStockingSpace[routine['path']]){
+                PublicServerStockingSpace[routine['path']] = {
                     users: {}
                 };
             }
+
             if(!routineServerLoaded){
-                routineG = require("../public/scripts/modules/"+info['path'])(io,socket,PublicServerStockingSpace[info['path']],info['info']);
+                routineG = require("../public/scripts/modules/"+routine['path'])(io,socket,PublicServerStockingSpace[routine['path']],routine['info']);
                 routineServerLoaded = true;
-                console.log("ROUTINE CHARGER")
+                console.log("ROUTINE LOADED");
             }
         });
         
         //CREATE PLAYER
         //BEST WAY TO USE ==> player = {id:monID,player:{maPropriété1:value1,maPropriété2:value2}};
         socket.on("create player -g", function(data){
+
             //Si on n'a pas préciser les informations à stocker
             if(!data){
                 data = {id:socket.id};
             }
+
             //Si l'id envoyé est incorrect
             if(data.id === ""){
                 data.id = socket.id;
             }
+
             //On stocke chaque valeur contenu dans player dans users[player.id] un objet représentant le joueur
             PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.id] = {};
             for(var key in data){
                 PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.id][key] = data[key];
             }
-            console.log("PLAYER",data.id," CREATED");
+
             //On envoie les données contenu dans player à tout les autres
             socket.broadcast.emit("new player",data);
+
+            console.log("PLAYER",data.id," CREATED");
         });
         
         
@@ -163,10 +173,10 @@ module.exports = function(io) {
             //Si votre modification implique d'envoyer une info supplémentaire sur le type de modification
             if(data.eventName){
                 socket.broadcast.emit(data.eventName,data.send);
-            } else{
+            } 
+            else{
                 socket.broadcast.emit('Synchronization',data.send);
-            }
-            
+            } 
         });
         
         
@@ -174,12 +184,12 @@ module.exports = function(io) {
         //BEST WAY TO USE ==> .emit without parameters to load the users or with parameters to load any other array
         socket.on("load -g",function(keyToLoad){
             if(!keyToLoad){
-                console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
                 socket.emit("load players", PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]);
+                console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
             }
             else{
-                console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL "+keyToLoad);
                 socket.emit("load "+keyToLoad, PublicServerStockingSpace[PublicServerStockingSpaceKey][keyToLoad]);
+                console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL "+keyToLoad);
             }
         });
         
@@ -188,7 +198,11 @@ module.exports = function(io) {
         //DELETE THE OBJECT -> SERVER-SIDE
         //BEST WAY TO USE ==> {idObject:ID-IN-THE-OBJECTKEY-ARRAY,objectKey:NAME-OF-THE-ARRAY}
         socket.on("delete info -g",function(data){
+
+            //data has been send and contain objectKey and idObject too
             if(!!data && data.objectKey && data.idObject){
+
+                //If associative array "objectKey" exist and the id in associative array "objectKey" exist too
                 if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.idObject]){
                     console.log("DELETE "+data.idObject+ " OF "+data.objectKey+" DONE.");
                     delete PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.idObject];
@@ -201,8 +215,8 @@ module.exports = function(io) {
         //BEST WAY TO USE ==> N/A
         socket.on('disconnect', function(){
 
-            console.log("PLAYER DISCONNECTED ID° "+socket.id);
             socket.broadcast.emit('player disconnected', {id:socket.id});
+            console.log("PLAYER DISCONNECTED ID° "+socket.id);
 
             if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id]){
                 console.log("PLAYER ID° "+socket.id+" DELETED FROM USERS");
@@ -212,6 +226,7 @@ module.exports = function(io) {
                 for(var key in PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]){
                     i++;
                 }
+                //If no player remaining
                 if(i == 0 && routineServerLoaded == true){
                     clearInterval(routineG);
                     routineServerLoaded = false;
@@ -227,17 +242,7 @@ module.exports = function(io) {
           socket. => juste le player
           socket.broadcast => tout le monde sauf le player
         *******************************************/
-        //POWER UP
-        socket.on("player get powerup", function(data){
-            for (var key in data.player) {
-                PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.idPlayer][key] = data.player[key];
-                console.log("PLAYER ID° "+data.idPlayer+" "+key+" IS NOW "+data.player[key]);
-            }
-            socket.broadcast.emit("player get powerup",data);
-            delete PublicServerStockingSpace[PublicServerStockingSpaceKey]["powerUps"][data.idPowerUp];
-        });
 
-        //     FIN DU CODE DE TIMOTENOOB    //
 
 
         socket.on("ask images names", function() {
