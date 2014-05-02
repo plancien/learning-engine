@@ -33,7 +33,7 @@ define([
 			delay = delay || 1;
 				if (typeof speed === "number") {
 					if (typeof objective === "object") {
-						var speed = tools.getDistance(this,{x: objective[0],y: objective[1]}/delay
+						var speed = tools.getDistance(this,{x: objective[0],y: objective[1]}/delay})
 						if (typeof objective[0] === "number" && typeof objective[1] === "number") {
 							this.x += Math.cos(tools.getAngle(this,{x: objective[0],y: objective[1]}))*speed;
 							this.y -= Math.sin(tools.getAngle(this,{x: objective[0],y: objective[1]}))*speed;

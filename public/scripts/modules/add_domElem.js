@@ -1,3 +1,5 @@
+
+
 define(['event_bus'], function(eventBus) {
     
     eventBus.on('createElement', function(params) {
