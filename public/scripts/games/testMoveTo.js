@@ -4,7 +4,7 @@ define([
     'modules/frames',
     'modules/mouse',
     'modules/moveToTarget'
-], function(eventBus, Canvas, frames, mouse) {
+], function(eventBus, Canvas, frames, mouse, moveToTarget) {
 
 	var canvas = Canvas.create({"width":480,"height":270});
 	var context = canvas.context;
@@ -28,15 +28,18 @@ define([
 	}
 
 	var target = new Target();
-	var carre = new Carre;
+	var carre = new Carre(50,50,50,50,"#6A6");
 
 	eventBus.on('mouse update', function (mouse) {
 		target.x = mouse.x;
 		target.y = mouse.y; 
 	})
 	eventBus.on('new frame',function () {
-		Carre.draw(context);
-		Carre.moveTo(target,10);
+		context.fillStyle = "#000";
+		context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
+		carre.moveTo(target,10);
+		carre.draw(context);
+
 	})
 
 });
