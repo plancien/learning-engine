@@ -3,24 +3,28 @@ define([
     'modules/canvas',
 ], function(eventBus, Canvas) {
 	var game = {};
-	game.canvas = Canvas.create({"width" : 800, "height" : 600});
-	console.log(game.canvas.width)
-	game.canvas.context.fillStyle = "rgb(0,0,0)";
-	game.canvas.context.fillRect(0,0, 800, 600); 
+	var canvas = Canvas.create({"width" : 800, "height" : 600});
+	game.canvas = canvas.canvas;
+	game.context = canvas.context
+	console.log(game.canvas)
+	game.context.fillStyle = "rgb(0,0,0)";
+	game.context.fillRect(0,0, 800, 600); 
 	alert("hello world");
+	// grille(game)
 });
 function grille(game){
-    var carre.height = 20;
-    var carre.width  = 20;
-    var maxX = (canvas.width/carre.height + carre.width)
-    var maxY = (canvas.height/carre.height + carre.width)
-    game.ctx.fillStyle = 'black';
-     for(int iX = 0; iX < maxx; iX++){
-        for(int iY = 0; iY < maxY; iY++){
+	var carre = {}
+    carre.height = 20;
+    carre.width  = 20;
+    var maxX = (canvas.width/carre.height + carre.width);
+    var maxY = (canvas.height/carre.height + carre.width);
+    game.context.fillStyle = 'white';
+     for(var iX = 0; iX < maxX; iX++){
+        for(var iY = 0; iY < maxY; iY++){
             //Dessiner ---------
-            game.drawLine(0, (iY * carre.height + carre.width), canvas.width, (iY * carre.height + carre.width));
+            game.context.drawLine(0, (iY * carre.height + carre.width), canvas.width, (iY * carre.height + carre.width));
             //Dessiner | | | | |
-            game.drawLine((iX * carre.height + carre.width), 0, (iX * carre.height + carre.width), canvas.height);
+            game.context.drawLine((iX * carre.height + carre.width), 0, (iX * carre.height + carre.width), canvas.height);
         }
     }
 }
