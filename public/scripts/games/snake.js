@@ -2,16 +2,16 @@ define([
     'event_bus',
     'event_capabilities'
 ], function(eventBus, addEventCapabilities) {
-        var game = {};
-        game.canvas: document.getElementById("canvas"),
-        game.ctx: document.getElementById("canvas").getContext('2d'),
+        var game ={};
+        game.canvas= document.getElementById("canvas");
+        game.ctx= document.getElementById("canvas").getContext('2d');
         game.run = function run(){
             window.requestAnimationFrame(function(){game.run()});
             this.ctx.fillStyle ='white';
             this.ctx.fillRect(0,0,canvas.width,canvas.height)
            
         },
-        game.player:{
+        game.player={
             x:0,
             y:0,
             w:64,
@@ -39,7 +39,7 @@ define([
             },
         }
 
-    };
+    }
     addEventCapabilities(game.player);
     game.player.on('move',function(e){
         console.log("loooool",this)
@@ -69,7 +69,7 @@ define([
 }
 
     function run(game){
-         game.ctx.fillStyle = this.player.color;
-        game.ctx.fillRect(this.player.x,this.player.y,this.player.w,this.player.h);
+         game.ctx.fillStyle = game.player.color;
+        game.ctx.fillRect(game.player.x,game.player.y,game.player.w,game.player.h);
     }
 });
