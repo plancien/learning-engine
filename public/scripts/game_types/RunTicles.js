@@ -115,7 +115,7 @@ define([
               var i = 0;
               for(var key in gameContainer.Players){
                   i+=50;
-                  gameContainer.Players[key].loop(ctx,i,canvas,gameContainer.bonus,eventBus);
+                  gameContainer.Players[key].loop(ctx,i,canvas,gameContainer);
               }
               if(gameContainer.Players[gameContainer.idOfPlayer].points>=gameContainer.maxPoints){
                   connector.emit("game over -g",gameContainer.idOfPlayer)
@@ -252,7 +252,7 @@ define([
 
 
 
-        function CheckCollision(object1,object2){
+        gameContainer.checkCollision = function(object1,object2){
             if((object1.x < (object2.x + object2.w)) && ((object1.x + object1.w) > object2.x) && 
                 (object1.y < (object2.y + object2.h)) && ((object1.y + object1.h) > object2.y)){
                 return true;
