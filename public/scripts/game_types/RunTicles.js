@@ -84,7 +84,7 @@ define([
                       gameContainer.badImages.src= params[key];
                   }
               }
-              connector.emit("load routine server -g", {path:"RunTiclesServer",info:{xMax:paramsCanvas.width,yMax:paramsCanvas.height}},"RunTiclesStockingKey")
+              connector.emit("load routine server -g", {path:"runTiclesServer",info:{xMax:paramsCanvas.width,yMax:paramsCanvas.height}},"RunTiclesStockingKey")
               CreateOwnPlayer(connector.socket.sessionid)
           });
 
