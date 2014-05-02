@@ -1,7 +1,25 @@
-require(['connector'], function(socket) {
+﻿require(['connector'], function(socket) {
 
     $(function() {
         socket.emit("ask gamesInfos");
+        socket.emit("ask images names");
+		
+		socket.on('send images names', function(data) {//populate selects with all images in the image folder
+            
+			$("#bonusImg").html('');
+			$("#malusImg").html('');
+			var display = "";
+			var imageTypes = [".jpeg",".jpg",".png",".gif"];
+			for(var i=data.length-1; i>=0; i--){
+				var imageName = data[i].replace("_"," ").replace("<","").replace(">","");
+				for(var j=imageTypes.length-1; j>=0; j--){
+					imageName = imageName.replace(imageTypes[j],"");
+				}
+				display += '<option value="images/' + data[i] + '">' + imageName + '</option>';
+			}
+			$("#bonusImg").html(display);
+			$("#malusImg").html(display);
+        });
 
         socket.on('inject css', function(data) {
             $("head").append("<link rel='stylesheet' type='text/css' href='" + data + "'>");
