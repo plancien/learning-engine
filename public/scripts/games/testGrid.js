@@ -52,7 +52,7 @@ define([
             //combo between the mouse and the grid to select a case
             for (var i = 0; i < test.grid.caseTable.length; i++) {
                 for (var j = 0; j < test.grid.caseTable[i].length; j++) {
-                    if (test.mouse.x >= test.grid.caseTable[i][j].x && test.mouse.x <= (test.grid.caseTable[i][j].x + test.grid.caseTable[i][j].width) && test.mouse.y >= test.grid.caseTable[i][j].y && test.mouse.y <= (test.grid.caseTable[i][j].y + test.grid.caseTable[i][j].height)) {
+                    if (test.mouse.canvasX >= test.grid.caseTable[i][j].x && test.mouse.canvasX <= (test.grid.caseTable[i][j].x + test.grid.caseTable[i][j].width) && test.mouse.canvasY >= test.grid.caseTable[i][j].y && test.mouse.canvasY <= (test.grid.caseTable[i][j].y + test.grid.caseTable[i][j].height)) {
                         test.grid.caseTable[i][j].select(true);
                     } else test.grid.caseTable[i][j].select(false);
                 }
