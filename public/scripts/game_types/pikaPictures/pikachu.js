@@ -1,7 +1,8 @@
 define([
     'event_bus',
     'modules/squareHero',
-], function(eventBus, heroEngine) {
+    'modules/collisionEngine'
+], function(eventBus, heroEngine, collisionEngine) {
     var pikachu = function(){
         this.pikaSpriteConfig = {};
         this.pikaSpriteConfig.idle = {"width" : 36, "height" :38, "nbAnim" : 1, "loop" : -1, "fps" : 3, "offsetY" : 64};
@@ -16,34 +17,34 @@ define([
         var inputsPika = {"left":"Q", "right":"D", "up":"Z", "down":"S"};   //On applique des inputs pour ce hero
         var configPika = { "x" : 1200, "y" : 1100, "maxSpeed" : 30, "acceleration" : 4, "deceleration" : 2, "color" : "rgba(0,200,255,1)", "width" : 39, "height" : 41, "inputs" : inputsPika};
        
-        game.pikachu = heroEngine.create(configPika, game.canvas.context, true);
-        collisionEngine.addElement(game.pikachu, "pikachu");
-        game.pikachu.collisionCallBack = {};
-        game.pikachu.collisionCallback["wall"] = function(opponent){
-            if (game.pikachu.x + game.pikachu.width > opponent.x && game.pikachu.x < opponent.x)
-                game.pikachu.x = opponent.x - game.pikachu.width;
-            else if (game.pikachu.x < opponent.x + opponent.width && game.pikachu.x + game.pikachu.width > opponent.x + opponent.width)
-                game.pikachu.x = opponent.x + opponent.width;
-            else if (game.pikachu.y > opponent.y){
-                game.pikachu.y = opponent.y + opponent.height;
-                    if(!game.pikachu.desaccrochage){
-                        game.pikachu.accrochage= true;
+        this.pikachu = heroEngine.create(configPika, true, true);
+        collisionEngine.addElement(this.pikachu, "pikachu");
+        this.pikachu.collisionCallBack = {};
+        this.pikachu.collisionCallback["wall"] = function(opponent){
+            if (this.pikachu.x + this.pikachu.width > opponent.x && this.pikachu.x < opponent.x)
+                this.pikachu.x = opponent.x - this.pikachu.width;
+            else if (this.pikachu.x < opponent.x + opponent.width && this.pikachu.x + this.pikachu.width > opponent.x + opponent.width)
+                this.pikachu.x = opponent.x + opponent.width;
+            else if (this.pikachu.y > opponent.y){
+                this.pikachu.y = opponent.y + opponent.height;
+                    if(!this.pikachu.desaccrochage){
+                        this.pikachu.accrochage= true;
                     }
-                 if(game.pikachu.currentAnim=="runLeft"){
-                    game.pikachu.speedY=-5;
-                    game.pikachu.changeAnimation("runLeftReverse");
+                 if(this.pikachu.currentAnim=="runLeft"){
+                    this.pikachu.speedY=-5;
+                    this.pikachu.changeAnimation("runLeftReverse");
                     
                  }
-                 else if(game.pikachu.currentAnim=="runRight"){
-                    game.pikachu.speedY=-5;
-                    game.pikachu.changeAnimation("runRightReverse");
+                 else if(this.pikachu.currentAnim=="runRight"){
+                    this.pikachu.speedY=-5;
+                    this.pikachu.changeAnimation("runRightReverse");
                     
                  }
             }
             else{
-                 game.pikachu.desaccrochage=false;
-                 game.pikachu.accrochage= false;
-                 game.pikachu.y = opponent.y - game.pikachu.height; 
+                 this.pikachu.desaccrochage=false;
+                 this.pikachu.accrochage= false;
+                 this.pikachu.y = opponent.y - this.pikachu.height; 
                 
             }
         }
