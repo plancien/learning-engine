@@ -83,7 +83,7 @@ define([
     var run = function(game){
 	    requestAnimationFrame(function(){run(game)});
         game.frame++;
-        if (game.frame % 60 == 0){
+        if (game.frame % 60 == 0 && cubes.length < 6){
             cubes.push (new creerCubeTombant(100 + Math.floor(Math.random() * 5) * 125));
         }
         //game.canvas.context.fillStyle = "rgba(220,0,220,0.8)";
@@ -95,7 +95,7 @@ define([
         for (var i = 0; i < cubes.length; i++) {
             //execution  des commandes du cube
             cubes[i].move();
-            if (cubes[i].x > 200){
+            if (game.cubeTombant.y > 500){
                 //disparition du cube
                 console.log('kill');
                 cubes.splice (i, 1);
