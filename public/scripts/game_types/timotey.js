@@ -28,12 +28,13 @@ define([
             var ownPlayerId = connector.socket.sessionid;
             var time = new Time();
 
-            function randomColorRGBA(){
+            //modifié pour que si le parametre alpha == true, donne en plus un alpha aléatoire (sinon meme utilisation qu'avant)
+            function randomColorRGBA(alpha){
               var r = (Math.random()*255)|0;
               var g = (Math.random()*255)|0;
               var b = (Math.random()*255)|0;
-              var a = Math.random();
-              var rgba="rgba("+r+","+g+","+b+",1)";
+              var a = alpha ? Math.random() : 1; 
+              var rgba="rgba("+r+","+g+","+b+","+a+")";
               return rgba;
             }
 

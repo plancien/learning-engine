@@ -61,7 +61,7 @@ define([
     var run = function(game){
 	    requestAnimationFrame(function(){run(game)});
         game.frame++;
-        game.canvas.context.fillStyle = "rgba(220,0,220,0.8";
+        game.canvas.context.fillStyle = "rgba(220,0,220,0.8)";
 	    game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
         game.canvas.context.fillStyle = specialBox.color;
         game.canvas.context.fillRect(specialBox.x, specialBox.y, specialBox.width, specialBox.height);
