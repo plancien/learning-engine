@@ -36,17 +36,18 @@ define([
     //eventBus.on("key pressed up", function(){ superHero.speedY = -10 });    //On lui rajoute une fonction de saut a la vole     
 
 
-    var creerCubeTombant = function(x){
+    var creerCubeTombant = function(x,y){
         this.x = x;
+        this.y = y;
         //var posX = 100 + Math.floor(Math.random() * 5) * 125;
         //console.log(posX);
-        var config = { "x" : this.x, "y" : 10, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
+        var config = { "x" : this.x, "y" : this.y, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
         game.cubeTombant = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce cube
         collisionEngine.addHitbox(game.cubeTombant, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
         //game.cubeTombant.collisionCallback['specialBox'] = function (side, box){ //On lui créer son callback sur la collision avec ce groupe
             this.move = function(){
                 game.cubeTombant.x = this.x;
-                game.cubeTombant.y += 3;
+                this.y = game.cubeTombant.y += 3;
             }
         //}
         /*if (side != "in"){
@@ -60,7 +61,7 @@ define([
 
 
     var creerMur = function(){
-        wall.create(100, 550, 600, 30);     
+        wall.create(100, 550, 475, 30);     
         collisionEngine.addElement(wall.content[0], "wall");            //On met juste un mur dedans pour les test
         wall.content[0].collisionCallback["hero"] = function(opponent){ //On lui attribut une fonction de callback quand collisionne avec un hero
             if (opponent.y + opponent.height > wall.content[0].y + wall.content[0].height)      //(on simule un mur juste en y)
@@ -84,7 +85,7 @@ define([
 	    requestAnimationFrame(function(){run(game)});
         game.frame++;
         if (game.frame % 60 == 0 && cubes.length < 6){
-            cubes.push (new creerCubeTombant(100 + Math.floor(Math.random() * 5) * 125));
+            cubes.push (new creerCubeTombant(100 + Math.floor(Math.random() * 4) * 125), 10);
         }
         //game.canvas.context.fillStyle = "rgba(220,0,220,0.8)";
 	    //game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
@@ -95,7 +96,7 @@ define([
         for (var i = 0; i < cubes.length; i++) {
             //execution  des commandes du cube
             cubes[i].move();
-            if (game.cubeTombant.y > 500){
+            if (cubes[i].y > 450){
                 //disparition du cube
                 console.log('kill');
                 cubes.splice (i, 1);
