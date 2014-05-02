@@ -47,7 +47,7 @@ module.exports = function(io) {
     var routineServerLoaded = false;
     var PublicServerStockingSpace = {};
     var PublicServerStockingSpaceKey = "default";
-    
+    var routineG;
     
     
     
@@ -82,7 +82,7 @@ module.exports = function(io) {
                 };
             }
             if(!routineServerLoaded){
-                var routineG = require("../public/scripts/modules/"+info['path'])(io,socket,PublicServerStockingSpace[info['path']],info['info']);
+                routineG = require("../public/scripts/modules/"+info['path'])(io,socket,PublicServerStockingSpace[info['path']],info['info']);
                 routineServerLoaded = true;
             }
         });
@@ -203,6 +203,14 @@ module.exports = function(io) {
             if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id]){
                 console.log("PLAYER ID° "+socket.id+" DELETED FROM USERS");
                 delete PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id];
+            }
+            var i = 0;
+            for(var key in PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]){
+                i++;
+            }
+            if(i == 0 && routineServerLoaded == true){
+                clearInterval(routineG);
+                routineServerLoaded = false;
             }
         });
         

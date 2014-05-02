@@ -8,27 +8,36 @@ define([
     "modules/mouse",
     "modules/add_canvasBoundingBox",
     "modules/particle_generator"
-], function (eventBus,canvasCreate,framer,keyListener,addEventCapabilities,connector,mouse,canvasBoundingBox,Particle) {	//Déclare les variables contenant les modules chargé dans define([])
+], function (eventBus,canvasCreate,framer,keyListener,addEventCapabilities,connector,mouse,canvasBoundingBox,Particle) {  //Déclare les variables contenant les modules chargé dans define([])
 
-	//Le module retourné
+  //Le module retourné
     return function(params) {
         var container;
         //équivalent du window.onload
         eventBus.on('init', function (_container) {
           connector.emit("load routine server -g",{path:"timoteyServer"},"timoteyStockingKey");
-        	//???
+          //???
             container = _container;
             //Ici je récupère le canvas, canvasCreate est le module canvas.js chargé plus haut
             Particle();
+
+
             var canvas = canvasCreate.create({width:800,height:600,id:"TimoteyCanvas"});
             var context = canvas.context;
+            context.fillStyle = "black";
+            context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
+            
             var players = {};
-            var bullets = {};
-            var powerUp = {};
             var ownPlayerId = connector.socket.sessionid;
+            
+            var bullets = {};
+            
+            var powerUp = {};
+            
             var time = new Time();
+            
 
-            //modifié pour que si le parametre alpha == true, donne en plus un alpha aléatoire (sinon meme utilisation qu'avant)
+            //RETURN RGBA COLOR
             function randomColorRGBA(alpha){
               var r = (Math.random()*255)|0;
               var g = (Math.random()*255)|0;
@@ -36,14 +45,16 @@ define([
               var a = alpha ? Math.random() : 1; 
               var rgba="rgba("+r+","+g+","+b+","+a+")";
               return rgba;
-            }
+            };
 
+            //MANAGE TIME
             function Time(){
               this.elapsedTime = 0;
               this.deltaTime = 0;
               this.frame = 0;
-            }
+            };
 
+            //COMPONENT POWERUP
             function PowerUp(x, y, w, h, color, id, type, modification){
               this.x = x;
               this.y = y;
@@ -92,6 +103,7 @@ define([
               }
             };
 
+            //COMPONENT NPC (AKA PLAYER)
             function NPC(x, y, w, h, id, health, maxHealth, alive, color, score){
                this.x = x || 0;
                this.y = y || 0;
@@ -146,7 +158,8 @@ define([
                 this.bulletDamage = 5;
                };
             };
-            //BULLETS
+
+            //CLASS BULLET
             function Bullet(x, y, vector, speed, id, idInArray, color, damage){
               this.x = x;
               this.y = y;
@@ -170,11 +183,15 @@ define([
                context.fillRect(this.x,this.y,this.w,this.h);
               };
             };
+
+            //COMPONENT POSITION SENDING
             function addSendPositionCapabilities(object){
                object.sendPositionToServer = function(){
                    connector.emit('modification player -g',{id:this.id,x:this.x,y:this.y});
                }
             };
+
+            //COMPONENT INPUT CONTROL
             function addInputControl(object){
                eventBus.on('keys still pressed', function(e){
                    var oldPosition = {
@@ -227,6 +244,8 @@ define([
                 }
                });
             };
+
+            //COMPONENT SHOOT CAPABILITIES
             function addShootCapabilities(object){
               object.shoot = function(vector){
                 bullets[this.id].push(new Bullet( this.x+this.w*0.5, this.y+this.h*0.5, vector, this.bulletSpeed, this.id, bullets[this.id].length, this.color, this.bulletDamage));
@@ -240,6 +259,8 @@ define([
                 });
               };
             };
+
+            //RETURN DOM SCORE
             function createScoreDOM(id, score, own){
               var domScore = document.createElement("p");
               domScore.id = id;
@@ -271,11 +292,15 @@ define([
                 document.body.appendChild(btn);
               }
             };
+
+            //UPDATE DOM ELEMENT
             function updateScoreDOM(id){
               var player = players[id];
               var element = document.getElementById(player.id);
               element.innerHTML = (player.name || player.id) + " : "+ player.score; 
             };
+
+            //DEATH SENDING CAPABILITIES
             function addSendDeathCapabilities(object){
               object.respawnDelay = 180;
               object.frameSinceDeath = 0;
@@ -337,7 +362,10 @@ define([
                 }
               }
             };
-            //OWN PLAYER
+
+            /*********************************************
+                      -OWN PLAYER MANAGEMENT-
+            *********************************************/
             players[ownPlayerId] = new NPC( (Math.random()*canvas.canvas.width-30)|0, (Math.random()*canvas.canvas.height-30)|0, 30, 30, ownPlayerId, 30, 30, true, randomColorRGBA(), 0);
             addInputControl(players[ownPlayerId]);
             addSendPositionCapabilities(players[ownPlayerId]);
@@ -345,7 +373,8 @@ define([
             addSendDeathCapabilities(players[ownPlayerId]);
             bullets[ownPlayerId] = [];
             createScoreDOM(ownPlayerId,players[ownPlayerId].score,true);
-            //LOAD PLAYERS
+
+            //LOAD PLAYERS SUBSCRIBING
             connector.on("load players",function(users){
               for(var key in users){
                 if(users[key].id != ownPlayerId){
@@ -355,12 +384,14 @@ define([
                 }
               }
             });
-            //LOAD POWER UP
+
+            //LOAD POWER UP SUBSCRIBING
             connector.on("load powerUps",function(powerUps){
               for(var key in powerUps){
                 powerUp[powerUps[key].id] = new PowerUp( powerUps[key].x, powerUps[key].y, powerUps[key].w, powerUps[key].h, powerUps[key].color, powerUps[key].id, powerUps[key].type, powerUps[key].modification);
               }
             });
+
             //EMIT OWN PLAYER CREATED
             connector.emit("create player -g",{
               id:ownPlayerId,
@@ -375,37 +406,44 @@ define([
               score:players[ownPlayerId].score
             });
 
+            //LOADER EMIT
             connector.emit("load -g");
             connector.emit("load -g","powerUps");
 
-
+            //NAME CHANGED SUBSCRIBING
             connector.on("name changed", function(data){
               players[data.id].name = data.name;
               updateScoreDOM(data.id);
             });
+
+            //NEW PLAYER SUBSCRIBING
             connector.on("new player", function(player){
                players[player.id] = new NPC(player.x, player.y, player.w, player.h, player.id, player.health, player.maxHealth, player.alive, player.color, player.score);
                bullets[player.id] = [];
                createScoreDOM(player.id,player.score);
             });
-            //INIT ALL BULLETS
-            //MOVE PARTS
+            
+            //NEW POSITION SUBSCRIBING
             connector.on("new position",function(player){
                players[player.id].move(player.x,player.y);
             });
-            //Deconnexion d'un joueur
+
+            //PLAYER DISCONNECT SUBSCRIBING
             connector.on('player disconnected',function(user){
                var element = document.getElementById(user.id);
                document.body.removeChild(element);
                delete players[user.id];
             });
-            //New Shoot fired by someone
+            
+            //PLAYER SHOOT SUBSCRIBING
             connector.on("player shoot", function(shoot){
               if(!bullets[shoot.id]){
                 bullets[shoot.id] = [];
               }
               bullets[shoot.id].push(new Bullet(shoot.x,shoot.y,shoot.vectorSend,shoot.speed,shoot.id, shoot.idInArray,shoot.color));
             });
+
+            //PLAYER RESPAWN SUBSCRIBING
             connector.on("player respawn", function(player){
               players[player.id].alive = true;
               players[player.id].x = player.x;
@@ -416,42 +454,53 @@ define([
               players[player.id].bulletSpeed = player.bulletSpeed;
               players[player.id].bulletDamage = player.bulletDamage;
             });
+
+            //PLAYER HIT SUBSCRIBING
             connector.on("player hit", function(data){
               players[data.id].health = data.health;
             });
+
+            //PLAYER KILL SUBSCRIBING
             connector.on("player kill",function(death){
               players[death.id].alive = false;
               if(death.idKiller == ownPlayerId){
                 players[ownPlayerId].score +=100;
                 updateScoreDOM(ownPlayerId);
               }
-              //eventBus.emit("CreateParticles",{x:players[death.id].x+(players[death.id].w*0.5),y:players[death.id].y+(players[death.id].h*0.5),size:4,style:true,lifeTime:180,color:players[death.id].color,count:20});
             });
+
+            //NEW POWER UP SUBSCRIBING
             connector.on("new powerup", function(data){
               powerUp[data.id] = new PowerUp(data.x, data.y, data.w, data.h, data.color, data.id, data.type,data.modification);
             });
+
+            //PLAYER GET POWER UP SUBSCRIBING
             connector.on("player get powerup",function(data){
               for(var key in data.playerModification){
                 players[data.idPlayer][key] = data.playerModification[key];
               }
               delete powerUp[data.idPowerUp];
             });
+
+            //COLLISION BULLET SUBSCRIBING
             connector.on("collision bullet", function(data){
               for(var i = 0; i < data.arrayColliding.length; i++){
                 bullets[data.arrayColliding[i].bullet.id].splice(data.arrayColliding[i].bullet.idInArray,1);
               }
             });
-
-            context.fillStyle = "black";
-            context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
-            //On ajoute un écouteur sur 'new frame', évènement défini dans frames.js
-            //Le callback correspond à notre mainLoop / Update 
+            
+            //NEW FRAME SUBSCRIBING ( MAIN LOOP )
             eventBus.on('new frame', function(){
+              //CLEAN CANVAS
               context.fillStyle = "black";
               context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
+
+              //DRAW ALL PLAYERS
               for(var key in players){
                    players[key].draw(context);
               }
+              
+              //MANAGE ALL BULLETS
               for(var key in bullets){
                 for(var i = 0; i < bullets[key].length; i++){
                   bullets[key][i].move();
@@ -462,22 +511,35 @@ define([
                   }
                 }
               }
+
+              //DRAW ALL POWER UP
               for(var key in powerUp){
                 powerUp[key].draw(context);
               }
+
+              //OWN PLAYER MANAGEMENT
               if(ownPlayerId != null){
-                //UPDATE CLIENT SIDE FOR YOUR PLAYER
+                //PLAYER ALIVE
                 if(players[ownPlayerId].alive){
-                  //BULLETS
+
+                  //BULLET MANAGEMMENT FOR OWN PLAYER
                   for(var key in bullets){
+
+                    //EXE IF NOT OWN BULLET
                     if(key != ownPlayerId){
+
+                      //GET BULLETS COLLIDING WITH OWN PLAYER
                       var arrayColliding = players[ownPlayerId].collision(bullets[key]);
+
+                      //FOR ALL BULLETS COLLIDING -> APPLY TAKEDAMAGE
                       for(var i = 0; i < arrayColliding.length; i++){
                         players[ownPlayerId].takeDamage(arrayColliding[i].bullet.damage,arrayColliding[i].bullet.id);
                         bullets[key].splice(arrayColliding[i].idInArray,1);
                       }
+
                       if(arrayColliding.length > 0){
-                        //DESTRUCTION DES BULLET POUR TOUT LE MONDE
+
+                        //SEND DESTROY EVENT
                         connector.emit("infoToSync -g",{
                           id:ownPlayerId,
                           eventName:"collision bullet",
@@ -489,14 +551,17 @@ define([
                           }
                         });
                       }
+                      //
                     }
                   }
-                  //POWERUP
+
+                  //COLLISION ALL POWER UPS WITH PLAYER
                   for(var key in powerUp){
                     if(powerUp[key].collision(players[ownPlayerId])){
                       delete powerUp[key];
                     }
                   }
+                  
                 }
                 else{
                   //WHEN YOU ARE DEAD

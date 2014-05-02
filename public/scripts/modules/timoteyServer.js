@@ -8,7 +8,7 @@ module.exports = function(io,socket,StockingSpace){
     if(!StockingSpace["bullets"]){
     	StockingSpace["bullets"] = {};
     }
-	setInterval(function(){
+	return setInterval(function(){
     var powerup = {
         type:((Math.random()*3)|0)+1,
         x:Math.random()*700,
@@ -38,5 +38,5 @@ module.exports = function(io,socket,StockingSpace){
     StockingSpace["powerUps"][powerup.id] = powerup;
     io.sockets.emit("new powerup",powerup);
     console.log("NEW POWERUP ID° "+powerup.id);
-},10*1000);
+},1*1000);
 };
