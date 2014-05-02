@@ -68,52 +68,8 @@ define([
     requestAnimationFrame(run(game));
 }
 
-function run(game){
-     game.ctx.fillStyle = this.player.color;
-    game.ctx.fillRect(this.player.x,this.player.y,this.player.w,this.player.h);
-}
-
-
-
-
-
-
-
-
-
-
-
-    function addEventCapabilities (object) {
-    
-        var listenersFor = {};  
-        object.on = function (eventName, callback) {
-           listenersFor[eventName] = listenersFor[eventName] || [];
-           listenersFor[eventName].push(callback); 
-        };
-
-        object.emit = function () {
-            var args = Array.prototype.slice.call(arguments);
-            console.log("arguments : ", arguments);
-            console.log("args :", args);
-            //shift récupère la première valeur du tableau,la return et la supprime args.pop() le dernier argument.
-            var eventName = args.shift();
-            // si event est associé listeners == event sinon pas d'event donc tableau vide
-            var listeners = listenersFor[eventName] || [];
-            // on parcourt la liste des function liée a cet event.
-            for(var i= 0; i < listeners.length; i++) {
-                try {
-                    //apply appelle la fonction en lui passant en paramêtre le contenu du  tableau args.
-                    //args est une liste d'arguments que l'on passe à la fonction contenue dans listeners[i]. 
-                    //Le premiers argument remplace la variable "this" dans la fonction. 
-
-                    //maFonction.apply(null,[1,2,3]) <=> maFonction(1,2,3);
-                    listeners[i].apply(object, args);
-                } catch(e) {
-                    console.log('Error on event ' + eventName);
-                    // bloque le script et renvoie l'event (e) qui a provoqué l'erreur.
-                    throw(e);
-                }
-            }
-        };
+    function run(game){
+         game.ctx.fillStyle = this.player.color;
+        game.ctx.fillRect(this.player.x,this.player.y,this.player.w,this.player.h);
     }
 });
