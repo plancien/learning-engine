@@ -26,6 +26,7 @@ define(['event_bus'], function(eventBus) {
                     context.rotate(this.rotation);
                     context.translate(-this.width / 2, -this.height / 2);
                     context.rect(0, 0, this.width, this.height);
+
                     context.fillStyle = context.createPattern(this.defaultSprite.img, this.patternRepeat);
                     context.fill();
                     context.fillStyle = "rgb(0,0,0)";
@@ -46,7 +47,9 @@ define(['event_bus'], function(eventBus) {
             } else {
                 if (this.patternRepeat !== undefined) {
                     context.save();
+                    console.log(this.defaultSprite.img);
                     context.translate(this.x - this.width / 2, this.y - this.height / 2);
+                    console.log(this);
                     context.fillStyle = context.createPattern(this.defaultSprite.img, this.patternRepeat);
                     context.fillRect(0, 0, this.width, this.height);
                     context.fillStyle = "rgb(0,0,0)";

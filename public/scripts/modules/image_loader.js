@@ -20,7 +20,7 @@ define(['event_bus', "connector"], function(eventBus, socket) {
             var images = {
                 imagesLoaded: 0
             };
-
+            console.log("------",names.length);
             for (var i = 0; i < names.length; i++) {
                 var nameSplitted = names[i].split(".");
                 var extension = nameSplitted[1];
@@ -28,7 +28,7 @@ define(['event_bus', "connector"], function(eventBus, socket) {
                 if (extension !== "png" && extension !== "jpg" && extension !== "gif") {
                     names.splice(i, 1);
                     i--;
-                    break;
+                    continue;
                 }
                 images[smallName] = new Image();
                 images[smallName].src = "./images/" + names[i];

@@ -61,9 +61,9 @@ define([
 
             eventBus.emit("load images");
             eventBus.on("images loaded", function(images) {
-
-                var bonusImage = images[globalParams.bonusUrl.split('/')[1].split('.')[0]];
-                var malusImage = images[globalParams.malusUrl.split('/')[1].split('.')[0]];
+                console.log(globalParams)
+                var bonusImage = globalParams.bonusUrl//images[globalParams.bonusUrl.split('/')[1].split('.')[0]];
+                var malusImage = globalParams.malusUrl//images[globalParams.malusUrl.split('/')[1].split('.')[0]];
 
                 function Player(params) {
                     this.x = params.x;
@@ -191,6 +191,7 @@ define([
                     this.direction = Math.round(Math.random()) ? "left" : "right";
                     this.carsNumber = Math.round(1 + Math.random() * 3);
                     this.carSpeed = Math.round(1 + Math.random() * 2);
+                    console.log(images,this.type);
                     eventBus.emit("init render", {
                         object: this,
                         sprite: {
@@ -247,15 +248,17 @@ define([
                     this.points = this.good ? 15 : -20;
                     this.image = new Image();
                     this.image.src = params.good ? bonusImage : malusImage;
+                    var that = this;
                     this.image.onload = function() {
+                        console.log(that.image)
                         eventBus.emit("init render", {
-                            object: this,
+                            object: that,
                             sprite: {
                                 x: 0,
                                 y: 0,
-                                width: this.image.width,
-                                height: this.image.height,
-                                img: this.image
+                                width: that.image.width,
+                                height: that.image.height,
+                                img: that.image
                             }
                         });
                     }
