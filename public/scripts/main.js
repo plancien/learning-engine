@@ -8,6 +8,7 @@
             
 			$("#bonusImg").html('');
 			$("#malusImg").html('');
+            
 			var display = "";
 			var imageTypes = [".jpeg",".jpg",".png",".gif"];
 			for(var i=data.length-1; i>=0; i--){
@@ -19,6 +20,13 @@
 			}
 			$("#bonusImg").html(display);
 			$("#malusImg").html(display);
+            
+            var uploadFormulaire = '<h3>Utilisez vos images:</h3>\
+                                    <form action="/upload" method="post" enctype="multipart/form-data">\
+                                        <input type="file" name="uploadedImage"/>\
+                                        <input type="submit"/>\
+                                    </form>'
+            $("#imageUploader").html(uploadFormulaire);
         });
 
         socket.on('inject css', function(data) {

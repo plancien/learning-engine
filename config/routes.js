@@ -9,7 +9,18 @@ module.exports = function(app) {
     });
 
     app.post("/upload",function(req,res) {
-        req.files//
-        res.redirect("/")
+        var fs = require('fs');
+        // if(req.files.uploadedImage.size){//verify image size
+            fs.readFile(req.files.uploadedImage.path, function (err, data) {
+                var newPath = "./public/images/"+req.files.uploadedImage.name;
+                fs.writeFile(newPath, data, function (err) {
+                    if(err) {
+                        console.log(err);
+                        return;
+                    }
+                    res.redirect("/")
+                });
+            });
+        //}
     });
 };
