@@ -85,6 +85,7 @@ module.exports = function(io) {
             if(!routineServerLoaded){
                 routineG = require("../public/scripts/modules/"+info['path'])(io,socket,PublicServerStockingSpace[info['path']],info['info']);
                 routineServerLoaded = true;
+                console.log("ROUTINE CHARGER")
             }
         });
         
@@ -199,20 +200,22 @@ module.exports = function(io) {
         //DISCONNECT
         //BEST WAY TO USE ==> N/A
         socket.on('disconnect', function(){
+
             console.log("PLAYER DISCONNECTED ID° "+socket.id);
             socket.broadcast.emit('player disconnected', {id:socket.id});
+
             if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id]){
                 console.log("PLAYER ID° "+socket.id+" DELETED FROM USERS");
                 delete PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id];
-            }
-            var i = 0;
-            if(PublicServerStockingSpaceKey && PublicServerStockingSpaceKey[PublicServerStockingSpaceKey]){
+                
+                var i = 0;
                 for(var key in PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]){
                     i++;
                 }
                 if(i == 0 && routineServerLoaded == true){
                     clearInterval(routineG);
                     routineServerLoaded = false;
+                    console.log("ROUTINE CLEAR")
                 }
             }
         });
