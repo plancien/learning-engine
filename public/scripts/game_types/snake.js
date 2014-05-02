@@ -22,7 +22,31 @@ function Snake(x,y,game){
 	this.width = 32;
 	this.height = 32;
 	this.size = 4;
-}
+    move:function move(args){
+                console.log(this);
+                switch(args){
+                    case 'up':
+                    this.y--;
+                    break;
+                    case 'down':
+                    this.y++;
+                    break;
+                    case 'gauche':
+                    this.x-=40;
+                    break;
+                    case 'droite':
+                    this.x++;
+                    break;
+                } 
+            }
+        }
+    };
+    addEventCapabilities(game.player);
+    game.player.on('move',function(e){
+        console.log("loooool",this)
+        this.move(e);
+    });
+    addEventCapabilities(game);
 Snake.prototype.display = function() {
 	this.refGame.context.fillStyle = "white";
 	this.refGame.context.fillRect(this.x, this.y, this.x+this.width, this.y+this.height);
