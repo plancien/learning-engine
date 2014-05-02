@@ -46,10 +46,14 @@ module.exports = function(io) {
 
     //-GForce API
     /*******************************/
-    var routineServerLoaded = false;
+    var routineServerLoaded = {
+        default:false
+    }
     var PublicServerStockingSpace = {};
-    var PublicServerStockingSpaceKey = "default";
-    var routineG;
+    var PublicServerStockingSpaceKey = {
+        default:"default"
+    };
+    var routineG = {};
     
     
     
@@ -75,21 +79,26 @@ module.exports = function(io) {
         //BEST WAY TO USE ==> in your eventBus.on("init"), connector.emit("load routine server -g", PublicServerStockingSpaceKey)
         socket.on("load routine server -g", function(routine){
 
+            //Warning path
             if(routine['path'] === ""){
                 console.warn("Le chemin de votre module est manquant. Des problèmes surviendront surement très bientôt. lol");
             }
 
-            PublicServerStockingSpaceKey = routine['path'];
+            //Set path
+            socket.currentGame = routine["path"];
+            PublicServerStockingSpaceKey[routine["path"]] = routine['path'];
 
+            //Create private stocking space
             if(!PublicServerStockingSpace[routine['path']]){
                 PublicServerStockingSpace[routine['path']] = {
                     users: {}
                 };
             }
 
-            if(!routineServerLoaded){
-                routineG = require("../public/scripts/modules/"+routine['path'])(io,socket,PublicServerStockingSpace[routine['path']],routine['info']);
-                routineServerLoaded = true;
+            //Load routine
+            if(!routineServerLoaded[routine["path"]]){
+                routineG[PublicServerStockingSpaceKey[socket.currentGame]] = require("../public/scripts/modules/"+routine['path'])(io,socket,PublicServerStockingSpace[socket.currentGame],routine['info']);
+                routineServerLoaded[routine["path"]] = true;
                 console.log("ROUTINE LOADED");
             }
         });
@@ -109,9 +118,9 @@ module.exports = function(io) {
             }
 
             //On stocke chaque valeur contenu dans player dans users[player.id] un objet représentant le joueur
-            PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.id] = {};
+            PublicServerStockingSpace[socket.currentGame]["users"][data.id] = {};
             for(var key in data){
-                PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][data.id][key] = data[key];
+                PublicServerStockingSpace[socket.currentGame]["users"][data.id][key] = data[key];
             }
 
             //On envoie les données contenu dans player à tout les autres
@@ -143,22 +152,22 @@ module.exports = function(io) {
             }
             
             //Si c'est la première fois qu'on modifie cette table, on la créé ainsi que l'id lui correspondant
-            if(!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey]){
-                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey] = {};
-                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id] = {};
+            if(!PublicServerStockingSpace[socket.currentGame][data.objectKey]){
+                PublicServerStockingSpace[socket.currentGame][data.objectKey] = {};
+                PublicServerStockingSpace[socket.currentGame][data.objectKey][data.id] = {};
                 console.log("UNKNOWN ID "+data.id+" In "+data.objectKey+" CREATING IT.");
             }
             
             //Si cet id n'est pas connu de l'objet
-            if(!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id]){
-                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id] = {};
+            if(!PublicServerStockingSpace[socket.currentGame][data.objectKey][data.id]){
+                PublicServerStockingSpace[socket.currentGame][data.objectKey][data.id] = {};
                 console.log("UNKNOWN ID "+data.id+" In "+data.objectKey+" CREATING IT.");
             }
             
             //On attribue chaque valeur contenu dans data.player a chaque propriété de user[data.id]
             for(var key in data.update){
-                PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key] = data.update[key];
-                console.log(key+"OF "+data.objectKey+" ID° "+data.id+" IS NOW "+PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.id][key]);
+                PublicServerStockingSpace[socket.currentGame][data.objectKey][data.id][key] = data.update[key];
+                console.log(key+"OF "+data.objectKey+" ID° "+data.id+" IS NOW "+PublicServerStockingSpace[socket.currentGame][data.objectKey][data.id][key]);
             }
             
             //Si on a pas préciser l'id dans les info
@@ -184,11 +193,11 @@ module.exports = function(io) {
         //BEST WAY TO USE ==> .emit without parameters to load the users or with parameters to load any other array
         socket.on("load -g",function(keyToLoad){
             if(!keyToLoad){
-                socket.emit("load players", PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]);
+                socket.emit("load players", PublicServerStockingSpace[socket.currentGame]["users"]);
                 console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL PLAYERS");
             }
             else{
-                socket.emit("load "+keyToLoad, PublicServerStockingSpace[PublicServerStockingSpaceKey][keyToLoad]);
+                socket.emit("load "+keyToLoad, PublicServerStockingSpace[socket.currentGame][keyToLoad]);
                 console.log("PLAYER ID° "+socket.id+" HAS LOAD ALL "+keyToLoad);
             }
         });
@@ -203,9 +212,9 @@ module.exports = function(io) {
             if(!!data && data.objectKey && data.idObject){
 
                 //If associative array "objectKey" exist and the id in associative array "objectKey" exist too
-                if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.idObject]){
+                if(!!PublicServerStockingSpace[socket.currentGame][data.objectKey] && PublicServerStockingSpace[socket.currentGame][data.objectKey][data.idObject]){
                     console.log("DELETE "+data.idObject+ " OF "+data.objectKey+" DONE.");
-                    delete PublicServerStockingSpace[PublicServerStockingSpaceKey][data.objectKey][data.idObject];
+                    delete PublicServerStockingSpace[socket.currentGame][data.objectKey][data.idObject];
                 }
             }
         });
@@ -217,19 +226,19 @@ module.exports = function(io) {
 
             socket.broadcast.emit('player disconnected', {id:socket.id});
             console.log("PLAYER DISCONNECTED ID° "+socket.id);
-
-            if(!!PublicServerStockingSpace[PublicServerStockingSpaceKey] && PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id]){
+            if(!!PublicServerStockingSpace[socket.currentGame] && PublicServerStockingSpace[socket.currentGame]["users"][socket.id]){
                 console.log("PLAYER ID° "+socket.id+" DELETED FROM USERS");
-                delete PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id];
+                console.log("socket currentGame",socket.currentGame,PublicServerStockingSpaceKey[socket.currentGame])
+                delete PublicServerStockingSpace[socket.currentGame]["users"][socket.id];
                 
                 var i = 0;
-                for(var key in PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]){
+                for(var key in PublicServerStockingSpace[socket.currentGame]["users"]){
                     i++;
                 }
                 //If no player remaining
-                if(i == 0 && routineServerLoaded == true){
-                    clearInterval(routineG);
-                    routineServerLoaded = false;
+                if(i == 0 && routineServerLoaded[socket.currentGame] == true){
+                    clearInterval(routineG[socket.currentGame]);
+                    routineServerLoaded[socket.currentGame] = false;
                     console.log("ROUTINE CLEAR")
                 }
             }
