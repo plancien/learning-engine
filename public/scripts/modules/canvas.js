@@ -16,7 +16,7 @@ define(['event_bus'], function(eventBus) {
         var canvas = $('<canvas id=' + id + ' width=' + width + ' height=' + height + '></canvas>');
 
         if (params.container) params.container.append(canvas);
-        else $('body').append(canvas);
+        else $('#container').append(canvas);
 
         var object = {
             canvas: canvas[0],
