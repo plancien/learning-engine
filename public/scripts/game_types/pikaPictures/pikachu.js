@@ -49,6 +49,21 @@ define([
                 
             }
         }
+
+        // if(this.pikachu.speedX==0){
+        //     this.pikachu.canIdle=true;
+        // }
+        //     if((this.pikachu.currentAnim!="idle"||this.pikachu.currentAnim!="idleRightReverse")&&this.pikachu.canIdle){
+        //         if(this.pikachu.accrochage){
+        //             this.pikachu.changeAnimation("idleRightReverse");
+        //         }
+        //         // else{
+        //         //     this.pikachu.changeAnimation("idle2");
+        //         // }
+        // }
+        // if(this.pikachu.accrochage){
+        //      this.pikachu.speedY=-5;
+        // }
     }
 
     return new Pikachu();
