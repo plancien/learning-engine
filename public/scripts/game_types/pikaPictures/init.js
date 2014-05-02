@@ -1,11 +1,17 @@
 
 define([
     'event_bus',
-    'modules/cameraRender'
-], function(eventBus, cameraRender) { // init,
+    'modules/cameraRender',
+    'modules/canvas'
+], function(eventBus, cameraRender, Canvas) { // init,
 
-    var init = function(){
-    cameraRender.init(game.canvas, true);
+    var init = function(game){
+        game.frame = 0;
+        game.canvas = Canvas.create({"width" : 800, "height" : 600});
+        game.canvas.width = 800;
+        game.canvas.height = 600;
+        game.canvas.context.fillStyle = "rgba(30,30,30,0.8)";
+        cameraRender.init(game.canvas, true);
 
     /***** Son *****/
         game.sounds={
@@ -13,10 +19,6 @@ define([
         }
         game.sounds.jump.setAttribute('src', "./sounds/jump.ogg");
         game.sounds.jump.setAttribute('preload','true');
-
-    /***** Configuration d'element generaux *****/
-        config.wallColor = "rgba(20,20,20,1)";
-        config.backgroundColor = "rgba(30,30,30,1)";
 
     /***** Initialisation des groupes de collision *****/
         collisionEngine.addGroup("wall", false, false, false);
