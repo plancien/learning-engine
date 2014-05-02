@@ -245,18 +245,22 @@ define([
                     this.height = 60;
                     this.good = params.good;
                     this.points = this.good ? 15 : -20;
-                    this.image = params.good ? bonusImage : malusImage;
+                    this.image = new Image();
+                    this.image.src = params.good ? bonusImage : malusImage;
+                    this.image.onload = function() {
+                        eventBus.emit("init render", {
+                            object: this,
+                            sprite: {
+                                x: 0,
+                                y: 0,
+                                width: this.image.width,
+                                height: this.image.height,
+                                img: this.image
+                            }
+                        });
+                    }
 
-                    eventBus.emit("init render", {
-                        object: this,
-                        sprite: {
-                            x: 0,
-                            y: 0,
-                            width: this.image.width,
-                            height: this.image.height,
-                            img: this.image
-                        }
-                    });
+                    
                 }
 
                 var strips = [];
