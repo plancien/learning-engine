@@ -31,8 +31,8 @@ define(['event_bus'], function(eventBus) {
         var totalOffsetY = 0;
         //calculating the position on the canvas
         
-        var currentElement = getCanvas != undefined ? getCanvas.canvas : window;
-
+        //var currentElement = getCanvas != undefined ? getCanvas.canvas : window;
+        var currentElement = window;
         var e = event || window.event;
         totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
         totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;
@@ -65,6 +65,7 @@ define(['event_bus'], function(eventBus) {
         window.addEventListener("mousemove", mouse.update.bind(mouse), false);
         window.addEventListener("mousedown", mouse.clickDown.bind(mouse), false);
         window.addEventListener("mouseup", mouse.clickUp.bind(mouse), false);
+        
         eventBus.emit('mouse is created', mouse);
     });
 

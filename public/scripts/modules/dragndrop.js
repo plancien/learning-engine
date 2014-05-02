@@ -6,32 +6,33 @@ define(['event_bus',
 
 
 	function dragndrop(movableObject){
+		eventBus.on('mouse is created', function (mouse){
 
-		document.body.addEventListener("mousedown", function(event) {
-			 
+			document.body.addEventListener("mousedown", function(event) {
+				 
 
-				if (collisionSquareAndPoint(mouse, movableObject)){				//si collision entre la souris et les éléments du groupe collisionable
-				document.body.addEventListener("mousemove", onMouseMove);		//on rajoute des listeners pour les clics
-				document.body.addEventListener("mouseup", onMouseUp);
-				handle = movableObject;							//on transfere l'élément qui collisione dans la variable
-				offset.x = mouse.x - handle.x;			//on replace l'élément
-				offset.y = mouse.x - handle.y;
+					if (collisions.CollisionSquareAndPoint(mouse, movableObject)){				//si collision entre la souris et les éléments du groupe collisionable
+					document.body.addEventListener("mousemove", onMouseMove);		//on rajoute des listeners pour les clics
+					document.body.addEventListener("mouseup", onMouseUp);
+					handle = movableObject;							//on transfere l'élément qui collisione dans la variable
+					offset.x = mouse.x - handle.x;			//on replace l'élément
+					offset.y = mouse.y - handle.y;
+				}
+			});
+		
+
+			function onMouseMove(event) {
+				handle.x = mouse.x;// - offset.x;					//on peut déplacer l'élément variable
+				handle.y = mouse.x;// - offset.y;
+				
+			}
+
+			function onMouseUp(event) {
+				document.body.removeEventListener("mousemove", onMouseMove);		//on arrete les Listeners
+				document.body.removeEventListener("mouseup", onMouseUp);
 			}
 		});
 	}
-
-		function onMouseMove(event) {
-			handle.x = mouse.x;// - offset.x;					//on peut déplacer l'élément variable
-			handle.y = mouse.x;// - offset.y;
-			
-		}
-
-		function onMouseUp(event) {
-			document.body.removeEventListener("mousemove", onMouseMove);		//on arrete les Listeners
-			document.body.removeEventListener("mouseup", onMouseUp);
-		}
-
-
 return new dragndrop();
 
 });
