@@ -25,7 +25,6 @@ define([
 
     collisionEngine.addGroup("wall", ["hero"], false, false);       //créer un group mur, qui collisione avec le groupe hero, ne collisionne pas entre eux, ne sont pas a l'interieur d'une box 
     collisionEngine.addGroup("bleu", false, false, ['specialBox']);         //On créer un groupe bleu - collisione avec aucun groupe - ne collisionne pas avec avec son groupe - on met la box dedans
-    collisionEngine.addGroup("rouge", false, false, ['specialBox']);
 
 
     var specialBox = {"x" : 100, "y" : 600, "width" : 600, "height" : 50, "color" : "rgba(255,0,0,0.5)"}; //On créer un box speciale
@@ -37,7 +36,8 @@ define([
 
 
     var creerCubeTombant = function(){
-        var posX = 100 + Math.floor(Math.random() * 4) * 150;
+        var posX = 100 + Math.floor(Math.random() * 5) * 125;
+        console.log(posX);
         var config = { "x" : posX, "y" : 10, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
         game.cubeTombant = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce cube
         collisionEngine.addHitbox(game.cubeTombant, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
@@ -48,36 +48,8 @@ define([
             }
         }
         collisionEngine.addElement(game.cubeTombant, "bleu");
-    }();
+    };
 
-    /*var creerHeroPersonnalise = function(){
-        var config = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
-        game.littleHero = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce hero
-        collisionEngine.addHitbox(game.littleHero, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
-        game.littleHero.collisionCallback['specialBox'] = function (side, box){ //On lui créer son callback sur la collision avec ce groupe
-            if (side != "in"){
-                console.log("Vous etes sortie par : " + side);
-                game.littleHero.x = 600;
-                game.littleHero.y += 3;
-            }
-        }
-        collisionEngine.addElement(game.littleHero, "bleu");            //On y met notre petit hero - il vas collisionner avec special box
-    }();
-
-
-    var creerDangerPersonnalise = function(){
-        var config = { "x" : 120, "y" : 100, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
-        game.dangerHero = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce hero
-        collisionEngine.addHitbox(game.dangerHero, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
-        game.dangerHero.collisionCallback['specialBox'] = function (side, box){ //On lui créer son callback sur la collision avec ce groupe
-            if (side != "in"){
-                console.log("Vous etes sortie par : " + side);
-                game.dangerHero.x = 100;
-                game.dangerHero.y += 3;
-            }
-        }
-        collisionEngine.addElement(game.dangerHero, "rouge");            //On y met notre petit hero - il vas collisionner avec special box
-    }();*/
 
 
     var creerMur = function(){
@@ -109,6 +81,10 @@ define([
         game.canvas.context.fillStyle = specialBox.color;
         game.canvas.context.fillRect(specialBox.x, specialBox.y, specialBox.width, specialBox.height);
 
+         for(i = 0; i < 5; i++){
+            creerCubeTombant();
+        }
+        
         collisionEngine.calcul();
         gravityEngine.calcul();
         heroEngine.render();
