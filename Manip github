@@ -1,0 +1,8 @@
+git clone : http://www.por.git
+
+git status
+git pull
+git add monFichier.js
+git add.
+git commit -m "added a new game"
+git push

@@ -12,8 +12,9 @@ module.exports = function(io) {
         var templates = [];
 
         for (var i = 0; i < games.length; i++) {
+            if (games[i].indexOf('.js') == -1)
+                continue;
             var file = fs.readFileSync(path + "/" + games[i], "utf8");
-
             var nameStart = file.search("@name") + 5;
             var nameLength = file.search("@endName") - nameStart;
             var nameText = file.substr(nameStart, nameLength);
@@ -205,12 +206,14 @@ module.exports = function(io) {
                 delete PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"][socket.id];
             }
             var i = 0;
-            for(var key in PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]){
-                i++;
-            }
-            if(i == 0 && routineServerLoaded == true){
-                clearInterval(routineG);
-                routineServerLoaded = false;
+            if(PublicServerStockingSpaceKey && PublicServerStockingSpaceKey[PublicServerStockingSpaceKey]){
+                for(var key in PublicServerStockingSpace[PublicServerStockingSpaceKey]["users"]){
+                    i++;
+                }
+                if(i == 0 && routineServerLoaded == true){
+                    clearInterval(routineG);
+                    routineServerLoaded = false;
+                }
             }
         });
         

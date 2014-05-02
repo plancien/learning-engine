@@ -26,11 +26,16 @@ body{
 .alert p {
     color : red;
 }
+
 #eventsList {
 	position: absolute;
 	font-size: 9px;
 	right: 0;
 	z-index: 1;
+}
+
+#container{
+	margin-bottom: 40px;
 }
 
 #retour {
