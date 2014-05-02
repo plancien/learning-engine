@@ -8,6 +8,7 @@
             
 			$("#bonusImg").html('');
 			$("#malusImg").html('');
+            
 			var display = "";
 			var imageTypes = [".jpeg",".jpg",".png",".gif"];
 			for(var i=data.length-1; i>=0; i--){
@@ -31,7 +32,20 @@
         });
 
         socket.on("send gamesInfos", function(infos) {
+            $("body").keydown(function(e) {
+                var code = (e.keyCode ? e.keyCode : e.which);
+                if(code == 37 || code == 38 || code == 39 || code == 40) {
+                    e.preventDefault();
+                }
+            });
 
+            var uploadFormulaire = 'Utilisez vos images:\
+                                    <form action="/upload" method="post" enctype="multipart/form-data">\
+                                        <input type="file" name="uploadedImage"/>\
+                                        <input type="submit"/>\
+                                    </form>'
+            $("#imageUploader").html(uploadFormulaire);
+            
             for (var i = 0; i < infos.games.names.length; i++) {
                 var $game = $(document.createElement('option'));
                 $game.attr("id", infos.games.names[i]);

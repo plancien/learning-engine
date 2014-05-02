@@ -37,7 +37,7 @@ define([
 	eventBus.on('new frame',function () {
 		context.fillStyle = "#000";
 		context.fillRect(0,0,canvas.canvas.width,canvas.canvas.height);
-		carre.moveTo(target,10);
+		carre.moveTo(target,10,0,true);
 		carre.draw(context);
 
 	})

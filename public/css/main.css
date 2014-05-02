@@ -42,6 +42,11 @@ body{
 	position: absolute;
 	top: 0;
 }
+
+input[type="file"] {
+width: 350px;
+height: 15px;
+}
 /* Timer style made to work with commented elem in clickOnMe.html */
 /*#hour, #minute, #second {
     width: 20px;
@@ -74,7 +79,7 @@ body{
 	float: left;
 }
 
-#gameSelect, #blocUser, #gameCreation{
+#gameSelect, #blocUser, #gameCreation, #imageUploader{
 	text-align: center;
 	border: 1px solid #ddd;
 	-mox-border-radius: 6px;
