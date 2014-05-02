@@ -1,14 +1,14 @@
 module.exports = function(io,socket,StockingSpace){
     if(!StockingSpace["powerUps"]){
-    	StockingSpace["powerUps"] = {};
+        StockingSpace["powerUps"] = {};
     }
     if(!StockingSpace["users"]){
-    	StockingSpace["users"] = {};
+        StockingSpace["users"] = {};
     }
     if(!StockingSpace["bullets"]){
-    	StockingSpace["bullets"] = {};
+        StockingSpace["bullets"] = {};
     }
-	return setInterval(function(){
+    return setInterval(function(){
     var powerup = {
         type:((Math.random()*3)|0)+1,
         x:Math.random()*700,

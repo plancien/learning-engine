@@ -12,14 +12,14 @@ define(['event_bus'], function(eventBus){
 
     eventBus.on('new frame', function() {
         if (isworking) {
-        	var actualCD = Math.floor(timerCD - (new Date().getTime()/1000));
-        	if(actualCD<=0){
-            	eventBus.emit('countdown finish',timerCD)
-            	isworking = false;
-          	}
-          	else{
-          		eventBus.emit('time remaning',actualCD)
-          	}
+          var actualCD = Math.floor(timerCD - (new Date().getTime()/1000));
+          if(actualCD<=0){
+              eventBus.emit('countdown finish',timerCD)
+              isworking = false;
+            }
+            else{
+              eventBus.emit('time remaning',actualCD)
+            }
 
         }
     });
