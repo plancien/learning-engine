@@ -28,34 +28,34 @@ define([
         }
 
         function Player() {
-			/*this.image = new Image();
-			this.image.src = src;*/
+			this.image = new Image();
+			this.image.src = "../../images/Spartiate.png";
 			this.x = 50;
-			this.y = 50;
+			this.y = 600 - 80;
 			this.left = false;
 			this.right = false;
-			this.speed = 5;
+			this.speed = 8;
 			this.frameWidth = 0;
 			this.frameHeight = 0;
 			this.animFrame = 0;
 		}
 
 		Player.prototype.drawPlayer = function(ctx) {
-			//this.animFrame ++;
-			context.fillStyle = "#FF0000";
-			ctx.fillRect(this.x, this.y, 50, 50);
-			//ctx.drawImage(this.image,  this.frameWidth, this.frameHeight, 50, 60, this.x, this.y, 50, 60);
+			this.animFrame ++;
+			//context.fillStyle = "#FF0000";
+			//ctx.fillRect(this.x, this.y, 50, 50);
+			ctx.drawImage(this.image,  this.frameWidth, this.frameHeight, 70, 66, this.x, this.y, 70, 66);
 		};
 
 		(function move(object) {
 			object.prototype.moveLeft = function() {
 				if (this.left) {
 					this.x -= this.speed;
-					this.frameHeight = 70;
+					this.frameHeight = 133;
 
 					if (this.animFrame % 9 == 0) {
-						this.frameWidth += 50;
-						if (this.frameWidth >= 200) {
+						this.frameWidth += 66.7;
+						if (this.frameWidth >= 252) {
 							this.frameWidth = 0;
 						}
 					}
@@ -65,11 +65,11 @@ define([
 			object.prototype.moveRight = function() {
 				if (this.right) {
 					this.x += this.speed;
-					this.frameHeight = 140;
+					this.frameHeight = 67;
 
 					if (this.animFrame % 9 == 0) {
-						this.frameWidth += 50;
-						if (this.frameWidth >= 200) {
+						this.frameWidth += 64.5;
+						if (this.frameWidth >= 252) {
 							this.frameWidth = 0;
 						}
 					}
