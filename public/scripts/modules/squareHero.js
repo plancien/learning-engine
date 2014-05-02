@@ -108,7 +108,7 @@ define(['event_bus', 'modules/collisionEngine', 'modules/key_listener', 'modules
         this.content.push(target);
         return this.content[this.content.length-1];
     }
-    HeroEngine.prototype.render = function(){
+    HeroEngine.prototype.calcul = function(){
         for (var i = this.content.length - 1; i >= 0; i--) {
             if (!this.content[i].haveMoveX){
                 if (Math.abs(this.content[i].speedX) <= this.content[i].deceleration)
@@ -126,9 +126,14 @@ define(['event_bus', 'modules/collisionEngine', 'modules/key_listener', 'modules
             }
             this.content[i].haveMoveX = false;
             this.content[i].haveMoveY = false;
-            this.content[i].contextReference.fillStyle = this.content[i].color;
             this.content[i].x += this.content[i].speedX;
             this.content[i].y += this.content[i].speedY;
+        }
+    }
+    HeroEngine.prototype.render = function(){
+        this.calcul();
+        for (var i = this.content.length - 1; i >= 0; i--) {
+            this.content[i].contextReference.fillStyle = this.content[i].color;
             if (this.content[i].contextReference)
                 this.content[i].contextReference.fillRect(this.content[i].x, this.content[i].y, this.content[i].width, this.content[i].height);
         }

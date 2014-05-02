@@ -1,8 +1,8 @@
  define(['event_bus'], function(eventBus) {
 
     var WallEngine = function(){
-        this.content = [];
     }
+    WallEngine.prototype.content = [];
     WallEngine.prototype.create = function(x,y,width,height, color){
         var wall = {};
         wall.x = x || 0;

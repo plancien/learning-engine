@@ -1,9 +1,13 @@
 define([
     'event_bus',
     'modules/canvas',
-], function(eventBus, Canvas) {
+    'modules/frames',
+    'event_capabilities',
+], function(eventBus, Canvas, Frames, addEventCapabilities) {
 	var game = {};
-	var canvas = Canvas.create({"width" : 800, "height" : 600});
+	
+    var canvas = Canvas.create({"width" : 800, "height" : 600});
+
 	game.canvas = canvas.canvas;
 	game.context = canvas.context;
 	console.log(game.canvas)
@@ -11,8 +15,15 @@ define([
 	game.context.fillRect(0,0, 800, 600); 
 	alert("hello world");
 	game.snake = new Snake(100, 100, game);
+    addEventCapabilities(game.snake);
+    game.snake.on('move',function(e){
+        console.log("loooool",this)
+        this.move(e);
+    });
+    addEventCapabilities(game);
 	game.snake.display();
 	console.log(game.snake)
+    eventBus.on("new frame",function(){console.log("lol")})
 	// grille(game);
 });
 function Snake(x,y,game){
@@ -39,14 +50,8 @@ function Snake(x,y,game){
                     break;
                 } 
             }
-        }
-    };
-    addEventCapabilities(game.player);
-    game.player.on('move',function(e){
-        console.log("loooool",this)
-        this.move(e);
-    });
-    addEventCapabilities(game);
+};
+    
 Snake.prototype.display = function() {
 	this.refGame.context.fillStyle = "white";
 	this.refGame.context.fillRect(this.x, this.y, this.x+this.width, this.y+this.height);
