@@ -5,4 +5,4 @@ define([
 
 
 	alert("hello world");
-}
+});
