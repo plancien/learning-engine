@@ -37,19 +37,18 @@ define([
 
 
     var creerCubeTombant = function(){
-        console.log('cube');
-        var config = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
+        var posX = 100 + Math.floor(Math.random() * 4) * 150;
+        var config = { "x" : posX, "y" : 10, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
         game.cubeTombant = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce cube
         collisionEngine.addHitbox(game.cubeTombant, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
         game.cubeTombant.collisionCallback['specialBox'] = function (side, box){ //On lui créer son callback sur la collision avec ce groupe
         if (side != "in"){
-                console.log("Vous etes sortie par : " + side);
-                game.cubeTombant.x = 600;
+                game.cubeTombant.x = posX;
                 game.cubeTombant.y += 3;
             }
         }
-        collisionEngine.addElement(game.littleHero, "bleu");
-    }
+        collisionEngine.addElement(game.cubeTombant, "bleu");
+    }();
 
     /*var creerHeroPersonnalise = function(){
         var config = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
