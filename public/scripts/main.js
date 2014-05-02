@@ -39,7 +39,6 @@
         });
 
         socket.on("send gamesInfos", function(infos) {
-
             for (var i = 0; i < infos.games.names.length; i++) {
                 var $game = $(document.createElement('option'));
                 $game.attr("id", infos.games.names[i]);

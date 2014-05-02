@@ -5,8 +5,7 @@ define([
     'modules/canvas'
 ], function(eventBus, WindowSize, Canvas) {
     
-    eventBus.on("gameover", function() {
-        
+    eventBus.on("gameover", function() {        
         function replay() {
             location.reload();
         }
