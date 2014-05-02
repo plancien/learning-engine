@@ -31,8 +31,12 @@ window.onload=function init(){
                     this.x++;
                     break;
                 } 
-            }
+            },
+            // addBlock:function addBlock(){
+            //     console.log("lool");
+            // },
         }
+
     };
     addEventCapabilities(game.player);
     game.player.on('move',function(e){
