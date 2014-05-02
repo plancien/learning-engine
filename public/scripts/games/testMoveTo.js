@@ -39,4 +39,4 @@ define([
 		Carre.moveTo(target,10);
 	})
 
-}
+});
