@@ -6,10 +6,10 @@ define([
 		var container;
 		var canvas = canvasCreate.create({width:800, height:600, id:"canvas"});
         var context = canvas.context;
+        var player = new Player();
+
         eventBus.on('init', function(_container) {
             container = _container;
-
-            var player = new Player();
             gameLoop();
         });
 
