@@ -1,4 +1,4 @@
-define([],function() {
+define(['event_bus','connector'],function(eventBus,connector) {
     return function (id,color){
         //proprieté du player
         this.x = 0;
@@ -19,8 +19,20 @@ define([],function() {
            this.x = x;
            this.y = y;
         };
-        this.render = function(context){
-            generateParticles({x : this.x , y : this.y, color : this.color, angle : this.angle})
+        this.render = function(){
+            var ParticlesParams = {
+                x : this.x,
+                y : this.y,
+                size : 5,
+                style : false,
+                lifeTime : 30,
+                alpha : true,
+                speed : 2,
+                count:10,
+                angle : this.angle,
+                color : this.color,
+            }
+            eventBus.emit('CreateParticles', ParticlesParams);
         };
 
         this.drawScore = function(context,x,y){
@@ -44,7 +56,7 @@ define([],function() {
             this.x += this.speed.x;
             this.y += this.speed.y;
         }
-        this.collision = function(canvas,bonus){
+        this.collision = function(canvas,bonus,checkCollision){
             if(this.x<0 || this.x>canvas.width-this.w){
                 this.x += -(this.speed.x)*5;
             }
@@ -52,18 +64,38 @@ define([],function() {
                 this.y += -(this.speed.y)*5;
             }
             for (var key in bonus) {
-                if(CheckCollision(this,bonus[key])){
+                if(checkCollision(this,bonus[key])){
                     connector.emit("infoToSync -g",{id:this.id,eventName:'BonusTake',update:{id:this.id,bonusid:bonus[key].id},send:{id:this.id,bonusid:bonus[key].id}});
                     this.points += bonus[key].point;
                     delete bonus[key];
                 }
             };
         }
-        this.loop = function(ctx,i,canvas,bonus){
-            this.render(ctx);
+        this.loop = function(ctx,i,canvas,game){
+            this.render();
             this.drawScore(ctx,20+i,30)
             this.deceleration();
-            this.collision(canvas,bonus);
+            this.collision(canvas,game.bonus,game.checkCollision);
         }
+
+
+
+        this.getAngle = function(){
+            var unit = unitVector(this.speed);
+            if (unit.y < 0) {
+                return - Math.acos(unit.x);
+            }
+            else {
+                return Math.acos(unit.x);
+            }  
+        }
+
+        function unitVector(vect) {
+            var length = lengthVector(vect);
+            return {x:vect.x/length,y: vect.y/length};
+        };
+        function lengthVector(vect) {
+            return Math.sqrt(vect.x*vect.x + vect.y*vect.y);
+        };
     };
 });

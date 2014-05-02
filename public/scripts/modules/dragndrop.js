@@ -1,4 +1,7 @@
-define(['event_bus', 'modules/mouse', 'modules/collisions'], function(eventBus, mouse, collisions) {  //on créé un nouveau module via require.js
+define(['event_bus', 
+	'modules/mouse', 
+	'modules/collisions'
+	], function(eventBus, mouse, collisions) {  //on créé un nouveau module via require.js
 
 
 
@@ -29,6 +32,6 @@ define(['event_bus', 'modules/mouse', 'modules/collisions'], function(eventBus, 
 		}
 
 
-return new DragNDrop();
+return new dragndrop();
 
 });
