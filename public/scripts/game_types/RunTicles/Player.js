@@ -19,8 +19,20 @@ define([],function() {
            this.x = x;
            this.y = y;
         };
-        this.render = function(context){
-            generateParticles({x : this.x , y : this.y, color : this.color, angle : this.angle})
+        this.render = function(eventBus){
+            var ParticlesParams = {
+                x : this.x,
+                y : this.y,
+                size : 5,
+                style : false,
+                lifeTime : 30,
+                alpha : true,
+                speed : 2,
+                count:10,
+                angle : this.angle,
+                color : this.color,
+            }
+            eventBus.emit('CreateParticles', ParticlesParams);
         };
 
         this.drawScore = function(context,x,y){
@@ -59,11 +71,31 @@ define([],function() {
                 }
             };
         }
-        this.loop = function(ctx,i,canvas,bonus){
-            this.render(ctx);
+        this.loop = function(ctx,i,canvas,bonus,eventBus){
+            this.render(eventBus);
             this.drawScore(ctx,20+i,30)
             this.deceleration();
             this.collision(canvas,bonus);
         }
+
+
+
+        this.getAngle = function(){
+            var unit = unitVector(vect);
+            if (unit.y < 0) {
+                return - Math.acos(unit.x);
+            }
+            else {
+                return Math.acos(unit.x);
+            }  
+        }
+
+        function unitVector(vect) {
+            var length = lengthVector(vect);
+            return {x:vect.x/length,y: vect.y/length};
+        };
+        function lengthVector(vect) {
+            return Math.sqrt(vect.x*vect.x + vect.y*vect.y);
+        };
     };
 });
