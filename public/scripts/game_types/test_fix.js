@@ -28,17 +28,31 @@ define([
     collisionEngine.addGroup("rouge", false, false, ['specialBox']);
 
 
-    var specialBox = {"x" : 200, "y" : 200, "width" : 200, "height" : 200, "color" : "rgba(255,0,0,0.5)"}; //On créer un box speciale
+    var specialBox = {"x" : 100, "y" : 600, "width" : 600, "height" : 50, "color" : "rgba(255,0,0,0.5)"}; //On créer un box speciale
     collisionEngine.addBox("specialBox", specialBox);                                                       //On ajoute la box dans le moteur de collision
     
 
     //var superHero = heroEngine.create({x:100}, game.canvas.context, true);   //On créer un hero standard, on lui dit true pour dire qu'il est sous gravite
-    eventBus.on("key pressed up", function(){ superHero.speedY = -10 });    //On lui rajoute une fonction de saut a la vole     
+    //eventBus.on("key pressed up", function(){ superHero.speedY = -10 });    //On lui rajoute une fonction de saut a la vole     
 
 
-    var creerHeroPersonnalise = function(){
-        var inputs = {"left":"Q", "right":"D", "up":"Z", "down":"S"};   //On applique des inputs pour ce hero
-        var config = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70, "inputs" : inputs};
+    var creerCubeTombant = function(){
+        console.log('cube');
+        var config = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
+        game.cubeTombant = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce cube
+        collisionEngine.addHitbox(game.cubeTombant, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
+        game.cubeTombant.collisionCallback['specialBox'] = function (side, box){ //On lui créer son callback sur la collision avec ce groupe
+        if (side != "in"){
+                console.log("Vous etes sortie par : " + side);
+                game.cubeTombant.x = 600;
+                game.cubeTombant.y += 3;
+            }
+        }
+        collisionEngine.addElement(game.littleHero, "bleu");
+    }
+
+    /*var creerHeroPersonnalise = function(){
+        var config = { "x" : 20, "y" : 100, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
         game.littleHero = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce hero
         collisionEngine.addHitbox(game.littleHero, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
         game.littleHero.collisionCallback['specialBox'] = function (side, box){ //On lui créer son callback sur la collision avec ce groupe
@@ -53,8 +67,7 @@ define([
 
 
     var creerDangerPersonnalise = function(){
-        var inputs = {"left":"left", "right":"right", "up":"up", "down":"down"};   //On applique des inputs pour ce hero
-        var config = { "x" : 120, "y" : 100, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70, "inputs" : inputs};
+        var config = { "x" : 120, "y" : 100, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
         game.dangerHero = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce hero
         collisionEngine.addHitbox(game.dangerHero, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
         game.dangerHero.collisionCallback['specialBox'] = function (side, box){ //On lui créer son callback sur la collision avec ce groupe
@@ -65,7 +78,7 @@ define([
             }
         }
         collisionEngine.addElement(game.dangerHero, "rouge");            //On y met notre petit hero - il vas collisionner avec special box
-    }();
+    }();*/
 
 
     var creerMur = function(){
@@ -96,9 +109,6 @@ define([
 	    game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
         game.canvas.context.fillStyle = specialBox.color;
         game.canvas.context.fillRect(specialBox.x, specialBox.y, specialBox.width, specialBox.height);
-        game.canvas.context.strokeText("Exemple utilisation modules : fleche et qsdz pour deplacer personnages", 0, 30);
-        game.canvas.context.strokeText("N'hesiter pas à faire des test dans Simba.js - modifier les fonctions de comportement - parametre des modules", 0, 60);
-        game.canvas.context.strokeText("modifier les fonctions de comportement - parametre des modules", 0, 90);
 
         collisionEngine.calcul();
         gravityEngine.calcul();
