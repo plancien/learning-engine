@@ -46,10 +46,11 @@ function Snake(x,y,game){
         y:0,
     }
 
-    this.moveDelay= 0;
-    this.graphDir={x:0,y:0}
-    this.x = this.pos.x*game.tileSize;
-    this.y = this.pos.y*game.tileSize;
+    this.moveDelay= 5;
+    this.delay=0;
+    this.graphDir={x:0,y:0};
+    this.x = 0;
+    this.y = 0;
     this.width = game.tileSize;
     this.height = game.tileSize;
     
@@ -71,41 +72,47 @@ function Snake(x,y,game){
         } 
     };
     this.update=function update(){
-        this.moveDelay++;
-        this.x += this.graphDir.x * (game.tileSize/this.moveDelay);
-        this.y += this.graphDir.y * (game.tileSize/this.moveDelay);
+        this.delay++;
+        
+            this.x += this.graphDir.x * (game.tileSize/this.moveDelay);
+            this.y += this.graphDir.y * (game.tileSize/this.moveDelay);
+            
+        
         switch (this.input){
             case "right":
-            if(this.moveDelay==10){
+            if(this.delay >= this.moveDelay){
                 this.pos.x ++;
                 this.graphDir.y = 0; //la direction de l'animation
                 this.graphDir.x = 1; //la direction de l'animation
-                this.moveDelay=0;   
+                this.delay=0;   
             }
             break;
             case "left":
-            if(this.moveDelay==10){
+            if(this.delay >= this.moveDelay){
                 this.pos.x --;
                 this.graphDir.y = 0; //la direction de l'animation
                 this.graphDir.x = -1; //la direction de l'animation
-                this.moveDelay=0; 
-            }
+                this.delay=0;
+            }    
+            
             break;
             case "up":
-            if(this.moveDelay==10){
+            if(this.delay >= this.moveDelay){
                 this.pos.y --;
                 this.graphDir.y = -1; //la direction de l'animation
                 this.graphDir.x = 0; //la direction de l'animation
-                this.moveDelay=0;
-            }
+                this.delay=0;            
+            }    
+            
             break;
             case "down":
-            if(this.moveDelay==10){
+            if(this.delay >= this.moveDelay){
                 this.pos.y ++;
                 this.graphDir.y = 1; //la direction de l'animation
                 this.graphDir.x = 0; //la direction de l'animation
-                this.moveDelay=0;
-            }
+                this.delay=0;
+            }    
+            
             break;
         }
     }
