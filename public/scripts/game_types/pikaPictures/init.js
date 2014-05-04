@@ -14,6 +14,17 @@ define([
         game.canvas.context.fillStyle = "rgba(30,30,30,0.8)";
         cameraRender.init(game.canvas, true);
 
+        pikaSpriteConfig = {};
+        pikaSpriteConfig.idle = {"width" : 32, "height" :32, "nbAnim" : 4, "loop" : -1, "fps" : 3, "offsetY" : 0};
+        pikaSpriteConfig.idle2 = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 3, "offsetY" : 0};
+        pikaSpriteConfig.runLeft = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0};
+        pikaSpriteConfig.runRight = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "scaleX" : -1, "scaleY" : 1};
+        pikaSpriteConfig.runLeftReverse = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "scaleX" : 1, "scaleY" : -1};
+        pikaSpriteConfig.runRightReverse = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "rotation" : Math.PI};
+        pikaSpriteConfig.idleLeftReverse={"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0};
+        pikaSpriteConfig.idleRightReverse={"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0};
+        cameraRender.addSprite("pikachu", "./images/green_guy_sprites.png", pikaSpriteConfig);
+
     /***** Son *****/
         game.sounds={
             jump : document.createElement('audio'),
@@ -49,6 +60,8 @@ define([
             cameraRender.images.goodImage = images["flag_french"];
             cameraRender.images.badImage = images["flag_romanian"];
         });
+
+
     }
     return init;
 });

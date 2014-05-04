@@ -49,38 +49,19 @@ define([
         game.pikachu.speedY+=5 
     });
     cameraRender.fixedCameraOn(game.pikachu);
-    cameraRender.addSprite("pikachu", "./images/green_guy_sprites.png", pikachu.pikaSpriteConfig);
+    // cameraRender.addSprite("pikachu", "./images/green_guy_sprites.png", pikachu.pikaSpriteConfig);
     cameraRender.putSpriteOn(game.pikachu, "pikachu");
     cameraRender.add(game.pikachu, 11);
 
     var run = function(game){
         requestAnimationFrame(function(){run(game)});
         game.frame++;
-
-       // game.pikachu.accrochage=false;
         heroEngine.calcul();
-       //  game.canvas.context.fillStyle = config.backgroundColor;
-       //  //game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
-
         gravityEngine.calcul();
         collisionEngine.calcul();
+        pikachu.run();
         cameraRender.render();
         cameraRender.showQuadTree();
-       //  if(game.pikachu.speedX==0){
-       //      game.pikachu.canIdle=true;
-       //  }
-       //      if((game.pikachu.currentAnim!="idle"||game.pikachu.currentAnim!="idleRightReverse")&&game.pikachu.canIdle){
-       //          if(game.pikachu.accrochage){
-       //              game.pikachu.changeAnimation("idleRightReverse");
-       //          }
-       //          else{
-       //              game.pikachu.changeAnimation("idle");
-       //          }
-       //  }
-       //  if(game.pikachu.accrochage){
-       //       game.pikachu.speedY=-5;
-       //  }
-       //  // wall.render(game.canvas.context);
     };
     requestAnimationFrame(function(){run(game)});
 });

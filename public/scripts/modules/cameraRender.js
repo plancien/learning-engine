@@ -247,5 +247,7 @@ define(['event_bus'], function(eventBus) {
         this.parralax.diviseur = diviseur || 10;
         this.parralax.remanance = remanance || 1;
     }
-    return new CameraRender();
+
+    var cameraRender = new CameraRender();
+    return cameraRender;
 });
