@@ -39,13 +39,14 @@ define([
     eventBus.on("new frame",function(){run(game)})
     // grille(game);
 });
+
+//----------------------SNAKE---------------
 function Snake(x,y,game){
     this.refGame = game;
     this.pos={
         x:0,
         y:0,
     }
-
     this.moveDelay= 5;
     this.delay=0;
     this.graphDir={x:0,y:0};
@@ -53,7 +54,6 @@ function Snake(x,y,game){
     this.y = 0;
     this.width = game.tileSize;
     this.height = game.tileSize;
-    
     this.input="left";
     this.move = function move(args){
         switch(args){
@@ -71,53 +71,40 @@ function Snake(x,y,game){
             break;
         } 
     };
+    this.checkDir=function checkDir(dirX,dirY){
+        if(this.delay >= this.moveDelay){
+            this.graphDir.y = dirY; //la direction de l'animation
+            this.graphDir.x = dirX; //la direction de l'animation
+            this.delay=0;   
+        }
+    };
     this.update=function update(){
         this.delay++;
-        
-            this.x += this.graphDir.x * (game.tileSize/this.moveDelay);
-            this.y += this.graphDir.y * (game.tileSize/this.moveDelay);
-            
-        
+        this.x += this.graphDir.x * (game.tileSize/this.moveDelay);
+        this.y += this.graphDir.y * (game.tileSize/this.moveDelay);
         switch (this.input){
             case "right":
-            if(this.delay >= this.moveDelay){
-                this.pos.x ++;
-                this.graphDir.y = 0; //la direction de l'animation
-                this.graphDir.x = 1; //la direction de l'animation
-                this.delay=0;   
-            }
+                this.checkDir(1,0);
             break;
             case "left":
-            if(this.delay >= this.moveDelay){
-                this.pos.x --;
-                this.graphDir.y = 0; //la direction de l'animation
-                this.graphDir.x = -1; //la direction de l'animation
-                this.delay=0;
-            }    
-            
+                this.checkDir(-1,0);    
             break;
             case "up":
-            if(this.delay >= this.moveDelay){
-                this.pos.y --;
-                this.graphDir.y = -1; //la direction de l'animation
-                this.graphDir.x = 0; //la direction de l'animation
-                this.delay=0;            
-            }    
+                this.checkDir(0,-1);    
             
             break;
             case "down":
-            if(this.delay >= this.moveDelay){
-                this.pos.y ++;
-                this.graphDir.y = 1; //la direction de l'animation
-                this.graphDir.x = 0; //la direction de l'animation
-                this.delay=0;
-            }    
-            
+                this.checkDir(0,1);   
             break;
         }
     }
 };
-
+Snake.prototype.draw = function() {
+    this.refGame.context.fillStyle = "red";
+    this.refGame.context.fillRect(this.x, this.y, this.width, this.height);
+    
+}
+//--------------------RUN-----------------------------------------
 function run(game){
     game.context.fillStyle="black";
     game.context.fillRect(0,0,game.canvas.width,game.canvas.height);
@@ -125,29 +112,9 @@ function run(game){
     game.snake.update();
     draw(game);
 }
+//------------------DRAW-----------------------------------------
 function draw(game){
-  game.snake.display();  
+  game.snake.draw();  
 }
-    
-Snake.prototype.display = function() {
-    this.refGame.context.fillStyle = "red";
-    this.refGame.context.fillRect(this.x, this.y, this.width, this.height);
-    
-}
-function grille(game){
-	var carre = {}
-    	carre.height = 20;
-    	carre.width  = 20;
-    var maxX = (game.canvas.width/carre.height + carre.width);
-    var maxY = (game.canvas.height/carre.height + carre.width);
-    game.context.fillStyle = 'white';
-     for(var iX = 0; iX < maxX; iX++){
-        for(var iY = 0; iY < maxY; iY++){
+//----------------------------------------------------------------
 
-            //Dessiner ---------
-            game.context.lineTo(0, iY * game.canvas.width);
-            //Dessiner | | | | |
-            game.context.lineTo(0, iX * game.canvas.height);
-        }
-    }
-}
