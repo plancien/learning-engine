@@ -31,8 +31,8 @@ define(['event_bus'], function(eventBus) {
         var totalOffsetY = 0;
         //calculating the position on the canvas
         
-        //var currentElement = getCanvas != undefined ? getCanvas.canvas : window;
-        var currentElement = window;
+        var currentElement = getCanvas != undefined ? getCanvas.canvas : window;
+
         var e = event || window.event;
         totalOffsetX += currentElement.offsetLeft - currentElement.scrollLeft;
         totalOffsetY += currentElement.offsetTop - currentElement.scrollTop;

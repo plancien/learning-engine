@@ -291,6 +291,8 @@ define([
                   vector.x /= longueur;
                   vector.y /= longueur;
 
+                  console.log(mouse,vector,longueur)
+
                   object.shoot(vector);
 
                 }
@@ -302,7 +304,6 @@ define([
             function addShootCapabilities(object){
 
               object.shoot = function(vector){
-
                 bullets[this.id].push(new Bullet( this.x+this.w*0.5, this.y+this.h*0.5, vector, this.bulletSpeed, this.id, bullets[this.id].length, this.color, this.bulletDamage));
                 
                 connector.emit("infoToSync -g", {id:this.id,eventName:"player shoot",objectKey:"bullets",
