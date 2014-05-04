@@ -3,12 +3,11 @@ define([
 	'ext_libs/jquery'
     ], 
 function(Canvas){
-$(document).ready(function(){
 	//Canvas stuff
-	var canvas = $("#main_canvas")[0];
-	var ctx = canvas.getContext("2d");
-	var width = $("#cmain_canvas").width();
-	var height = $("#main_canvas").height();
+	var canvas = Canvas.create({"width" : 800, "height" : 600});
+	var ctx = canvas.context;
+	var width = canvas.width;
+	var height = canvas.height;	
 	console.log(canvas);
 	//Permet de sauver la largeur de la cellule dans une variable pour un contrôle facile
 	var controleWitdh = 10;
