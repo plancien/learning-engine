@@ -4,7 +4,7 @@
 	"pikaSpriteConfig.runLeft"  : {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0},
 	"pikaSpriteConfig.runRight"  : {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "scaleX" : -1, "scaleY" : 1},
 	"pikaSpriteConfig.runLeftReverse"  : {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "scaleX" : 1, "scaleY" : -1},
-	"pikaSpriteConfig.runRightReverse"  : {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "rotation" : Math.PI},
+	"pikaSpriteConfig.runRightReverse"  : {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "rotation" : "Math.PI"},
 	"pikaSpriteConfig.idleLeftReverse" :{"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0},
 	"pikaSpriteConfig.idleRightReverse" :{"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0}
 }

@@ -204,6 +204,7 @@ define(['event_bus'], function(eventBus) {
                     this.currentAnim = name;
                     this.width=that.sprites[this.sprite][name].width;
                     this.height=that.sprites[this.sprite][name].height;
+                    this.spriteNbLoop = 0;
                 }
                 else
                     console.warn("L'animation '"+name+"' n'existe pas sur cet element");
@@ -221,21 +222,27 @@ define(['event_bus'], function(eventBus) {
                 element.currentIndex = 0;
                 if (element.spriteNbLoop == target.loop){
                     element.spriteNbLoop = 0;
-                    element.currentAnim = "idle";
-                    element.spriteFrame = 0;
-                    element.width = target.width;
-                    element.height = target.height;
+                    if (target.loopCallback){
+                        target.loopCallback(element);
+                    }
+                    else{
+                        element.currentAnim = "idle";
+                        element.spriteFrame = 0;
+                        element.width = target.width;
+                        element.height = target.height;
+                    }
                 }
             }
         }
         var indexOfAnim = target.offsetY;
+        var offsetX = target.offsetX || 0;
         this.canvas.context.save();
         this.canvas.context.translate(element.x-this.x+element.width/2, element.y-this.y+element.height/2);
         if (target.scaleX && target.scaleY)
             this.canvas.context.scale(target.scaleX, target.scaleY);
         if (target.rotation)
             this.canvas.context.rotate(target.rotation);
-        this.canvas.context.drawImage(this.images[element.sprite], element.width * element.currentIndex, indexOfAnim, element.width, element.height, 
+        this.canvas.context.drawImage(this.images[element.sprite], element.width * element.currentIndex + offsetX, indexOfAnim, element.width, element.height, 
                                     -element.width/2, -element.height/2, element.width, element.height);
 
         this.canvas.context.restore();

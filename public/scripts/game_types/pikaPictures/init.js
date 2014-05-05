@@ -12,17 +12,29 @@ define([
         game.canvas.width = 800;
         game.canvas.height = 600;
         game.canvas.context.fillStyle = "rgba(30,30,30,0.8)";
+
         cameraRender.init(game.canvas, true);
+        cameraRender.backgroundParralax("./images/pikachuParallax.png", 1, 0.5);
+
 
         pikaSpriteConfig = {};
-        pikaSpriteConfig.idle = {"width" : 32, "height" :32, "nbAnim" : 4, "loop" : -1, "fps" : 3, "offsetY" : 0};
-        pikaSpriteConfig.idle2 = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 3, "offsetY" : 0};
+        pikaSpriteConfig.idleLeft = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 288};
+        pikaSpriteConfig.idleRight = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 288, "scaleX" : -1, "scaleY" : 1};
+        pikaSpriteConfig.idleLeftReverse = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 288, "scaleX" : 1, "scaleY" : -1};
+        pikaSpriteConfig.idleRightReverse = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 288, "rotation" : Math.PI};
         pikaSpriteConfig.runLeft = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0};
         pikaSpriteConfig.runRight = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "scaleX" : -1, "scaleY" : 1};
         pikaSpriteConfig.runLeftReverse = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "scaleX" : 1, "scaleY" : -1};
         pikaSpriteConfig.runRightReverse = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "rotation" : Math.PI};
-        pikaSpriteConfig.idleLeftReverse={"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0};
-        pikaSpriteConfig.idleRightReverse={"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0};
+        pikaSpriteConfig.jumpLeft = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 256};
+        pikaSpriteConfig.jumpRight = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 256, "scaleX" : -1, "scaleY" : 1};
+        pikaSpriteConfig.jumpLeftReverse = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 256, "scaleX" : 1, "scaleY" : -1};
+        pikaSpriteConfig.jumpRightReverse = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 256, "rotation" : Math.PI};
+        pikaSpriteConfig.waitingLeft = {"width" : 32, "height" :32, "nbAnim" : 5, "loop" : 1, "fps" : 3, "offsetY" : 0, "offsetX" : 288, "loopCallback" : function (target){target.currentFrameWaiting = 0}};
+        pikaSpriteConfig.waitingRight = {"width" : 32, "height" :32, "nbAnim" : 5, "loop" : 1, "fps" : 3, "offsetY" : 0, "offsetX" : 288, "scaleX" : -1, "scaleY" : 1, "loopCallback" : function (target){target.currentFrameWaiting = 0}};
+        pikaSpriteConfig.waitingLeftReverse = {"width" : 32, "height" :32, "nbAnim" : 5, "loop" : 1, "fps" : 3, "offsetY" : 0, "offsetX" : 288, "scaleX" : 1, "scaleY" : -1, "loopCallback" : function (target){target.currentFrameWaiting = 0}};
+        pikaSpriteConfig.waitingRightReverse = {"width" : 32, "height" :32, "nbAnim" : 5, "loop" : 1, "fps" : 3, "offsetY" : 0, "offsetX" : 288, "rotation" : Math.PI, "loopCallback" : function (target){target.currentFrameWaiting = 0}};
+
         cameraRender.addSprite("pikachu", "./images/green_guy_sprites.png", pikaSpriteConfig);
 
     /***** Son *****/

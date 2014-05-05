@@ -19,7 +19,6 @@ define([
     window.collisionEngine = collisionEngine;
     window.element = element;
     var game = {};
-
     window.pGame = game;
 
 
@@ -28,30 +27,12 @@ define([
     game.pikachu = pikachu.pikachu;
 
     init(game);
-    level();
+    level(game);
 
-    cameraRender.backgroundParralax("./images/pikachuParallax.png", 1, 0.5);
-
-    eventBus.on("key pressed Z", function(){ 
-        game.sounds.jump.play();
-        game.pikachu.speedY = -10
-          });
-    eventBus.on("key pressed Q", function(){
-         game.pikachu.canIdle=false;
-        game.pikachu.changeAnimation("runRight") 
-    });
-    eventBus.on("key pressed D", function(){ 
-        game.pikachu.canIdle=false;
-        game.pikachu.changeAnimation("runLeft") 
-    });
-    eventBus.on("key pressed S", function(){ 
-        game.pikachu.desaccrochage=true;
-        game.pikachu.speedY+=5 
-    });
     cameraRender.fixedCameraOn(game.pikachu);
-    // cameraRender.addSprite("pikachu", "./images/green_guy_sprites.png", pikachu.pikaSpriteConfig);
     cameraRender.putSpriteOn(game.pikachu, "pikachu");
     cameraRender.add(game.pikachu, 11);
+    game.pikachu.changeAnimation("idleRight");
 
     var run = function(game){
         requestAnimationFrame(function(){run(game)});
@@ -59,9 +40,9 @@ define([
         heroEngine.calcul();
         gravityEngine.calcul();
         collisionEngine.calcul();
-        pikachu.run();
         cameraRender.render();
         cameraRender.showQuadTree();
+        game.pikachu.run();
     };
     requestAnimationFrame(function(){run(game)});
 });
