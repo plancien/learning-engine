@@ -5,21 +5,28 @@
         socket.emit("ask images names");
 		
 		socket.on('send images names', function(data) {//populate selects with all images in the image folder
-            
+
 			$("#bonusImg").html('');
 			$("#malusImg").html('');
             
 			var display = "";
+            var selectBonus = "";
+            var selectMalus = "";
 			var imageTypes = [".jpeg",".jpg",".png",".gif"];
 			for(var i=data.length-1; i>=0; i--){
 				var imageName = data[i].replace("_"," ").replace("<","").replace(">","");
 				for(var j=imageTypes.length-1; j>=0; j--){
 					imageName = imageName.replace(imageTypes[j],"");
 				}
-				display += '<option value="images/' + data[i] + '">' + imageName + '</option>';
+                if (imageName == "pomme pourrie")
+                    selectBonus = '<option value="images/' + data[i] + '" selected="selected">' + imageName + '</option>';
+                else if (imageName == "pomme or")
+                    selectMalus = '<option value="images/' + data[i] + '" selected="selected">' + imageName + '</option>';
+                else
+    				display += '<option value="images/' + data[i] + '">' + imageName + '</option>';
 			}
-			$("#bonusImg").html(display);
-			$("#malusImg").html(display);
+			$("#bonusImg").html(display+selectMalus);
+			$("#malusImg").html(display+selectBonus);
         });
 
         socket.on('inject css', function(data) {
