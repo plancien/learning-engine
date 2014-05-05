@@ -49,6 +49,8 @@ function Snake(game){
         x:0,
         y:0,
     }
+    this.oldPosY=0;
+    this.oldPosY=0;
     this.moveDelay= 5;
     this.delay=0;
     this.graphDir={x:0,y:0};
@@ -75,9 +77,20 @@ function Snake(game){
     };
     this.checkDir=function checkDir(dirX,dirY){
         if(this.delay >= this.moveDelay){
+            this.oldPosY=this.y;
+            this.oldPosX=this.x;
             this.graphDir.y = dirY; //la direction de l'animation
             this.graphDir.x = dirX; //la direction de l'animation
-            this.delay=0;   
+            this.delay=0;
+            for (var i = 0 ; i< game.tails.length;i++){
+                if(i>0){
+                    game.tails[i].oldPosY=game.tails[i-1].oldPosY
+                    game.tails[i].oldPosX=game.tails[i-1].oldPosX
+                    
+                }
+            } 
+            
+             
         }
     };
     this.update=function update(){
@@ -109,13 +122,28 @@ Snake.prototype.draw = function() {
 //------------------------SNAKE TAIL------------------------
 function Tail(game,x,y){
     this.refGame=game;
+    this.next;
     this.x=x;
     this.y=y;
     this.width=game.tileSize;
     this.height=game.tileSize;
+    this.oldPosX=0;
+    this.oldPosY=0;
     this.draw=function draw(){
-        this.refGame.context.fillStyle = "green";
-        this.refGame.context.fillRect(this.refGame.snake.x-32, this.refGame.snake.y-32, this.width, this.height);
+            this.oldPosX=this.next.oldPosX;
+            this.oldPosY=this.next.oldPosY;
+                  
+            this.refGame.context.fillStyle = "red";
+            this.refGame.context.fillRect(this.next.oldPosX, this.next.oldPosY, this.width, this.height);
+
+    }
+    this.next = null;
+    this.move = function(x,y) {
+        if (this.next) {
+            this.next.move(this.x,this.y);
+        }
+        this.x = x;
+        this.y = y;
     }
 }
 //-------------------------ITEM---------------------------------
@@ -142,10 +170,10 @@ function run(game){
 function draw(game){
     game.item.draw();
     game.snake.draw();
-    console.log(game.tails.length)
+    
     for(var i=0;i<game.tails.length;i++){
-        game.tails[i].draw()
-        console.log("ca dessine")
+        game.tails[i].draw();
+
     }  
 }
 //----------------------------------------------------------------
@@ -153,8 +181,20 @@ function manageItem(game){
     if(collisionSquares(game.snake,game.item)){
         game.item.x = (Math.random()*24|0)*game.tileSize;
         game.item.y = (Math.random()*24|0)*game.tileSize;
-        game.tails.push(new Tail(game,game.snake.x,game.snake.y))
-        console.log(game.tails)
+        //On ajoute une nouvelle queue
+        if(game.tails.length>=1){ 
+            console.log("ok2")
+            var newTails = new Tail(game, game.tails[game.tails.length-1].oldPosX, game.tails[game.tails.length-1].oldPosY)
+            game.tails.push(newTails);
+            game.tails[game.tails.length-1].next=newTails;
+        }
+        else{
+            console.log("ok1")
+            game.tails.push(new Tail(game,0,0));
+            var oldTails = game.tails[game.tails.length-1];
+            oldTails.next=game.snake;    
+        }
+        
     }
 }
 
