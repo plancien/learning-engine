@@ -1,8 +1,10 @@
 define([
+	'event_bus',
 	'modules/canvas',
-	'ext_libs/jquery'
+	'modules/frames',
+	'ext_libs/jquery',
     ], 
-function(Canvas){
+function(eventBus,Canvas, Frames){
 	//Canvas stuff
 	var canvas = Canvas.create({"width" : 800, "height" : 600});
 	var ctx = canvas.context;
@@ -100,7 +102,7 @@ function(Canvas){
 		paint_cell(food.x, food.y);
 		//dessine le score
 		var score_text = "Score: " + score;
-		ctx.fillText(score_text, 5, h-5);
+		ctx.fillText(score_text, 5, height-5);
 	}
 	
 	// création d'une fonction générique pour dessiner les cellues 
