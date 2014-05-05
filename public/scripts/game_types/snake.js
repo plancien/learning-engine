@@ -2,8 +2,9 @@ define([
     'event_bus',
     'modules/canvas',
     'modules/frames',
+    'modules/collisions',
     'event_capabilities',
-], function(eventBus, Canvas, Frames, addEventCapabilities) {
+], function(eventBus, Canvas, Frames,collisions,addEventCapabilities) {
     var game = {};
     
     var canvas = Canvas.create({"width" : 24*32, "height" : 24*32});
@@ -13,13 +14,14 @@ define([
     console.log(game.canvas);
     game.context.fillStyle = "rgb(0,0,0)";
     game.context.fillRect(0,0, 800, 600); 
-    game.snake = new Snake(100, 100, game);
+    game.snake = new Snake(game);
+    game.item= new Item(game);
+    game.tails=[];
     addEventCapabilities(game);
     game.on('move snake', function(e){
         game.snake.move(e); // C'est ici le PB  ? yes !
     });
     window.onkeydown = function(e){
-        console.log(e);
         switch(e.keyCode){
             case 38 : 
             game.emit('move snake',"up");
@@ -41,7 +43,7 @@ define([
 });
 
 //----------------------SNAKE---------------
-function Snake(x,y,game){
+function Snake(game){
     this.refGame = game;
     this.pos={
         x:0,
@@ -54,7 +56,7 @@ function Snake(x,y,game){
     this.y = 0;
     this.width = game.tileSize;
     this.height = game.tileSize;
-    this.input="left";
+    this.input="right";
     this.move = function move(args){
         switch(args){
             case 'up':
@@ -104,17 +106,70 @@ Snake.prototype.draw = function() {
     this.refGame.context.fillRect(this.x, this.y, this.width, this.height);
     
 }
+//------------------------SNAKE TAIL------------------------
+function Tail(game,x,y){
+    this.refGame=game;
+    this.x=x;
+    this.y=y;
+    this.width=game.tileSize;
+    this.height=game.tileSize;
+    this.draw=function draw(){
+        this.refGame.context.fillStyle = "green";
+        this.refGame.context.fillRect(this.refGame.snake.x-32, this.refGame.snake.y-32, this.width, this.height);
+    }
+}
+//-------------------------ITEM---------------------------------
+function Item(game){
+    this.refGame=game;
+    this.x = (Math.random()*24|0)*game.tileSize;
+    this.y = (Math.random()*24|0)*game.tileSize;
+    this.height=game.tileSize;
+    this.width=game.tileSize;
+    this.draw = function draw(){
+        this.refGame.context.fillStyle = "blue";
+        this.refGame.context.fillRect(this.x, this.y, this.width, this.height);    
+    }
+}
 //--------------------RUN-----------------------------------------
 function run(game){
     game.context.fillStyle="black";
     game.context.fillRect(0,0,game.canvas.width,game.canvas.height);
-    console.log(game.snake.input);
     game.snake.update();
+    manageItem(game);
     draw(game);
 }
 //------------------DRAW-----------------------------------------
 function draw(game){
-  game.snake.draw();  
+    game.item.draw();
+    game.snake.draw();
+    console.log(game.tails.length)
+    for(var i=0;i<game.tails.length;i++){
+        game.tails[i].draw()
+        console.log("ca dessine")
+    }  
 }
 //----------------------------------------------------------------
+function manageItem(game){
+    if(collisionSquares(game.snake,game.item)){
+        game.item.x = (Math.random()*24|0)*game.tileSize;
+        game.item.y = (Math.random()*24|0)*game.tileSize;
+        game.tails.push(new Tail(game,game.snake.x,game.snake.y))
+        console.log(game.tails)
+    }
+}
 
+function collisionSquares(object1, object2){
+    if 
+    (
+        (object1.x < (object2.x + object2.width)) && 
+        ((object1.x + object1.width) > object2.x) && 
+        (object1.y < (object2.y + object2.height)) && 
+        ((object1.y + object1.height) > object2.y)
+    ){
+        return true;    
+    }
+    else{
+        return false;
+    }
+        
+}
