@@ -3,10 +3,25 @@ define([
     'event_bus',
     'modules/cameraRender',
     'modules/canvas',
-    'modules/collisionEngine'
-], function(eventBus, cameraRender, Canvas, collisionEngine) { // init,
+    'modules/collisionEngine',
 
+    'modules/frames',
+    'modules/render',
+    'modules/mouse',
+    'modules/particle_generator',
+    'connector',
+    'modules/key_listener',
+    'game_types/RunTicles/Bonus',
+    'game_types/RunTicles/Player',
+    'modules/bonus_chooser',
+    'modules/add_canvasBoundingBox',
+    'modules/countdown'
+], function(eventBus, cameraRender, Canvas, collisionEngine) { // init,
     var init = function(game){
+         eventBus.on('init', function() {
+            console.log("BOnjour LOOOL");
+         });
+
         game.frame = 0;
         game.canvas = Canvas.create({"width" : 800, "height" : 600});
         game.canvas.width = 800;
@@ -65,13 +80,19 @@ define([
             }
         });
 
-    /***** On recupere les images du serveur*****/
-        eventBus.emit("load images");
-        eventBus.on("images loaded", function(images) {
-            console.log(images);
-            cameraRender.images.goodImage = images["flag_french"];
-            cameraRender.images.badImage = images["flag_romanian"];
+        eventBus.on("malus create", function(target){
+            target.image = "badImage";
+            cameraRender.add(target, 20);
+            collisionEngine.addElement(target, "bonus");
+            target.collisionCallback["pikachu"] = function(opponent){
+                opponent.speedX *= -1;
+
+            }
         });
+
+    /***** On recupere les images du serveur*****/
+        cameraRender.addImage("goodImage", game.params.bonusUrl);
+        cameraRender.addImage("badImage", game.params.malusUrl);
 
 
     }

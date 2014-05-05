@@ -12,6 +12,7 @@ define([
 	    wall.create(850, 0, 60, 1600, color);
 	    wall.create(850, 1600, 20000, 60, color);
 	    element.create(1600, 1350, 50, 50, "bonus");
+	    element.create(1500, 1350, 50, 50, "malus");
 	    game.pikachu.x =  1150;
 	    game.pikachu.y = 1300;
 	}
