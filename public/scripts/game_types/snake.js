@@ -4,11 +4,13 @@ define([
     'modules/frames',
     'modules/collisions',
     'event_capabilities',
-], function(eventBus, Canvas, Frames,collisions,addEventCapabilities) {
+    'modules/score',
+], function(eventBus, Canvas, Frames,collisions,addEventCapabilities, score) {
     var game = {};
     
     var canvas = Canvas.create({"width" : 24*32, "height" : 24*32});
     game.tileSize =32;
+
     game.canvas = canvas.canvas;
     game.context = canvas.context;
     console.log(game.canvas);
@@ -51,7 +53,7 @@ function Snake(game){
     }
     this.oldPosY=0;
     this.oldPosY=0;
-    this.moveDelay= 5;
+    this.moveDelay= 6;
     this.delay=0;
     this.graphDir={x:0,y:0};
     this.x = 0;
@@ -169,6 +171,16 @@ function run(game){
     manageItem(game);
     draw(game);
 }
+//-------------------GAMEOVER-----------------------------------
+function gameOver(game){
+
+	// if (player.dead) {
+        ctx.fillStyle = "rgb(255,255,255)";
+        ctx.font = "20px Verdana";
+        ctx.fillText("Vous avez obtenu " + score + " points", 200, 300);
+    // }
+}
+
 //------------------DRAW-----------------------------------------
 function draw(game){
     game.item.draw();
@@ -186,14 +198,11 @@ function manageItem(game){
         game.item.y = (Math.random()*24|0)*game.tileSize;
         //On ajoute une nouvelle queue
             var newTails = new Tail(game,0, 0)
-        if(game.tails.length>=1){ 
+        if(game.tails.length>0){ 
             game.tails[game.tails.length-1].next=newTails;
-            game.tails.push(newTails);
-           
+            game.tails.push(newTails); 
         } 
-        
         else{
-            console.log("ok1")
             game.tails.push(newTails);
             
             game.snake.next = newTails; 
@@ -201,6 +210,23 @@ function manageItem(game){
         }
         
     }
+    for(var i = 0; i< game.tails; i++){
+    	if(collisionSquares(game.snake, game.tails[i])){
+    		fillStyle(50,50,255);
+    		gameOver(game)
+    	}
+    }
+    if(game.snake.x>game.canvas.width)
+    	game.snake.x = 0;
+
+    if(game.snake.x<0)
+    	game.snake.x = game.canvas.width;
+
+    if(game.snake.y<0)
+    	game.snake.y=game.canvas.height;
+
+    if(game.snake.y>game.canvas.height)
+    	game.snake.y = 0;
 }
 
 function collisionSquares(object1, object2){
