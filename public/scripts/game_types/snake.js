@@ -54,7 +54,7 @@ function Snake(game){
         y:0,
     }
     this.oldPosY=0;
-    this.oldPosY=0;
+    this.oldPosX=0;
     this.moveDelay= 9;
     this.delay=0;
     this.graphDir={x:0,y:0};
