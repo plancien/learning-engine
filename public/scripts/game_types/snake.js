@@ -39,6 +39,9 @@ define([
         }
     };
     console.log(game.snake)
+    for(var i =0;i<20;i++){
+        addTail(game)
+    }
     eventBus.on("new frame",function(){run(game)})
    
 });
@@ -93,7 +96,6 @@ function Snake(game){
     };
     this.moveTails = function() {
         if (this.next) {
-            
             this.next.move(this.x,this.y);
         }
         this.x += this.graphDir.x * (game.tileSize/this.moveDelay);
@@ -147,20 +149,17 @@ function Tail(game,x,y){
     this.y=y;
     this.width=game.tileSize;
     this.height=game.tileSize;
-    this.oldPos={
-        x:0,
-        y:0
-    }
+    
     this.draw=function draw(){
         this.refGame.context.fillStyle = "red";
-        this.refGame.context.fillRect(this.oldPos.x, this.oldPos.y, this.width, this.height);     
+        this.refGame.context.fillRect(this.x, this.y, this.width, this.height);     
     }
     this.move = function(x,y) {
         if (this.next) {
-            this.next.move(this.oldPos.x,this.oldPos.y);
+            this.next.move(this.x,this.y);
         }
-        this.oldPos.x = x;
-        this.oldPos.y = y;
+        this.x = x;
+        this.y = y;
     }
     
 }
@@ -195,9 +194,13 @@ function ManageScore(game){
             break;
             case 100:
             this.refGame.snake.moveDelay=3;
-            this.refGame.item.push(new Item(this.refGame))
-            break;       
+            this.refGame.item.push(new Item(this.refGame));
+            break
         }
+        if(this.score>100)
+            if(this.score%10==0)
+                this.refGame.item.push(new Item(this.refGame))
+                  
     }
     this.draw=function draw(){
         this.refGame.context.fillStyle = "blue";
@@ -223,6 +226,7 @@ function run(game){
     game.context.fillRect(0,0,game.canvas.width,game.canvas.height);
     game.snake.update();
     manageItem(game);
+    loose(game);
     draw(game);
 }
 //------------------DRAW-----------------------------------------
@@ -252,7 +256,7 @@ function manageItem(game){
 function replaceItem(game,i){
     for (var j=0;j<game.tails.length;j++){
         //si l'objet entre en collision avec une cellule au moment ou il apparait on le replace
-        if(collisionSquares(game.item[i],game.tails[j].oldPos)){
+        if(collisionSquares(game.item[i],game.tails[j])){
             game.item[i].x = (Math.random()*24|0)*game.tileSize;
             game.item[i].y = (Math.random()*24|0)*game.tileSize;
         }
@@ -268,6 +272,28 @@ function addTail(game){
     else{//pour la premiere cellule elle devra suivre les positions de la tete
         game.tails.push(newTails);    
         game.snake.next = newTails;     
+    }
+}
+//---------------------LOOSE--------------------
+function loose(game){//condition pour perdre
+    for (var i=0;i<game.tails.length;i++){
+        if(collisionSquares(game.snake,game.tails[i])){
+            if(i>20){
+                reset(game);
+            }
+        }    
+    }
+}
+function reset(game){
+    game.manageScore.score=0;
+    game.snake.x=0;
+    game.snake.y=0;
+    game.snake.delay=0;
+    game.snake.input="right";
+    game.tails=[];
+    game.item= [new Item(game),new Item(game),new Item(game)];
+    for(var i =0;i<20;i++){
+        addTail(game)
     }
 }
 //------------------------------COLLISION-------------------------------
