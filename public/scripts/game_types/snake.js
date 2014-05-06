@@ -4,7 +4,6 @@ define([
     'modules/frames',
     'modules/collisions',
     'event_capabilities',
-    'modules/score',
 ], function(eventBus, Canvas, Frames,collisions,addEventCapabilities, score) {
     var game = {};
     
@@ -214,6 +213,8 @@ function manageItem(game){
     if(collisionSquares(game.snake,game.item)){
         game.item.x = (Math.random()*24|0)*game.tileSize;
         game.item.y = (Math.random()*24|0)*game.tileSize;
+
+        console.log(game.tails)
         //On ajoute une nouvelle queue
             var newTails = new Tail(game,0, 0)
         if(game.tails.length>0){ 
@@ -240,10 +241,10 @@ function addTail(game){
         game.tails.push(newTails);    
         game.snake.next = newTails;     
     }
-    for(var i = 0; i< game.tails; i++){
-    	if(collisionSquares(game.snake, game.tails[i])){
-    		fillStyle(50,50,255);
-    		gameOver(game)
+    for(var i = 1; i< game.tails.length; i++){
+    	if(collisionTails(game.snake, game.tails[i])){
+    		context.fillStyle(50,50,255);
+    		gameOver(game);
     	}
     }
     if(game.snake.x>game.canvas.width)
@@ -259,13 +260,31 @@ function addTail(game){
     	game.snake.y = 0;
 }
 function collisionSquares(object1, object2){
-    if 
+    if
     (
         (object1.x < (object2.x + object2.width)) && 
         ((object1.x + object1.width) > object2.x) && 
         (object1.y < (object2.y + object2.height)) && 
         ((object1.y + object1.height) > object2.y)
     ){
+        return true;    
+    }
+    else{
+        return false;
+    }
+        
+}
+function collisionTails(snake, tail){
+    if
+    (
+        (snake.x <= (tail.oldPosX + tail.width)) && 
+        ((snake.x + snake.width) >= tail.oldPosX) && 
+        (snake.y <= (tail.oldPosY + tail.height)) && 
+        ((snake.y + snake.height) >= tail.oldPosY)
+    ){
+        console.log('collisionTail')
+        console.log("snake :"+snake.x+" "+snake.y)
+        console.log("tail : "+tail.oldPosX+" "+tail.oldPosY)
         return true;    
     }
     else{
