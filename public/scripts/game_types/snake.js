@@ -4,23 +4,23 @@ define([
     'modules/frames',
     'modules/collisions',
     'event_capabilities',
-], function(eventBus, Canvas, Frames,collisions,addEventCapabilities, score) {
+], function(eventBus, Canvas, Frames,collisions,addEventCapabilities) {
     var game = {};
     
     var canvas = Canvas.create({"width" : 24*32, "height" : 24*32});
     game.tileSize =32;
-
     game.canvas = canvas.canvas;
     game.context = canvas.context;
     console.log(game.canvas);
     game.context.fillStyle = "rgb(0,0,0)";
-    game.context.fillRect(0,0, 800, 600); 
+    game.context.fillRect(0,0, 800, 600);
+    game.manageScore=new ManageScore(game); 
     game.snake = new Snake(game);
-    game.item= new Item(game);
+    game.item= [new Item(game),new Item(game),new Item(game)];
     game.tails=[];
     addEventCapabilities(game);
     game.on('move snake', function(e){
-        game.snake.move(e); // C'est ici le PB  ? yes !
+        game.snake.move(e); 
     });
     window.onkeydown = function(e){
         switch(e.keyCode){
@@ -39,6 +39,9 @@ define([
         }
     };
     console.log(game.snake)
+    for(var i =0;i<20;i++){
+        addTail(game)
+    }
     eventBus.on("new frame",function(){run(game)})
    
 });
@@ -52,7 +55,7 @@ function Snake(game){
     }
     this.oldPosY=0;
     this.oldPosY=0;
-    this.moveDelay= 6;
+    this.moveDelay= 9;
     this.delay=0;
     this.graphDir={x:0,y:0};
     this.x = 0;
@@ -93,23 +96,22 @@ function Snake(game){
     };
     this.moveTails = function() {
         if (this.next) {
-            
             this.next.move(this.x,this.y);
         }
         this.x += this.graphDir.x * (game.tileSize/this.moveDelay);
         this.y += this.graphDir.y * (game.tileSize/this.moveDelay);
     }
     this.replaceSnake=function replaceSnake(){
-        if(this.x>this.refGame.canvas.width){
+        if(this.x-this.width>this.refGame.canvas.width){
             this.x = 0;
         }
-        else if(this.y>this.refGame.canvas.height){
+        else if(this.y-this.height>this.refGame.canvas.height){
             this.y=0;
         }
-        else if(this.x<0){
+        else if(this.x+this.width<0){
             this.x=this.refGame.canvas.width;
         }
-        else if(this.y<0){
+        else if(this.y+this.height<0){
             this.y=this.refGame.canvas.height;
         }
     }
@@ -147,29 +149,64 @@ function Tail(game,x,y){
     this.y=y;
     this.width=game.tileSize;
     this.height=game.tileSize;
-    this.oldPosX=0;
-    this.oldPosY=0;
-    this.eatable = false;
+    
     this.draw=function draw(){
-            //this.oldPosX=this.next.oldPosX;
-            //this.oldPosY=this.next.oldPosY;
-                  
-            this.refGame.context.fillStyle = "red";
-            this.refGame.context.fillRect(this.oldPosX, this.oldPosY, this.width, this.height);//c'est oldPos de next qui est dissiné ici
-            //et j'update les positions dans checkdir**
-            //Pas bon !
-            
+        this.refGame.context.fillStyle = "red";
+        this.refGame.context.fillRect(this.x, this.y, this.width, this.height);     
     }
     this.move = function(x,y) {
         if (this.next) {
-            this.next.move(this.oldPosX,this.oldPosY);
+            this.next.move(this.x,this.y);
         }
-
-        this.oldPosX = x;
-        this.oldPosY = y;
-
+        this.x = x;
+        this.y = y;
     }
     
+}
+//---------------------------------MANAGE SCORE--------------------------
+function ManageScore(game){
+    this.refGame=game;
+    this.score=0;
+    this.action=function action(action){//modification des regles en fonction du score
+        if(action=="addScore")
+            this.score++
+        if(action=="resetScore")
+            this.score=0;
+        switch(this.score){
+            case 0:
+            this.refGame.snake.moveDelay=9;
+            break;
+            case 5:
+            this.refGame.snake.moveDelay=8;
+            break;
+            case 15:
+            this.refGame.snake.moveDelay=7;
+            break;
+            case 25:
+            this.refGame.snake.moveDelay=6;
+            break;
+            case 35:
+            this.refGame.snake.moveDelay=5;
+            this.refGame.item.push(new Item(this.refGame))
+            break;
+            case 70:
+            this.refGame.snake.moveDelay=4;
+            break;
+            case 100:
+            this.refGame.snake.moveDelay=3;
+            this.refGame.item.push(new Item(this.refGame));
+            break
+        }
+        if(this.score>100)
+            if(this.score%10==0)
+                this.refGame.item.push(new Item(this.refGame))
+                  
+    }
+    this.draw=function draw(){
+        this.refGame.context.fillStyle = "blue";
+        this.refGame.context.font = "bold 50px Arial";
+        this.refGame.context.fillText(this.score+"", this.refGame.canvas.width-100, this.refGame.canvas.height-50);
+    }
 }
 //-------------------------ITEM---------------------------------
 function Item(game){
@@ -189,50 +226,41 @@ function run(game){
     game.context.fillRect(0,0,game.canvas.width,game.canvas.height);
     game.snake.update();
     manageItem(game);
+    loose(game);
     draw(game);
 }
-//-------------------GAMEOVER-----------------------------------
-function gameOver(game){
-
-	// if (player.dead) {
-        ctx.fillStyle = "rgb(255,255,255)";
-        ctx.font = "20px Verdana";
-        ctx.fillText("Vous avez obtenu " + score + " points", 200, 300);
-    // }
-}
-
 //------------------DRAW-----------------------------------------
 function draw(game){
-    game.item.draw();
     game.snake.draw();
-    
+    for(var i = 0 ; i<game.item.length ; i++){
+        game.item[i].draw();
+    }    
     for(var i=0;i<game.tails.length;i++){
         game.tails[i].draw();
-
     }  
+    game.manageScore.draw();
 }
 //--------------------MANAGE ITEM---------------------------
 function manageItem(game){
-    if(collisionSquares(game.snake,game.item)){
-        game.item.x = (Math.random()*24|0)*game.tileSize;
-        game.item.y = (Math.random()*24|0)*game.tileSize;
-
-        console.log(game.tails)
-        //On ajoute une nouvelle queue
-            var newTails = new Tail(game,0, 0)
-        if(game.tails.length>0){ 
-            game.tails[game.tails.length-1].next=newTails;
-            game.tails.push(newTails); 
-            game.tails[game.tails.length].eatable = true;
-        } 
-        else{
-            game.tails.push(newTails);
-            
-            game.snake.next = newTails; 
-            
+    for(var i = 0 ; i<game.item.length ; i++){
+        if(collisionSquares(game.snake,game.item[i])){
+            game.manageScore.action("addScore");
+            game.item[i].x = (Math.random()*24|0)*game.tileSize;
+            game.item[i].y = (Math.random()*24|0)*game.tileSize;
+            addTail(game);//vient rajouter une cellule a la queue du serpent
+            replaceItem(game,i);//check si l'item est bien placé
         }
         
-        addTail(game)//vient rajouter une cellule a la queue du serpent
+    }
+}
+function replaceItem(game,i){
+    for (var j=0;j<game.tails.length;j++){
+        //si l'objet entre en collision avec une cellule au moment ou il apparait on le replace
+        if(collisionSquares(game.item[i],game.tails[j])){
+            game.item[i].x = (Math.random()*24|0)*game.tileSize;
+            game.item[i].y = (Math.random()*24|0)*game.tileSize;
+        }
+        
     }
 }
 function addTail(game){
@@ -245,52 +273,38 @@ function addTail(game){
         game.tails.push(newTails);    
         game.snake.next = newTails;     
     }
-    for(var i = 1; i< game.tails.length-1; i++){
-    	if(collisionTails(game.snake, game.tails[i])){
-    		context.fillStyle(50,50,255);
-    		gameOver(game);
-    	}
-    }
-    if(game.snake.x>game.canvas.width)
-    	game.snake.x = 0;
-
-    if(game.snake.x<0)
-    	game.snake.x = game.canvas.width;
-
-    if(game.snake.y<0)
-    	game.snake.y=game.canvas.height;
-
-    if(game.snake.y>game.canvas.height)
-    	game.snake.y = 0;
 }
+//---------------------LOOSE--------------------
+function loose(game){//condition pour perdre
+    for (var i=0;i<game.tails.length;i++){
+        if(collisionSquares(game.snake,game.tails[i])){
+            if(i>20){
+                reset(game);
+            }
+        }    
+    }
+}
+function reset(game){
+    game.manageScore.score=0;
+    game.snake.x=0;
+    game.snake.y=0;
+    game.snake.delay=0;
+    game.snake.input="right";
+    game.tails=[];
+    game.item= [new Item(game),new Item(game),new Item(game)];
+    for(var i =0;i<20;i++){
+        addTail(game)
+    }
+}
+//------------------------------COLLISION-------------------------------
 function collisionSquares(object1, object2){
-    if
+    if 
     (
         (object1.x < (object2.x + object2.width)) && 
         ((object1.x + object1.width) > object2.x) && 
         (object1.y < (object2.y + object2.height)) && 
         ((object1.y + object1.height) > object2.y)
     ){
-        return true;    
-    }
-    else{
-        return false;
-    }
-        
-}
-function collisionTails(snake, tail){
-    if
-    (
-        (snake.x <= (tail.oldPosX + tail.width)) && 
-        ((snake.x + snake.width) >= tail.oldPosX) && 
-        (snake.y <= (tail.oldPosY + tail.height)) && 
-        ((snake.y + snake.height) >= tail.oldPosY)&&
-        tail.eatable
-    ){
-        console.log('collisionTail')
-
-        console.log("snake :"+snake.x+" "+snake.y)
-        console.log(tail)
         return true;    
     }
     else{
