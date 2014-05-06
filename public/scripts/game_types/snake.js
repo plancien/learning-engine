@@ -149,6 +149,7 @@ function Tail(game,x,y){
     this.height=game.tileSize;
     this.oldPosX=0;
     this.oldPosY=0;
+    this.eatable = false;
     this.draw=function draw(){
             //this.oldPosX=this.next.oldPosX;
             //this.oldPosY=this.next.oldPosY;
@@ -163,8 +164,10 @@ function Tail(game,x,y){
         if (this.next) {
             this.next.move(this.oldPosX,this.oldPosY);
         }
+
         this.oldPosX = x;
         this.oldPosY = y;
+
     }
     
 }
@@ -220,6 +223,7 @@ function manageItem(game){
         if(game.tails.length>0){ 
             game.tails[game.tails.length-1].next=newTails;
             game.tails.push(newTails); 
+            game.tails[game.tails.length].eatable = true;
         } 
         else{
             game.tails.push(newTails);
@@ -241,7 +245,7 @@ function addTail(game){
         game.tails.push(newTails);    
         game.snake.next = newTails;     
     }
-    for(var i = 1; i< game.tails.length; i++){
+    for(var i = 1; i< game.tails.length-1; i++){
     	if(collisionTails(game.snake, game.tails[i])){
     		context.fillStyle(50,50,255);
     		gameOver(game);
@@ -280,11 +284,13 @@ function collisionTails(snake, tail){
         (snake.x <= (tail.oldPosX + tail.width)) && 
         ((snake.x + snake.width) >= tail.oldPosX) && 
         (snake.y <= (tail.oldPosY + tail.height)) && 
-        ((snake.y + snake.height) >= tail.oldPosY)
+        ((snake.y + snake.height) >= tail.oldPosY)&&
+        tail.eatable
     ){
         console.log('collisionTail')
+
         console.log("snake :"+snake.x+" "+snake.y)
-        console.log("tail : "+tail.oldPosX+" "+tail.oldPosY)
+        console.log(tail)
         return true;    
     }
     else{
