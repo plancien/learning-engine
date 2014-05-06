@@ -6,11 +6,11 @@ define([
     ], 
 function(eventBus,Canvas, Frames){
 	//Canvas stuff
-	var canvas = Canvas.create({"width" : 800, "height" : 600});
+	var width = 800;
+	var height = 600;	
+
+	var canvas = Canvas.create({"width" : width, "height" : height});
 	var ctx = canvas.context;
-	var width = canvas.width;
-	var height = canvas.height;	
-	console.log(canvas);
 	//Permet de sauver la largeur de la cellule dans une variable pour un contrôle facile
 	var controleWitdh = 10;
 	var direction;
