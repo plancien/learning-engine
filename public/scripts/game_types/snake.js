@@ -41,7 +41,7 @@ define([
     };
     console.log(game.snake)
     eventBus.on("new frame",function(){run(game)})
-    // grille(game);
+   
 });
 
 //----------------------SNAKE---------------
@@ -64,15 +64,19 @@ function Snake(game){
     this.move = function move(args){
         switch(args){
             case 'up':
+            if (this.input!="down")
             this.input="up";
             break;
             case 'down':
+            if (this.input!="up")
             this.input="down";
             break;
             case 'left':
+            if (this.input!="right")
             this.input="left";
             break;
             case 'right':
+            if (this.input!="left")
             this.input="right";
             break;
         } 
@@ -96,9 +100,23 @@ function Snake(game){
         this.x += this.graphDir.x * (game.tileSize/this.moveDelay);
         this.y += this.graphDir.y * (game.tileSize/this.moveDelay);
     }
-    
+    this.replaceSnake=function replaceSnake(){
+        if(this.x>this.refGame.canvas.width){
+            this.x = 0;
+        }
+        else if(this.y>this.refGame.canvas.height){
+            this.y=0;
+        }
+        else if(this.x<0){
+            this.x=this.refGame.canvas.width;
+        }
+        else if(this.y<0){
+            this.y=this.refGame.canvas.height;
+        }
+    }
     this.update=function update(){
         this.delay++;
+        this.replaceSnake();
         this.moveTails();
         switch (this.input){
             case "right":
@@ -191,7 +209,7 @@ function draw(game){
 
     }  
 }
-//----------------------------------------------------------------
+//--------------------MANAGE ITEM---------------------------
 function manageItem(game){
     if(collisionSquares(game.snake,game.item)){
         game.item.x = (Math.random()*24|0)*game.tileSize;
@@ -209,6 +227,18 @@ function manageItem(game){
             
         }
         
+        addTail(game)//vient rajouter une cellule a la queue du serpent
+    }
+}
+function addTail(game){
+    var newTails = new Tail(game,0, 0)
+    if(game.tails.length>=1){ 
+        game.tails[game.tails.length-1].next=newTails;//on donne une reference de la cellule suivante
+        game.tails.push(newTails);   
+    }  
+    else{//pour la premiere cellule elle devra suivre les positions de la tete
+        game.tails.push(newTails);    
+        game.snake.next = newTails;     
     }
     for(var i = 0; i< game.tails; i++){
     	if(collisionSquares(game.snake, game.tails[i])){
@@ -228,7 +258,6 @@ function manageItem(game){
     if(game.snake.y>game.canvas.height)
     	game.snake.y = 0;
 }
-
 function collisionSquares(object1, object2){
     if 
     (
