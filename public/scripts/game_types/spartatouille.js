@@ -1,8 +1,7 @@
 define([
     'event_bus',
-    'modules/canvas',
-    'modules/score'
-], function(eventBus, canvasCreate, scoreModule) {
+    'modules/canvas'
+], function(eventBus, canvasCreate) {
 	return function(params) {
 		var container;
 		var canvas = canvasCreate.create({width:800, height:475, id:"canvas"});
@@ -69,6 +68,7 @@ define([
 		    	collisionElements(player, enemys[i]);
 
 		    	if (collision) {
+		    		enemys.splice(i, 1);
 			    	score--;
 		    	}
 		    }
@@ -77,8 +77,15 @@ define([
 		    	collisionElements(player, princesses[i]);
 
 		    	if (collision) {
+		    		princesses.splice(i, 1);
 			    	score++;
 		    	}
+		    }
+
+		    if (princesses.length <= 0) {
+		    	for (var j = 0; j < 3; j++) {
+					princesses.push(new Princess(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
+				}
 		    }
 
 			scoreUser(context);
@@ -209,10 +216,10 @@ define([
 		}
 
 		function collisionElements(element1, element2) {
-			if (element1.x + 65 > element2.x
-				&& element1.x < element2.x + 65
-				&& element1.y + 32 > element2.y
-				&& element1.y < element2.y + 35) {
+			if (element1.x + 66 > element2.x
+				&& element1.x < element2.x + 50
+				&& element1.y + 66 > element2.y
+				&& element1.y < element2.y + 50) {
 
 					collision = true;
 			} else {
