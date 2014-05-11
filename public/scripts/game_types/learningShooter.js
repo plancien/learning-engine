@@ -164,6 +164,7 @@ define([
                 });
                 var answerArray = gameContainer.arrayAnswer.push(gameContainer.answer);
             }
+            console.log(params.bonusUrl);
             createBadAnswer();
         }
 

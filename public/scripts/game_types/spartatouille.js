@@ -4,9 +4,20 @@ define([
 ], function(eventBus, canvasCreate) {
 	return function(params) {
 		var container;
-		var canvas = canvasCreate.create({width:800, height:600, id:"canvas"});
+		var canvas = canvasCreate.create({width:800, height:475, id:"canvas"});
         var context = canvas.context;
         var player = new Player();
+        var enemys = [];
+        var princesses = [];
+
+        for (var i = 0; i < 10; i++) {
+			enemys.push(new Enemy(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
+		}
+
+		for (var i = 0; i < 3; i++) {
+			princesses.push(new Princess(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
+		}
+
         events(Player);
         player.keyboardEvent();
 
@@ -23,15 +34,43 @@ define([
             player.moveLeft();
 			player.moveRight();
 
+			for(var i = 0; i < enemys.length; i++) {
+				enemys[i].drawEnemy(context);
+				enemys[i].moveEnemy();
+				if (enemys[i].y > canvas.canvas.height) {
+					enemys.splice(i, 1);
+				}
+
+				if (enemys.length <= 0) {
+					for (var j = 0; j < 10; j++) {
+						enemys.push(new Enemy(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
+					}
+				}
+			}
+
+			for(var i = 0; i < princesses.length; i++) {
+				princesses[i].drawPrincess(context);
+				princesses[i].movePrincess();
+				if (princesses[i].y > canvas.canvas.height) {
+					princesses.splice(i, 1);
+				}
+
+				if (princesses.length <= 0) {
+					for (var j = 0; j < 3; j++) {
+						princesses.push(new Princess(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
+					}
+				}
+			}
+
         	requestAnimationFrame(gameLoop);
-            //eventBus.emit('need new bonus');
+        	console.log(params.bonusUrl);
         }
 
         function Player() {
 			this.image = new Image();
 			this.image.src = "../../images/Spartiate.png";
 			this.x = 50;
-			this.y = 600 - 80;
+			this.y = 400;
 			this.left = false;
 			this.right = false;
 			this.speed = 8;
@@ -42,8 +81,6 @@ define([
 
 		Player.prototype.drawPlayer = function(ctx) {
 			this.animFrame ++;
-			//context.fillStyle = "#FF0000";
-			//ctx.fillRect(this.x, this.y, 50, 50);
 			ctx.drawImage(this.image,  this.frameWidth, this.frameHeight, 70, 66, this.x, this.y, 70, 66);
 		};
 
@@ -68,7 +105,7 @@ define([
 					this.frameHeight = 67;
 
 					if (this.animFrame % 9 == 0) {
-						this.frameWidth += 64.5;
+						this.frameWidth += 64.7;
 						if (this.frameWidth >= 252) {
 							this.frameWidth = 0;
 						}
@@ -111,5 +148,37 @@ define([
 				}, false);
 			};
 		}
+
+		function Enemy(y, x) {
+			this.image = new Image();
+			this.image.src = params.malusUrl;
+			this.x = x;
+			this.y = y;
+			this.speed = 2.2;
+		}
+
+		Enemy.prototype.drawEnemy = function(ctx) {
+			ctx.drawImage(this.image, this.x, this.y, 50, 50);
+		};
+
+		Enemy.prototype.moveEnemy = function() {
+			this.y += this.speed;
+		};
+
+		function Princess(y, x) {
+			this.image = new Image();
+			this.image.src = params.bonusUrl;
+			this.x = x;
+			this.y = y;
+			this.speed = 1;
+		}
+
+		Princess.prototype.drawPrincess = function(ctx) {
+			ctx.drawImage(this.image, this.x, this.y, 50, 50);
+		};
+
+		Princess.prototype.movePrincess = function() {
+			this.y += this.speed;
+		};
 	}
 });
