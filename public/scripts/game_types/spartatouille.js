@@ -11,6 +11,8 @@ define([
         var princesses = [];
         var score = 0;
         var collision = false;
+        var lifes = [];
+        var die = false;
 
         for (var i = 0; i < 8; i++) {
 			enemys.push(new Enemy(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
@@ -18,6 +20,10 @@ define([
 
 		for (var i = 0; i < 3; i++) {
 			princesses.push(new Princess(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
+		}
+
+		for (var i = 0; i < 3; i++) {
+			lifes.push(new Life(29 * i, 30));
 		}
 
         events(Player);
@@ -64,11 +70,16 @@ define([
 				}
 			}
 
+			for(var i = 0; i < lifes.length; i++) {
+				lifes[i].drawLife(context);
+			}
+
 			for (var i = 0; i < enemys.length; i++) {
 		    	collisionElements(player, enemys[i]);
 
 		    	if (collision) {
 		    		enemys.splice(i, 1);
+		    		lifes.pop();
 			    	score -= 8;
 		    	}
 		    }
@@ -88,10 +99,21 @@ define([
 				}
 		    }
 
+		    if (lifes <= 0) {
+		    	die = true;
+		    }
+
 			scoreUser(context);
 
-        	requestAnimationFrame(gameLoop);
-        	console.log(params.bonusUrl);
+			if (die == false) {
+				requestAnimationFrame(gameLoop);
+			}
+
+			if (die) {
+			    context.font = "50pt Calibri,Geneva,Arial";
+	    		context.strokeStyle = "rgb(0,0,0)";
+			    context.strokeText("GAME OVER", canvas.canvas.width * .5 - 150, canvas.canvas.height * .5);
+			}
         }
 
         function Player() {
@@ -226,5 +248,16 @@ define([
 				collision = false;
 			}
 		}
+
+		function Life(x, y) {
+			this.image = new Image();
+			this.image.src = "../../images/Coeur.png";
+			this.x = x;
+			this.y = y;
+		}
+
+		Life.prototype.drawLife = function(ctx) {
+			ctx.drawImage(this.image, this.x, this.y);
+		};
 	}
 });
