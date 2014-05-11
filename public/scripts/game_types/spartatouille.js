@@ -12,7 +12,7 @@ define([
         var score = 0;
         var collision = false;
 
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 8; i++) {
 			enemys.push(new Enemy(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
 		}
 
@@ -44,7 +44,7 @@ define([
 				}
 
 				if (enemys.length <= 0) {
-					for (var j = 0; j < 10; j++) {
+					for (var j = 0; j < 8; j++) {
 						enemys.push(new Enemy(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
 					}
 				}
@@ -69,7 +69,7 @@ define([
 
 		    	if (collision) {
 		    		enemys.splice(i, 1);
-			    	score--;
+			    	score -= 8;
 		    	}
 		    }
 
@@ -78,7 +78,7 @@ define([
 
 		    	if (collision) {
 		    		princesses.splice(i, 1);
-			    	score++;
+			    	score += 3;
 		    	}
 		    }
 
