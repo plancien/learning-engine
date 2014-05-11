@@ -1,7 +1,8 @@
 define([
     'event_bus',
     'modules/canvas',
-], function(eventBus, canvasCreate) {
+    'modules/score'
+], function(eventBus, canvasCreate, scoreModule) {
 	return function(params) {
 		var container;
 		var canvas = canvasCreate.create({width:800, height:475, id:"canvas"});
@@ -9,6 +10,8 @@ define([
         var player = new Player();
         var enemys = [];
         var princesses = [];
+        var score = 0;
+        var collision = false;
 
         for (var i = 0; i < 10; i++) {
 			enemys.push(new Enemy(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
@@ -61,6 +64,24 @@ define([
 					}
 				}
 			}
+
+			for (var i = 0; i < enemys.length; i++) {
+		    	collisionElements(player, enemys[i]);
+
+		    	if (collision) {
+			    	score--;
+		    	}
+		    }
+
+		    for (var i = 0; i < princesses.length; i++) {
+		    	collisionElements(player, princesses[i]);
+
+		    	if (collision) {
+			    	score++;
+		    	}
+		    }
+
+			scoreUser(context);
 
         	requestAnimationFrame(gameLoop);
         	console.log(params.bonusUrl);
@@ -180,5 +201,23 @@ define([
 		Princess.prototype.movePrincess = function() {
 			this.y += this.speed;
 		};
+
+		function scoreUser(ctx) {
+			ctx.font = "20pt Calibri,Geneva,Arial";
+    		ctx.strokeStyle = "rgb(0,0,0)";
+		    ctx.strokeText("SCORE : " + score, 10, 20);
+		}
+
+		function collisionElements(element1, element2) {
+			if (element1.x + 65 > element2.x
+				&& element1.x < element2.x + 65
+				&& element1.y + 32 > element2.y
+				&& element1.y < element2.y + 35) {
+
+					collision = true;
+			} else {
+				collision = false;
+			}
+		}
 	}
 });
