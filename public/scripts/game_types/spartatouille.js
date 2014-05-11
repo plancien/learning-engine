@@ -14,7 +14,7 @@ define([
         var lifes = [];
         var die = false;
 
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < 10; i++) {
 			enemys.push(new Enemy(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
 		}
 
@@ -50,7 +50,7 @@ define([
 				}
 
 				if (enemys.length <= 0) {
-					for (var j = 0; j < 8; j++) {
+					for (var j = 0; j < 10; j++) {
 						enemys.push(new Enemy(-50 - Math.random() *- 50, Math.random() * canvas.canvas.width));
 					}
 				}
@@ -137,28 +137,37 @@ define([
 		(function move(object) {
 			object.prototype.moveLeft = function() {
 				if (this.left) {
-					this.x -= this.speed;
-					this.frameHeight = 133;
+					if (this.x >= 0) {
+						this.x -= this.speed;
+						this.frameHeight = 133;
 
-					if (this.animFrame % 9 == 0) {
-						this.frameWidth += 66.7;
-						if (this.frameWidth >= 252) {
-							this.frameWidth = 0;
+						if (this.animFrame % 9 == 0) {
+							this.frameWidth += 66.7;
+							if (this.frameWidth >= 252) {
+								this.frameWidth = 0;
+							}
 						}
+					} else {
+						this.x = 0;
 					}
 				}
 			};
 
 			object.prototype.moveRight = function() {
 				if (this.right) {
-					this.x += this.speed;
-					this.frameHeight = 67;
 
-					if (this.animFrame % 9 == 0) {
-						this.frameWidth += 64.7;
-						if (this.frameWidth >= 252) {
-							this.frameWidth = 0;
+					if (this.x <= canvas.canvas.width - 66) {
+						this.x += this.speed;
+						this.frameHeight = 67;
+
+						if (this.animFrame % 9 == 0) {
+							this.frameWidth += 64.7;
+							if (this.frameWidth >= 252) {
+								this.frameWidth = 0;
+							}
 						}
+					} else {
+						this.x = canvas.canvas.width - 66;
 					}
 				}
 			};
@@ -204,7 +213,7 @@ define([
 			this.image.src = params.malusUrl;
 			this.x = x;
 			this.y = y;
-			this.speed = 2.2;
+			this.speed = 2.3;
 		}
 
 		Enemy.prototype.drawEnemy = function(ctx) {
@@ -234,7 +243,7 @@ define([
 		function scoreUser(ctx) {
 			ctx.font = "20pt Calibri,Geneva,Arial";
     		ctx.strokeStyle = "rgb(0,0,0)";
-		    ctx.strokeText("SCORE : " + score, 10, 20);
+		    ctx.strokeText("SCORE : " + score, 0, 20);
 		}
 
 		function collisionElements(element1, element2) {
