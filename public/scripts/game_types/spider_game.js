@@ -114,7 +114,7 @@ define([
             updatePlayer(dt);
             updateScrolling();
             if (isPlayerOutsideOfScreen()) {
-                //game over;
+                resetLevel();
             }
             draw();
 
@@ -126,7 +126,6 @@ define([
                     x: mouse.canvasX,
                     y: mouse.canvasY+scrolling
                 }
-                console.log(realMouse);
             for (var i = 0; i < anchors.length; i++) {
 
                 if (collisions.CollisionCircleAndPoint(realMouse,anchors[i])) {
