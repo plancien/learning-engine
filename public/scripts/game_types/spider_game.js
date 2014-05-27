@@ -22,21 +22,21 @@ define([
         var canvas = canvasFactory.create({"width" : 400, "height" : 600});
         var ctx = canvas.context; console.log(canvas);
         var gravity = 0.001;
-        var anchors = [];
-        createAnchor();
-        createAnchor();
-        createAnchor();
+        var player, anchors, scrolling;
 
-        ctx.fillRect(0,0,400,600);
-
-        var player = {
-            x:100,
-            y:0,
-            vx:0,
-            vy:0,
-            linkTo: createAnchor(),
-            dir: 1
-        };
+        function resetLevel() {
+            anchors = [];
+            scrolling = 0;
+            generateLevel()
+            player = {
+                    x:100,
+                    y:0,
+                    vx:0,
+                    vy:0,
+                    linkTo: anchors[0],
+                    dir: 1
+            };
+        }
 
         function updatePlayer (dt) {
             player.x += player.vx;
@@ -57,11 +57,20 @@ define([
                 dis.y = dis.y/length * (length-100);
                 player.vx += dis.x*0.001+tan.x*0.01;
                 player.vy += dis.y*0.001+tan.y*0.01;
-                player.vx *= 0.99
-                player.vy *= 0.99
+                player.vx *= 0.99;
+                player.vy *= 0.99;
             } else {
                 player.vy += gravity;
                 
+            }
+        }
+
+        function updateScrolling() {
+            if (player.y < scrolling + 400) {
+                scrolling = player.y-400;
+            }
+            if (anchors[0]>scrolling+660) {
+                anchors.shift();
             }
         }
 
@@ -70,36 +79,52 @@ define([
             ctx.fillRect(0,0,400,600);
             ctx.fillStyle = "red";
             ctx.beginPath();
-            ctx.arc(player.x,player.y,20,0,Math.PI*2);
+            ctx.arc(player.x,player.y - scrolling ,20,0,Math.PI*2);
             ctx.fill();
             ctx.fillStyle = "blue";
             for (var i = 0; i < anchors.length; i++) {
                 ctx.beginPath();
-                ctx.arc(anchors[i].x,anchors[i].y,anchors[i].radius,0,Math.PI*2);
+                ctx.arc(anchors[i].x,anchors[i].y - scrolling,anchors[i].radius,0,Math.PI*2);
                 ctx.fill();
             };
         }
 
-        function createAnchor() {
+        function createAnchor(y) {
             var anchor = {
                 x:Math.random()*400,
-                y:Math.random()*600,
+                y:y || Math.random()*600,
                 radius: 20,
             };
             anchors.push(anchor);
             return anchor;
         }
 
+        function generateLevel() {
+            for (var i = 0; i < 100; i+=1) {
+                createAnchor(-200-i*100);
+            };
+        }
+
+        function isPlayerOutsideOfScreen() {
+            return (player.x<-50 || player.x>450 || player.y <scrolling-50 || player.y > scrolling+700)
+        }
+
+
         eventBus.on("new frame", function (dt) {
             updatePlayer(dt);
+            updateScrolling();
+            if (isPlayerOutsideOfScreen()) {
+                //game over;
+            }
             draw();
+
         });
 
         eventBus.on("mouse left start clicking",function(mouse) {
             player.linkTo = null;
             var realMouse = {
                     x: mouse.canvasX,
-                    y: mouse.canvasY
+                    y: mouse.canvasY+scrolling
                 }
                 console.log(realMouse);
             for (var i = 0; i < anchors.length; i++) {
@@ -118,6 +143,7 @@ define([
             };
         });
 
+        resetLevel();
     };
 
 });
