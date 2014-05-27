@@ -9,8 +9,19 @@ define(['event_bus'], function(eventBus) {
             window.setTimeout(callback, 1000 / 60);
         };
 
+    var updateDT = (function() {
+        var old = Date.now();
+        return function() {
+            var now = Date.now();
+            var dt = now-old;
+            old = now;
+            return dt;
+        }
+    })()
+
     var onEachFrame = function() {
-            eventBus.emit('new frame');
+            var dt = updateDT();
+            eventBus.emit('new frame',dt);
             requestAnimationFrame(onEachFrame);
         };
 

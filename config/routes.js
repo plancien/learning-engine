@@ -1,3 +1,6 @@
+var img = require(__dirname+"/../server/img.js");
+
+
 module.exports = function(app) {
 
     app.get('/test', function(req, res) {
@@ -10,6 +13,10 @@ module.exports = function(app) {
 
     app.post("/upload",function(req,res) {
         var fs = require('fs');
+        img.save(req.files.uploadedImage,function(err,data) {
+            res.redirect("/");
+        });
+        /*
         // if(req.files.uploadedImage.size){//verify image size
             fs.readFile(req.files.uploadedImage.path, function (err, data) {
                 var newPath = "./public/images/"+req.files.uploadedImage.name;
@@ -22,5 +29,7 @@ module.exports = function(app) {
                 });
             });
         //}
+        */
+
     });
 };

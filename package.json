@@ -7,13 +7,15 @@
     "node": "0.8.14"
   },
   "scripts": {
-      "start": "server.js"
+    "start": "server.js"
   },
   "dependencies": {
-      "express": "3.4.5",
-      "connect": "2.11.1",
-      "jade": "0.35.0",
-      "socket.io": "0.9.14",
-      "mongoose": "*"
+    "connect": "2.11.1",
+    "express": "3.4.5",
+    "jade": "0.35.0",
+    "mime": "^1.2.11",
+    "mongoose": "*",
+    "promise": "*",
+    "socket.io": "0.9.14"
   }
 }

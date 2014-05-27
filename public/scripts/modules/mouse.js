@@ -51,6 +51,9 @@ define(['event_bus'], function(eventBus) {
     };
 
     Mouse.prototype.clickDown = function(event) {
+        if (!this.isClicking[this.btns[event.button]]) {
+            eventBus.emit('mouse ' + this.btns[event.button] + ' start clicking', this);
+        }
         this.isClicking[this.btns[event.button]] = true;
         eventBus.emit('mouse ' + this.btns[event.button] + ' is clicking', this);
     };
