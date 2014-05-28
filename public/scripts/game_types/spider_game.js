@@ -20,7 +20,10 @@ define([
 ], function(eventBus,canvasFactory,frames,mouse,collisions,createTextDisplay) {
 
     return function(params) {
-        var canvas = canvasFactory.create({"width" : 400, "height" : 600});
+        var maxRopeDistance = 300;
+        var canvasWidth = 400;
+        var canvasHeight = 600;
+        var canvas = canvasFactory.create({"width" : canvasWidth, "height" : canvasHeight});
         var ctx = canvas.context; console.log(canvas);
         var gravity = 0.001;
         var player, anchors, scrolling;
@@ -49,7 +52,8 @@ define([
         function resetLevel() {
             anchors = [];
             scrolling = 0;
-            generateLevel()
+            generateLevel();
+            anchors[0].ropeRadius = 50;
             player = {
                     x:anchors[0].x,
                     y:anchors[0].y+100,
@@ -62,45 +66,75 @@ define([
 
         resetLevel();
 
-
+        // function updatePlayer (dt) {
+        //             player.x += player.vx;
+        //             player.y += player.vy;
+        //             
+        //             
+        //             if (player.linkTo) {
+        //                 var dis = {
+        //                     x:player.linkTo.x-player.x,
+        //                     y:player.linkTo.y-player.y
+        //                 };
+        //                 var length = Math.sqrt(dis.x*dis.x+dis.y*dis.y);
+        //                 var tan = {
+        //                     x:-dis.y/length,
+        //                     y:dis.x/length
+        //                 };
+        //                 dis.x = dis.x/length * (length-100);
+        //                 dis.y = dis.y/length * (length-100);
+        //                 player.vx += dis.x*0.001+tan.x*0.01;
+        //                 player.vy += dis.y*0.001+tan.y*0.01;
+        //                 player.vx *= 0.99;
+        //                 player.vy *= 0.99;
+        //             } else {
+        //                 player.vy += gravity;
+        //                 
+        //             }
+        //         }
+        
+        
         function updatePlayer (dt) {
-            player.x += player.vx;
-            player.y += player.vy;
+            player.x += player.vx * dt;
+            player.y += player.vy * dt;
             
+            var fx = 0;
+            var fy = gravity;
             
             if (player.linkTo) {
-                var dis = {
+                var ropeVector = {
                     x:player.linkTo.x-player.x,
                     y:player.linkTo.y-player.y
+                };
+                var length = Math.sqrt(ropeVector.x*ropeVector.x+ropeVector.y*ropeVector.y);
+                if (length > player.linkTo.ropeRadius) {
+                    var forceRope = (length - player.linkTo.ropeRadius) * 0.00001;
+                    var forceRopeVector = {
+                        x: ropeVector.x * forceRope / length,
+                        y: ropeVector.y * forceRope / length
+                    };
+                    fx += forceRopeVector.x;
+                    fy += forceRopeVector.y;
                 }
-                var length = Math.sqrt(dis.x*dis.x+dis.y*dis.y);
-                var tan = {
-                    x:-dis.y/length,
-                    y:dis.x/length
-                }
-                dis.x = dis.x/length * (length-100);
-                dis.y = dis.y/length * (length-100);
-                player.vx += dis.x*0.001+tan.x*0.01;
-                player.vy += dis.y*0.001+tan.y*0.01;
-                player.vx *= 0.99;
-                player.vy *= 0.99;
-            } else {
-                player.vy += gravity;
-                
             }
+            
+            player.vx += fx * dt;
+            player.vy += fy * dt;
         }
 
         function updateScrolling() {
-            if (player.y < scrolling + 400) {
-                scrolling = player.y-400;
+            if (player.y < scrolling + canvasWidth) {
+                scrolling = player.y-canvasWidth;
                 text.changeText("max : "+Math.floor((-scrolling+400)/50));
             }
-            if (anchors[0]>scrolling+660) {
+            if (anchors[0]>scrolling+660) {
                 anchors.shift();
             }
         }
 
         function draw() {
+            /*
+<<<<<<< HEAD
            
             //ctx.fillStyle = "black";
             //ctx.fillRect(0,0,400,600);
@@ -127,6 +161,45 @@ define([
             //ctx.arc(player.x,player.y - scrolling ,20,0,Math.PI*2);
             //ctx.fill();
             
+=======
+*/
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+            ctx.drawImage(background, 0, 100*101-600+scrolling,1,600,0,0,400,600);
+
+            ctx.beginPath();
+            ctx.arc(player.x,player.y - scrolling, maxRopeDistance, 0, Math.PI*2);
+            
+            var grd= ctx.createRadialGradient(player.x, player.y - scrolling, maxRopeDistance * 0.5, player.x, player.y - scrolling, maxRopeDistance);
+            grd.addColorStop(0, "rgba(0, 0, 0, 0.0)");
+            grd.addColorStop(1, "rgba(0, 0, 0, 0.2)");
+            
+            ctx.fillStyle = grd;
+            ctx.strokeStyle = "rgba(0, 0, 0, 0.6)";
+            
+            ctx.fill();
+            ctx.stroke();
+            
+            
+            ctx.fillStyle = "red";
+            if (player.linkTo) {
+                ctx.beginPath();
+                ctx.strokeStyle = "#FF0000";
+                ctx.moveTo(player.x, player.y - scrolling);
+                ctx.lineTo(player.linkTo.x, player.linkTo.y - scrolling);
+                ctx.stroke();
+            };
+            /*
+            ctx.beginPath();
+            ctx.arc(player.x,player.y - scrolling ,20,0,Math.PI*2);
+            ctx.fill();
+>>>>>>> 52bb9bd85ec996d7e2e461ead55195e1020eefc8
+            */
+            if (player.vx>0) {
+                ctx.drawImage(imgCube,0,0,66,66,player.x-33,player.y-33-scrolling,66,66);
+            } else {
+                ctx.drawImage(imgCube,0,66,66,66,player.x-33,player.y-33-scrolling,66,66);
+            }
             ctx.fillStyle = "blue";
             
            
@@ -150,10 +223,14 @@ define([
 
         function createAnchor(y) {
             var anchor = {
+
                 x:Math.random()*300+50,
                 y:y || Math.random()*600,
                 radius: 20,
                 good: Math.random()>0.5
+                //x:Math.random()*canvasWidth,
+                //y:y || Math.random()*canvasHeight,
+                //radius: 20
             };
             anchors.push(anchor);
             return anchor;
@@ -166,7 +243,12 @@ define([
         }
 
         function isPlayerOutsideOfScreen() {
+//<<<<<<< HEAD
             return (player.x<-100 || player.x>500 || player.y <scrolling-50 || player.y > scrolling+700)
+//=======
+            return false;
+            //return (player.x<-50 || (player.x> canvasWidth + 50) || player.y < (scrolling - 50) || player.y > (scrolling + canvasHeight + 100));
+//>>>>>>> 52bb9bd85ec996d7e2e461ead55195e1020eefc8
         }
 
         function loadImage(url,callback) {
@@ -190,23 +272,23 @@ define([
         });
 
         eventBus.on("mouse left start clicking",function(mouse) {
-            player.linkTo = null;
             var realMouse = {
                     x: mouse.canvasX,
                     y: mouse.canvasY+scrolling
-                }
+                };
             for (var i = 0; i < anchors.length; i++) {
 
                 if (collisions.CollisionCircleAndPoint(realMouse,anchors[i])) {
                     var dis = {
                         x:anchors[i].x-player.x,
                         y:anchors[i].y-player.y
-                    }
+                    };
                     var length = Math.sqrt(dis.x*dis.x+dis.y*dis.y);
-                    if (length<200) {
+                    if (length < maxRopeDistance) {
                         player.linkTo = anchors[i];
+                        player.linkTo.ropeRadius = length * 0.4;
                     }
-                    return
+                    return;
                 }
             };
         });
