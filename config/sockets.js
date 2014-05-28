@@ -252,8 +252,15 @@ module.exports = function(io) {
           socket. => juste le player
           socket.broadcast => tout le monde sauf le player
         *******************************************/
-
-
+        socket.on("ask images names", function() {
+            var names = fs.readdirSync("./public/images");
+            console.log(names);
+            img.getGamesImages(function(err,imgs) {
+                socket.emit('send images names',imgs );
+            })
+        });
+         ///
+         /*
 
         socket.on("ask images names", function() {
             var names = fs.readdirSync("./public/images");
@@ -261,8 +268,9 @@ module.exports = function(io) {
             img.getGamesImages(function(err,imgs) {
                 socket.emit('send images names',imgs );
             })
-            
         });
+*/
+        ///
 
         socket.on("ask gamesInfos", function() {
             var games = getFileInfos(rootPath + "./public/scripts/games");
