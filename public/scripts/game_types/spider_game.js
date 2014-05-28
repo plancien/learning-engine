@@ -129,6 +129,7 @@ define([
                 scrolling = player.y-canvasWidth;
                 text.changeText("max : "+Math.floor((-scrolling+400)/50));
             }
+            scrolling-=0.01;
             if (anchors[0]>scrolling+660) {
                 anchors.shift();
             }
@@ -280,7 +281,7 @@ define([
                     x: mouse.canvasX,
                     y: mouse.canvasY+scrolling
                 };
-            player.linkTo = null;
+            //player.linkTo = null;
             for (var i = 0; i < anchors.length; i++) {
 
                 if (collisions.CollisionCircleAndPoint(realMouse,anchors[i])) {
@@ -293,6 +294,8 @@ define([
                         player.linkTo = anchors[i];
                         player.linkTo.ropeRadius = length * 0.4;
                         return;
+                    } else {
+                        player.linkTo = null;
                     }
                     
                 }
