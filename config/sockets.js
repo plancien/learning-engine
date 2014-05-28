@@ -1,6 +1,7 @@
 var fs = require('fs');
 var moduleBroadcast = require('./global_broadcast');
 var rootPath = require('path').join(__dirname, '../');
+var img = require("../server/img.js");
 
 module.exports = function(io) {
 
@@ -257,7 +258,10 @@ module.exports = function(io) {
         socket.on("ask images names", function() {
             var names = fs.readdirSync("./public/images");
             console.log(names);
-            socket.emit('send images names', names);
+            img.getGamesImages(function(err,imgs) {
+                socket.emit('send images names',imgs );
+            })
+            
         });
 
         socket.on("ask gamesInfos", function() {

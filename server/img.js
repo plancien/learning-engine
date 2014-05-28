@@ -5,19 +5,25 @@ var path = require("path");
 var acceptedType = ["image/png","image/jpeg","image/gif","image/bmp"]
 
 function getGameImagesList(callback) {
-    var readDir = Promise.denodify(fs.readDir);
+    var readDir = Promise.denodeify(fs.readdir);
     var defaultImgPromise = readDir(__dirname+"/../public/images/games_images/");
     var uploadedImgPromise = readDir(__dirname+"/../public/images/uploaded_images/");
-    var allImagesPromise = Promise.all(defaultImgPromise,uploadedImgPromise);
-    allImagesPromise.then(function(defaultImg,uploadedImg) {
+    var allImagesPromise = Promise.all([defaultImgPromise,uploadedImgPromise]);
+    allImagesPromise.then(function(result) {
+        var defaultImg = result[0];
+        var uploadedImg = result[1];
         return defaultImg.map(appendPath("/images/games_images/"))
             .concat(uploadedImg.map(appendPath("/images/uploaded_images/")))
             .filter(isImage);
     }).then(function(img) {
         return img.map(createDataFromPath);
+    },function(err) {
+        callback(err);
     }).then(function(img) {
+        console.log("test");
         callback(null,img);
-    },function() {
+    },function(err) {
+        console.log("testaaa");
         callback(err);
     });
 }
@@ -33,6 +39,7 @@ function appendPath(pathName) {
 }
 
 function createDataFromPath(pathName) {
+    console.log(pathName)
     return {
         url: pathName,
         fileName: path.basename(pathName),

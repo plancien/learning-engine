@@ -13,17 +13,15 @@
             var selectBonus = "";
             var selectMalus = "";
 			var imageTypes = [".jpeg",".jpg",".png",".gif"];
+            console.log(data)
 			for(var i=data.length-1; i>=0; i--){
-				var imageName = data[i].replace("_"," ").replace("<","").replace(">","");
-				for(var j=imageTypes.length-1; j>=0; j--){
-					imageName = imageName.replace(imageTypes[j],"");
-				}
-                if (imageName == "pomme pourrie")
-                    selectBonus = '<option value="images/' + data[i] + '" selected="selected">' + imageName + '</option>';
-                else if (imageName == "pomme or")
-                    selectMalus = '<option value="images/' + data[i] + '" selected="selected">' + imageName + '</option>';
+
+                if (data[i].name == "pomme pourrie")
+                    selectBonus = '<option value="' + data[i].url + '" selected="selected">' + data[i].name + '</option>';
+                else if (data[i].name == "pomme or")
+                    selectMalus = '<option value="' + data[i].url + '" selected="selected">' + data[i].name + '</option>';
                 else
-    				display += '<option value="images/' + data[i] + '">' + imageName + '</option>';
+    				display += '<option value="' + data[i].url + '">' + data[i].name + '</option>';
 			}
 			$("#bonusImg").html(display+selectMalus);
 			$("#malusImg").html(display+selectBonus);
