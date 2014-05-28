@@ -45,7 +45,9 @@ define([
         var imgCube = loadImage("/images/sprites/cube.png");
         var imgplus = loadImage(params.bonusUrl);
         var imgmoin = loadImage(params.malusUrl);
+        var imgcloud = loadImage("/images/sprites/cloud.png");
         var text = createTextDisplay();
+        var cloudX = 0;
 
         //To refactor avec image Loader.
 
@@ -56,7 +58,7 @@ define([
             anchors[0].ropeRadius = 50;
             player = {
                     x:anchors[0].x,
-                    y:anchors[0].y+100,
+                    y:anchors[0].y+50,
                     vx:0,
                     vy:0,
                     linkTo: anchors[0],
@@ -167,6 +169,11 @@ define([
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
             ctx.drawImage(background, 0, 100*101-600+scrolling,1,600,0,0,400,600);
 
+
+            cloudX = (cloudX+1)%(649*2)
+            ctx.drawImage(imgcloud,-649+cloudX,-20000+scrolling);
+
+
             ctx.beginPath();
             ctx.arc(player.x,player.y - scrolling, maxRopeDistance, 0, Math.PI*2);
             
@@ -221,13 +228,13 @@ define([
             
         }
 
-        function createAnchor(y) {
+        function createAnchor(y,good) {
             var anchor = {
 
                 x:Math.random()*300+50,
                 y:y || Math.random()*600,
                 radius: 20,
-                good: Math.random()>0.5
+                good: good//Math.random()>0.5
                 //x:Math.random()*canvasWidth,
                 //y:y || Math.random()*canvasHeight,
                 //radius: 20
@@ -237,18 +244,15 @@ define([
         }
 
         function generateLevel() {
-            for (var i = 0; i < 100; i+=1) {
-                createAnchor(-200-i*100);
+            for (var i = 0; i < 10000; i+=100) {
+                createAnchor(-200-i,false);
+                createAnchor(-200-i,true);
             };
         }
 
         function isPlayerOutsideOfScreen() {
-//<<<<<<< HEAD
-            return (player.x<-100 || player.x>500 || player.y <scrolling-50 || player.y > scrolling+700)
-//=======
-            return false;
-            //return (player.x<-50 || (player.x> canvasWidth + 50) || player.y < (scrolling - 50) || player.y > (scrolling + canvasHeight + 100));
-//>>>>>>> 52bb9bd85ec996d7e2e461ead55195e1020eefc8
+            return (player.y > scrolling+700)
+            return (player.x<-100 || player.x>500 || player.y <scrolling-50 || player.y > scrolling+800)
         }
 
         function loadImage(url,callback) {
@@ -276,6 +280,7 @@ define([
                     x: mouse.canvasX,
                     y: mouse.canvasY+scrolling
                 };
+            player.linkTo = null;
             for (var i = 0; i < anchors.length; i++) {
 
                 if (collisions.CollisionCircleAndPoint(realMouse,anchors[i])) {
@@ -284,11 +289,12 @@ define([
                         y:anchors[i].y-player.y
                     };
                     var length = Math.sqrt(dis.x*dis.x+dis.y*dis.y);
-                    if (length < maxRopeDistance) {
+                    if (length < maxRopeDistance+10 && anchors[i].good) {
                         player.linkTo = anchors[i];
                         player.linkTo.ropeRadius = length * 0.4;
+                        return;
                     }
-                    return;
+                    
                 }
             };
         });
