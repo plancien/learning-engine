@@ -45,7 +45,7 @@ define([
         var imgCube = loadImage("/images/sprites/cube.png");
         var imgplus = loadImage(params.bonusUrl);
         var imgmoin = loadImage(params.malusUrl);
-        var imgcloud = loadImage("/images/sprites/cloud.png");
+        var imgcloud = loadImage("/images/sprites/cloud1.png");
         var text = createTextDisplay();
         var cloudX = 0;
 
