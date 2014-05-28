@@ -16,13 +16,21 @@ define([
     'modules/frames',
     'modules/mouse',
     'modules/collisions',
-    "modules/text_canvas"
-], function(eventBus,canvasFactory,frames,mouse,collisions,createTextDisplay) {
+    "modules/text_canvas",
+    "modules/dat_gui"
+], function(eventBus,canvasFactory,frames,mouse,collisions,createTextDisplay,DatGui) {
 
     return function(params) {
-        var maxRopeDistance = 300;
+        var config = {
+            maxRopeDistance: 300,
+            gravity: 0.001,
+            scrollingSpeed : 0.1,
+            playerScroll : 400,
+            stepBetweenAnchors: 100
+        }
+        DatGui(config);
         var canvasWidth = 400;
-        var canvasHeight = 600;
+        var canvasHeight = 600
         var canvas = canvasFactory.create({"width" : canvasWidth, "height" : canvasHeight});
         var ctx = canvas.context; console.log(canvas);
         var gravity = 0.001;
@@ -125,47 +133,17 @@ define([
         }
 
         function updateScrolling() {
-            if (player.y < scrolling + canvasWidth) {
-                scrolling = player.y-canvasWidth;
-                text.changeText("max : "+Math.floor((-scrolling+400)/50));
+            if (player.y < scrolling + config.playerScroll) {
+                scrolling = player.y-config.playerScroll;
+                text.changeText("max : "+Math.floor((-scrolling+config.playerScroll)/50));
             }
-            scrolling-=0.01;
+            scrolling-=config.scrollingSpeed || 0.1;
             if (anchors[0]>scrolling+660) {
                 anchors.shift();
             }
         }
 
         function draw() {
-            /*
-<<<<<<< HEAD
-           
-            //ctx.fillStyle = "black";
-            //ctx.fillRect(0,0,400,600);
-            //console.log(params);
-            ctx.drawImage(background, 0, 100*101-600+scrolling,1,600,0,0,400,600);
-            ctx.fillStyle = "red";
-            if (player.linkTo) {
-                ctx.strokeStyle = "#f57ad2";
-                ctx.lineWidth = 5;
-                ctx.beginPath();
-                ctx.moveTo(player.x,player.y - scrolling);
-                ctx.lineTo(player.linkTo.x,player.linkTo.y - scrolling);
-                ctx.stroke();
-                if (player.vx>0) {
-                    ctx.drawImage(imgCube,0,0,66,66,player.x-33,player.y-33-scrolling,66,66);
-                } else {
-                    ctx.drawImage(imgCube,0,66,66,66,player.x-33,player.y-33-scrolling,66,66);
-                }
-            } else {
-                ctx.drawImage(imgCube,0,132,66,66,player.x-33,player.y-33-scrolling,66,66);
-            }
-
-            //ctx.beginPath();
-            //ctx.arc(player.x,player.y - scrolling ,20,0,Math.PI*2);
-            //ctx.fill();
-            
-=======
-*/
             ctx.fillStyle = "white";
             ctx.fillRect(0, 0, canvasWidth, canvasHeight);
             ctx.drawImage(background, 0, 100*101-600+scrolling,1,600,0,0,400,600);
@@ -176,9 +154,9 @@ define([
 
 
             ctx.beginPath();
-            ctx.arc(player.x,player.y - scrolling, maxRopeDistance, 0, Math.PI*2);
+            ctx.arc(player.x,player.y - scrolling, config.maxRopeDistance, 0, Math.PI*2);
             
-            var grd= ctx.createRadialGradient(player.x, player.y - scrolling, maxRopeDistance * 0.5, player.x, player.y - scrolling, maxRopeDistance);
+            var grd= ctx.createRadialGradient(player.x, player.y - scrolling, config.maxRopeDistance * 0.5, player.x, player.y - scrolling, config.maxRopeDistance);
             grd.addColorStop(0, "rgba(0, 0, 0, 0.0)");
             grd.addColorStop(1, "rgba(0, 0, 0, 0.2)");
             
@@ -245,7 +223,7 @@ define([
         }
 
         function generateLevel() {
-            for (var i = 0; i < 10000; i+=100) {
+            for (var i = 0; i < 10000; i+=config.stepBetweenAnchors) {
                 createAnchor(-200-i,false);
                 createAnchor(-200-i,true);
             };
@@ -290,7 +268,7 @@ define([
                         y:anchors[i].y-player.y
                     };
                     var length = Math.sqrt(dis.x*dis.x+dis.y*dis.y);
-                    if (length < maxRopeDistance+10 && anchors[i].good) {
+                    if (length < config.maxRopeDistance+10 && anchors[i].good) {
                         player.linkTo = anchors[i];
                         player.linkTo.ropeRadius = length * 0.4;
                         return;

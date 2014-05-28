@@ -256,6 +256,7 @@ module.exports = function(io) {
             var names = fs.readdirSync("./public/images");
             console.log(names);
             img.getGamesImages(function(err,imgs) {
+                console.log(imgs, "<-- that")
                 socket.emit('send images names',imgs );
             })
         });
