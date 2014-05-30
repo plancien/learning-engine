@@ -28,7 +28,8 @@ define([
             playerScroll : 400,
             stepBetweenAnchors: 100
         }
-        DatGui(config);
+        var gui = DatGui({});
+        gui.add(config,"maxRopeDistance")
         var canvasWidth = 400;
         var canvasHeight = 600
         var canvas = canvasFactory.create({"width" : canvasWidth, "height" : canvasHeight});
