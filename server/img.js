@@ -20,7 +20,6 @@ function getGameImagesList(callback) {
     },function(err) {
         callback(err);
     }).then(function(img) {
-        console.log("test");
         callback(null,img);
     },function(err) {
         console.log("testaaa");
@@ -64,9 +63,6 @@ function saveImage(file,callback) {
             });
         });
     }
-    /*
-    
-    */
 }
 
 module.exports.getGamesImages = getGameImagesList;
