@@ -14,14 +14,12 @@ define([
     'event_bus',
     'modules/canvas',
     'modules/render',
-    'modules/image_loader',
+    'modules/imageLoader',
     'modules/frames',
     'modules/key_listener',
     'modules/score'
 ], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule) {
-
-    
-    
+   
 
     var isInside = function inInside (objectB){
         if(this.x < objectB.x){
@@ -60,11 +58,13 @@ define([
             var ctx = canvas.context;
 
             eventBus.emit("load images");
-            eventBus.on("images loaded", function(images) {
+            // eventBus.on("images loaded", function(images) {
 
-                var bonusImage = images[globalParams.bonusUrl.split('/')[1].split('.')[0]];
-                var malusImage = images[globalParams.malusUrl.split('/')[1].split('.')[0]];
+                // var bonusImage = images[globalParams.bonusUrl.split('/')[1].split('.')[0]];
+                // var malusImage = images[globalParams.malusUrl.split('/')[1].split('.')[0]];
 
+                var bonusImage = globalParams.bonusUrl;
+                var malusImage = globalParams.malusUrl;
                 function Player(params) {
                     this.x = params.x;
                     this.y = params.y;
@@ -86,7 +86,7 @@ define([
                             y: 0,
                             width: 25,
                             height: 25,
-                            img: images["frog"]
+                            img: imageLoader("frog.png")
                         },
                         rotating: true
                     });
@@ -198,7 +198,7 @@ define([
                             y: 0,
                             width: 32,
                             height: 32,
-                            img: images[this.type]
+                            img: imageLoader(this.type+".png")
                         },
                         patternRepeat: "repeat"
                     });
@@ -222,7 +222,7 @@ define([
                             y: 0,
                             width: 48,
                             height: 48,
-                            img: images.cars
+                            img: imageLoader(cars+".png")
                         },
                         rotating: true
                     });
@@ -398,7 +398,7 @@ define([
                         }));
                     }
                 }
-            });
+            // });
         });
     };
 });
