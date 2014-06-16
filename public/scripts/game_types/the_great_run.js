@@ -215,6 +215,8 @@ define([
                     this.rotation = Math.PI / 2;
                     if (this.direction === "left") this.rotation = -this.rotation;
 
+                    console.log(cars);
+
                     eventBus.emit("init render", {
                         object: this,
                         sprite: {
@@ -222,7 +224,7 @@ define([
                             y: 0,
                             width: 48,
                             height: 48,
-                            img: imageLoader(cars+".png")
+                            img: cars
                         },
                         rotating: true
                     });
