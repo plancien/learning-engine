@@ -1,7 +1,8 @@
 define([
     'event_bus',
-    'modules/canvas'
-], function(eventBus, canvasCreate) {
+    'modules/canvas',
+    'modules/imageLoader'
+], function(eventBus, canvasCreate, imageLoader) {
 	return function(params) {
 		var container;
 		var canvas = canvasCreate.create({width:800, height:475, id:"canvas"});
@@ -117,8 +118,7 @@ define([
         }
 
         function Player() {
-			this.image = new Image();
-			this.image.src = "../../images/Spartiate.png";
+			this.image = imageLoader("Spartiate.png");
 			this.x = 50;
 			this.y = 400;
 			this.left = false;
@@ -259,8 +259,7 @@ define([
 		}
 
 		function Life(x, y) {
-			this.image = new Image();
-			this.image.src = "../../images/Coeur.png";
+			this.image = imageLoader("Coeur.png", "games_images");
 			this.x = x;
 			this.y = y;
 		}
