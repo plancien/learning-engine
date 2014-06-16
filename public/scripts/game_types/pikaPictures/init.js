@@ -4,6 +4,7 @@ define([
     'modules/cameraRender',
     'modules/canvas',
     'modules/collisionEngine',
+    'modules/imageLoader',
 
     'modules/frames',
     'modules/render',
@@ -16,7 +17,7 @@ define([
     'modules/bonus_chooser',
     'modules/add_canvasBoundingBox',
     'modules/countdown'
-], function(eventBus, cameraRender, Canvas, collisionEngine) { // init,
+], function(eventBus, cameraRender, Canvas, collisionEngine, imageLoader) { // init,
     var init = function(game){
          eventBus.on('init', function() {
             console.log("BOnjour LOOOL");
@@ -30,6 +31,8 @@ define([
 
         cameraRender.init(game.canvas, true);
         cameraRender.backgroundParralax("./images/sprites/pikachuParallax.png", 1, 0.5);
+
+        window.monImg = imageLoader("pikachuParallax.png", "lol");
 
 
         pikaSpriteConfig = {};
