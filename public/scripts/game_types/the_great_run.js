@@ -62,9 +62,12 @@ define([
 
                 // var bonusImage = images[globalParams.bonusUrl.split('/')[1].split('.')[0]];
                 // var malusImage = images[globalParams.malusUrl.split('/')[1].split('.')[0]];
+                var bonusImage = new Image();
+                bonusImage.src = globalParams.bonusUrl;
+                var malusImage = new Image();
+                malusImage.src = globalParams.malusUrl;
 
-                var bonusImage = globalParams.bonusUrl;
-                var malusImage = globalParams.malusUrl;
+
                 function Player(params) {
                     this.x = params.x;
                     this.y = params.y;
@@ -215,7 +218,6 @@ define([
                     this.rotation = Math.PI / 2;
                     if (this.direction === "left") this.rotation = -this.rotation;
 
-                    console.log(cars);
 
                     eventBus.emit("init render", {
                         object: this,
@@ -224,7 +226,7 @@ define([
                             y: 0,
                             width: 48,
                             height: 48,
-                            img: cars
+                            img: imageLoader("cars.png")
                         },
                         rotating: true
                     });
@@ -288,6 +290,7 @@ define([
                     }
 
                     var i;
+
                     for (i = 0; i < strips.length; i++) {
                         eventBus.emit("render object", strips[i], ctx);
                     }

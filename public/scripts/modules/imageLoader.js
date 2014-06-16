@@ -1,10 +1,5 @@
 define([], function() {
 	var getImage = function(name, files){
-		console.log(name);
-		if (typeof(name) == "object"){
-			console.log(name);
-			return false;
-		}
 		var files = files || "sprites";
 		files += '/';
 
