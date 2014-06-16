@@ -1,7 +1,7 @@
 define([], function() {
 	var getImage = function(name, files){
 		var files = files || "sprites";
-		files += '\\';
+		files += '/';
 
 		var image = new Image();
 		image.src = "./images/"+files+name;

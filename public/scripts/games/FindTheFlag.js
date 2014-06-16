@@ -2,9 +2,8 @@ define([
     'event_bus',
     'modules/canvas',
     'modules/frames',
-    'modules/mouse',
-    'modules/image_loader'
-    ],function (eventBus, canvas, frames, mouse, imageLoader)
+    'modules/mouse'
+    ],function (eventBus, canvas, frames, mouse)
     {
          var canvas = canvas.create({"width":700,"height":700});
          var context = canvas.context;

@@ -10,10 +10,10 @@
 
 */
 
-define(['event_bus', 'modules/render', 'modules/canvas', 'modules/frames', 'modules/image_loader'], function(eventBus, Render, Canvas, frames) {
+define(['event_bus', 'modules/render', 'modules/canvas', 'modules/frames', 'modules/imageLoader'], function(eventBus, Render, Canvas, frames,getImage) {
 
     eventBus.emit("load images");
-    eventBus.on('images loaded', function(images) {
+    //eventBus.on('images loaded', function(images) {
         var canvas = Canvas.create();
 
         function Test(params) {
@@ -94,7 +94,7 @@ define(['event_bus', 'modules/render', 'modules/canvas', 'modules/frames', 'modu
                 y: 0,
                 width: 48,
                 height: 48,
-                img: images['pupil1']
+                img: getImage('pupil1.png')
             }
         });
         eventBus.emit("init render", {
@@ -104,7 +104,7 @@ define(['event_bus', 'modules/render', 'modules/canvas', 'modules/frames', 'modu
                 y: 0,
                 width: 48,
                 height: 48,
-                img: images['+']
+                img: getImage('+.png',"games_images")
             },
             patternRepeat: "repeat"
         });
@@ -115,7 +115,7 @@ define(['event_bus', 'modules/render', 'modules/canvas', 'modules/frames', 'modu
                 y: 0,
                 width: 48,
                 height: 48,
-                img: images['+']
+                img: getImage('+.png',"games_images")
             },
             patternRepeat: "repeat-x",
             rotating: true
@@ -127,7 +127,7 @@ define(['event_bus', 'modules/render', 'modules/canvas', 'modules/frames', 'modu
                 y: 0,
                 width: 48,
                 height: 48,
-                img: images['pupil1']
+                img: getImage('pupil1.png')
             }
         });
 
@@ -138,7 +138,7 @@ define(['event_bus', 'modules/render', 'modules/canvas', 'modules/frames', 'modu
                 y: 0,
                 width: 48,
                 height: 48,
-                img: images['pupil1']
+                img: getImage('pupil1.png')
             },
             rotating: true
         });
@@ -168,5 +168,5 @@ define(['event_bus', 'modules/render', 'modules/canvas', 'modules/frames', 'modu
             }
         });
 
-    });
+    //});
 });
