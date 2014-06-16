@@ -5,15 +5,13 @@ define([
     'modules/collisionEngine',
     'modules/simpleWall',
     'modules/gravityEngine',
-    'modules/image_loader',
     'modules/frames',
     'modules/cameraRender',
-    'modules/image_loader',
     'modules/simpleElement',
     'game_types/pikaPictures/init',
     'game_types/pikaPictures/level1',
     'game_types/pikaPictures/pikachu'
-], function(eventBus, heroEngine, collisionEngine, wall, gravityEngine, frames, Mouse, cameraRender, imageLoader, element, init, level, pikachu) { // init,
+], function(eventBus, heroEngine, collisionEngine, wall, gravityEngine, frames, cameraRender, element, init, level, pikachu) { // init,
     return function (params){
         window.cameraRender = cameraRender;
         window.collisionEngine = collisionEngine;

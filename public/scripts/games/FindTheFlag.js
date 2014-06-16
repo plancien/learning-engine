@@ -10,7 +10,7 @@ define([
          var context = canvas.context;
 
          var imageFlag = new Image();
-		 imageFlag.src = '../../images/flags.png';
+		 imageFlag.src = '../../images/sprites/flags.png';
 
          var posX = 0;
          var posY = 0;
