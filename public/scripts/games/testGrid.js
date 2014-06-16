@@ -20,7 +20,6 @@ define([
 
     var canvas = Canvas.create();
 
-    eventBus.emit("newCanvas", canvas.canvas);
     var Test = function() {
             this.grid = null;
             this.mouse = null;
