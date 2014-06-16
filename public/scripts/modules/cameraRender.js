@@ -150,7 +150,7 @@ define(['event_bus'], function(eventBus) {
                 this.canvas.context.beginPath();
                 this.canvas.context.rect(realX, realY, this.quadTreeWidth, this.quadTreeHeight)
                 this.canvas.context.stroke();
-                this.canvas.context.strokeText(i + " : " + j, realX + 10, realY + 30);
+                this.canvas.context.fillText(i + " : " + j, realX + 10, realY + 30);
             };
         };
     }
