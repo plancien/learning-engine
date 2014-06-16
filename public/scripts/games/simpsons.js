@@ -12,13 +12,14 @@
 
 define([
     'event_bus',
+    'modules/imageLoader',
     'modules/score',
     'modules/bonus_chooser',
     'modules/bonus_fader'
-], function(eventBus) {
+], function(eventBus, imageLoader) {
 
-    eventBus.emit('init bonus', false, 'images/homer.png');
-    eventBus.emit('init bonus', true, 'images/burns.png');
+    eventBus.emit('init bonus', false, imageLoader("homer.png", "games_images", true));
+    eventBus.emit('init bonus', true, imageLoader("burns.png", "games_images", true));
 
     eventBus.on('add bonus', function(good, url) {
         var htmlClass = good ? 'good' : 'bad';
