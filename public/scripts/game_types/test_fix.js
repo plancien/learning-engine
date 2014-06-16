@@ -5,10 +5,8 @@ define([
     'modules/collisionEngine',
     'modules/simpleWall',
     'modules/gravityEngine',
-    'modules/canvas',
-    'modules/image_loader',
-    'modules/frames'
-], function(eventBus, heroEngine, collisionEngine, wall, gravityEngine, Canvas, frames, Mouse) {
+    'modules/canvas'
+], function(eventBus, heroEngine, collisionEngine, wall, gravityEngine, Canvas) {
     var game = {};
 
     window.gravityEngine = gravityEngine;
@@ -39,24 +37,17 @@ define([
     var creerCubeTombant = function(x,y){
         this.x = x;
         this.y = y;
-        //var posX = 100 + Math.floor(Math.random() * 5) * 125;
-        //console.log(posX);
         var config = { "x" : this.x, "y" : this.y, "maxSpeed" : 30, "acceleration" : 1, "deceleration" : 10, "color" : "rgba(0,0,255,0.7)", "width" : 100, "height" : 70};
-        game.cubeTombant = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce cube
-        collisionEngine.addHitbox(game.cubeTombant, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
-        //game.cubeTombant.collisionCallback['specialBox'] = function (side, box){ //On lui créer son callback sur la collision avec ce groupe
-            this.move = function(){
-                game.cubeTombant.x = this.x;
-                this.y = game.cubeTombant.y += 3;
-            }
-        //}
-        /*if (side != "in"){
-                game.cubeTombant.x = this.x;
-                game.cubeTombant.y += 3;
-            }
-        }*/
-        collisionEngine.addElement(game.cubeTombant, "bleu");
+        this.cubeTombant = heroEngine.create(config, game.canvas.context);   //On créer et memorise ce cube
+        collisionEngine.addHitbox(this.cubeTombant, "rect", -10, -10, 110, 80)        //On lui rajoute une hitbox arbitraire plus grande            
+
+        collisionEngine.addElement(this.cubeTombant, "bleu");
     };
+    creerCubeTombant.prototype.move = function(){
+        console.log("Bonjourje suis la fonction move");
+        this.cubeTombant.x = this.x;
+        this.y = this.cubeTombant.y += 3;
+    }
 
 
 
@@ -85,16 +76,17 @@ define([
 	    requestAnimationFrame(function(){run(game)});
         game.frame++;
         if (game.frame % 60 == 0 && cubes.length < 6){
-            cubes.push (new creerCubeTombant(100 + Math.floor(Math.random() * 4) * 125), 10);
+            cubes.push (new creerCubeTombant(100 + Math.floor(Math.random() * 4) * 125));
         }
-        //game.canvas.context.fillStyle = "rgba(220,0,220,0.8)";
-	    //game.canvas.context.fillRect(0, 0, game.canvas.width, game.canvas.height);
+
         game.canvas.context.clearRect(0, 0, game.canvas.width, game.canvas.height);
         game.canvas.context.fillStyle = specialBox.color;
         game.canvas.context.fillRect(specialBox.x, specialBox.y, specialBox.width, specialBox.height);
 
-        for (var i = 0; i < cubes.length; i++) {
+        for (var i = cubes.length - 1; i >= 0  ; i--) {
             //execution  des commandes du cube
+            console.log(cubes[i]);
+
             cubes[i].move();
             if (cubes[i].y > 450){
                 //disparition du cube
