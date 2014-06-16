@@ -29,7 +29,7 @@ define([
         game.canvas.context.fillStyle = "rgba(30,30,30,0.8)";
 
         cameraRender.init(game.canvas, true);
-        cameraRender.backgroundParralax("./images/pikachuParallax.png", 1, 0.5);
+        cameraRender.backgroundParralax("./images/sprites/pikachuParallax.png", 1, 0.5);
 
 
         pikaSpriteConfig = {};
@@ -50,7 +50,7 @@ define([
         pikaSpriteConfig.waitingLeftReverse = {"width" : 32, "height" :32, "nbAnim" : 5, "loop" : 1, "fps" : 3, "offsetY" : 0, "offsetX" : 288, "scaleX" : 1, "scaleY" : -1, "loopCallback" : function (target){target.currentFrameWaiting = 0}};
         pikaSpriteConfig.waitingRightReverse = {"width" : 32, "height" :32, "nbAnim" : 5, "loop" : 1, "fps" : 3, "offsetY" : 0, "offsetX" : 288, "rotation" : Math.PI, "loopCallback" : function (target){target.currentFrameWaiting = 0}};
 
-        cameraRender.addSprite("pikachu", "./images/green_guy_sprites.png", pikaSpriteConfig);
+        cameraRender.addSprite("pikachu", "./images/sprites/green_guy_sprites.png", pikaSpriteConfig);
 
     /***** Son *****/
         game.sounds={
