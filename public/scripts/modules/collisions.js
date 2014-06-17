@@ -1,10 +1,10 @@
 define(['event_bus'], function(eventBus) {
 
 	function collisionCircles(c1, c2){
-		if (c1.x-c1.radius <= c2.x+c2.radius && c1.x -c1.radius>= c2.x-c2.radius
-			&& c1.y-c1.radius<= c2.y+c2.radius && c1.y-c1.radius>= c2.y-c2.radius){
+		var hypotenus = Math.sqrt((c1.x - c2.x) * (c1.x - c2.x) + (c1.y - c2.y) * (c1.y - c2.y));
+		var radiusSum = c1.radius  + c2.radius;
+		if (hypotenus <= radiusSum)
 			return true;
-		}
 		else 
 			return false;
 	}

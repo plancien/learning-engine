@@ -17,8 +17,12 @@ define([
     'modules/imageLoader',
     'modules/frames',
     'modules/key_listener',
-    'modules/score'
-], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule) {
+    'modules/score',
+
+    'game_types/theGreatRun/generateBonuses',
+    'game_types/theGreatRun/generateStrips',
+    'game_types/theGreatRun/strips'
+], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, generateBonuses, generateStrips, Strip) {
    
 
     var isInside = function inInside (objectB){
@@ -54,20 +58,27 @@ define([
         var score = 0;
 
         eventBus.on('init', function() {
-            var canvas = canvasModule.create(paramsCanvas);
+            window.canvas = canvasModule.create(paramsCanvas);
             var ctx = canvas.context;
 
-            eventBus.emit("load images");
-            // eventBus.on("images loaded", function(images) {
+            var bonusToLoad = 2;
+            var bonusLoaded = 0;
 
-                // var bonusImage = images[globalParams.bonusUrl.split('/')[1].split('.')[0]];
-                // var malusImage = images[globalParams.malusUrl.split('/')[1].split('.')[0]];
-                var bonusImage = new Image();
-                bonusImage.src = globalParams.bonusUrl;
-                var malusImage = new Image();
-                malusImage.src = globalParams.malusUrl;
+            window.bonusImage = new Image();
+            bonusImage.src = globalParams.bonusUrl;
+            bonusImage.onload = thenBonusLoaded;
 
+            window.malusImage = new Image();
+            malusImage.src = globalParams.malusUrl;
+            malusImage.onload = thenBonusLoaded;
 
+            function thenBonusLoaded(){
+                bonusLoaded++;
+                if (bonusToLoad == bonusLoaded)
+                    bonusLoad();
+            }
+
+            function bonusLoad(){
                 function Player(params) {
                     this.x = params.x;
                     this.y = params.y;
@@ -185,84 +196,6 @@ define([
                     });
                 }
 
-                function Strip(params) {
-                    this.x = canvas.canvas.width / 2;
-                    this.y = params.y;
-                    this.width = this.x * 2;
-                    this.height = 75;
-                    this.type = params.type;
-                    this.direction = Math.round(Math.random()) ? "left" : "right";
-                    this.carsNumber = Math.round(1 + Math.random() * 3);
-                    this.carSpeed = Math.round(1 + Math.random() * 2);
-                    eventBus.emit("init render", {
-                        object: this,
-                        sprite: {
-                            x: 0,
-                            y: 0,
-                            width: 32,
-                            height: 32,
-                            img: imageLoader(this.type+".png")
-                        },
-                        patternRepeat: "repeat"
-                    });
-                }
-
-                function Car(params) {
-                    this.x = params.x;
-                    this.y = params.y;
-                    this.speed = params.speed;
-                    this.width = 75;
-                    this.height = 75;
-                    this.sourceX = Math.round(Math.random() * 8) * 48;
-                    this.direction = params.direction;
-                    this.rotation = Math.PI / 2;
-                    if (this.direction === "left") this.rotation = -this.rotation;
-
-
-                    eventBus.emit("init render", {
-                        object: this,
-                        sprite: {
-                            x: this.sourceX,
-                            y: 0,
-                            width: 48,
-                            height: 48,
-                            img: imageLoader("cars.png")
-                        },
-                        rotating: true
-                    });
-
-                    this.move = function() {
-                        var direction = this.direction === "left" ? -1 : 1;
-                        this.x += this.speed * 1.5 * direction;
-                        if (direction === 1 && this.x >= 875) {
-                            this.x = -75;
-                        } else if (direction === -1 && this.x <= -75) {
-                            this.x = 875;
-                        }
-                    };
-                };
-
-                function Bonus(params) {
-                    this.x = params.x;
-                    this.y = params.y;
-                    this.width = 60;
-                    this.height = 60;
-                    this.good = params.good;
-                    this.points = this.good ? 15 : -20;
-                    this.image = params.good ? bonusImage : malusImage;
-
-                    eventBus.emit("init render", {
-                        object: this,
-                        sprite: {
-                            x: 0,
-                            y: 0,
-                            width: this.image.width,
-                            height: this.image.height,
-                            img: this.image
-                        }
-                    });
-                }
-
                 var strips = [];
                 var cars = [];
                 var bonuses = [];
@@ -290,10 +223,9 @@ define([
                     }
 
                     var i;
-
                     for (i = 0; i < strips.length; i++) {
                         eventBus.emit("render object", strips[i], ctx);
-                    }
+                                        }
                     for (i = 0; i < bonuses.length; i++) {
                         eventBus.emit("render object", bonuses[i], ctx);
                         if (player.isInside(bonuses[i])) {
@@ -338,72 +270,7 @@ define([
                         player.y = 600 - 37.5;
                     }
                 });
-
-
-                function generateStrips(offset, strips, cars, bonuses) {
-                    var pausePosition = Math.round(2 + Math.random() * 3);
-                    var direction = Math.round(Math.random()) ? "left" : "right";
-
-                    strips.push(new Strip({
-                        y: 37.5 + offset,
-                        type: "grass"
-                    }));
-                    for (var i = 1; i < 7; i++) {
-                        if (pausePosition === i) {
-                            strips.push(new Strip({
-                                y: 37.5 + pausePosition * 75 + offset,
-                                type: "grass"
-                            }));
-                            continue;
-                        }
-                        var strip = new Strip({
-                            y: 37.5 + i * 75 + offset,
-                            type: "road",
-                            direction: direction
-                        });
-                        strips.push(strip);
-                        var chosenPattern = patterns[strip.carsNumber][Math.floor(Math.random() * patterns[strip.carsNumber].length)];
-                        for (var j = 0; j < strip.carsNumber; j++) {
-                            var car = new Car({
-                                y: strip.y,
-                                x: chosenPattern[j],
-                                speed: strip.carSpeed,
-                                direction: strip.direction
-                            });
-                            cars.push(car);
-                        }
-                    }
-                    generateBonuses(offset, bonuses);
-                }
-
-                function generateBonuses(offset, bonuses) {
-                    var moreBonusesNumber = Math.round(Math.random() * 2);
-                    var x = 75 / 2 + Math.round(Math.random() * 10) * 75;
-                    var y = 75 / 2 + Math.round(Math.random() * 8) * 75;
-                    bonuses.push(new Bonus({
-                        x: x,
-                        y: y + offset,
-                        good: true
-                    }));
-                    x = 75 / 2 + Math.round(Math.random() * 10) * 75;
-                    y = 75 / 2 + Math.round(Math.random() * 8) * 75;
-                    bonuses.push(new Bonus({
-                        x: x,
-                        y: y + offset,
-                        good: false
-                    }));
-                    for (var i = 0; i < moreBonusesNumber; i++) {
-                        x = 75 / 2 + Math.round(Math.random() * 10) * 75;
-                        y = 75 / 2 + Math.round(Math.random() * 8) * 75;
-                        var good = Math.round(Math.random());
-                        bonuses.push(new Bonus({
-                            x: x,
-                            y: y + offset,
-                            good: good
-                        }));
-                    }
-                }
-            // });
+            }
         });
     };
 });
