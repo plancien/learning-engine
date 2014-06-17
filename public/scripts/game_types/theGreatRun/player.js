@@ -1,11 +1,10 @@
-define(['event_bus', 'modules/imageLoader', 'game_types/theGreatRun/isInside', 'modules/collisions'], function(eventBus, imageLoader, isInside, collisions){
-    function Player(params) {
-        this.x = params.x;
-        this.y = params.y;
-        this.width = params.width;
-        this.height = this.width;
+define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config'], function(eventBus, imageLoader, collisions, config){
+    function Player() {
+        for (var key in config.player)
+            this[key] = config.player[key];
 
-        this.hitbox = params.hitbox;
+        this.score = 0;
+
         this.speed = 74;
         this.rotation = 0;
         this.canMove = true;
@@ -117,9 +116,6 @@ define(['event_bus', 'modules/imageLoader', 'game_types/theGreatRun/isInside', '
         	this.hitbox.y = this.y + this.hitbox.offsetY;
         	return collisions.squares(this.hitbox, target);
         }
-        eventBus.on("collision", function(parama, paramb) {
-            console.log(parama, paramb);
-        });
     }
     return Player;
 });    	

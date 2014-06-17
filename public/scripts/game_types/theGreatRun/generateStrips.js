@@ -1,6 +1,6 @@
-define(['event_bus', 'game_types/theGreatRun/strips', 'game_types/theGreatRun/car', 'game_types/theGreatRun/generateBonuses'], 
-function(eventBus, Strip, Car, generateBonuses){
-    function generateStrips(offset, strips, cars, bonuses) {
+define(['event_bus', 'game_types/theGreatRun/strips', 'game_types/theGreatRun/car'], 
+function(eventBus, Strip, Car){
+    function generateStrips(offset, strips, cars) {
         var pausePosition = Math.round(2 + Math.random() * 3);
         var direction = Math.round(Math.random()) ? "left" : "right";
 
@@ -33,7 +33,6 @@ function(eventBus, Strip, Car, generateBonuses){
                 cars.push(car);
             }
         }
-        generateBonuses(offset, bonuses);
     };
     return generateStrips;
 });    	

@@ -19,11 +19,11 @@ define([
     'modules/key_listener',
     'modules/score',
 
-    'game_types/theGreatRun/generateBonuses',
+    'game_types/theGreatRun/bonusManageur',
     'game_types/theGreatRun/generateStrips',
     'game_types/theGreatRun/strips',
     'game_types/theGreatRun/player'
-], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, generateBonuses, generateStrips, Strip, Player) {
+], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, bonusManageur, generateStrips, Strip, Player) {
 
     return function(globalParams) {
 
@@ -32,11 +32,9 @@ define([
             width: 800,
             height: 600
         };
-        var score = 0;
-
         eventBus.on('init', function() {
             window.canvas = canvasModule.create(paramsCanvas);
-            var ctx = canvas.context;
+            window.ctx = canvas.context;
 
             var bonusToLoad = 2;
             var bonusLoaded = 0;
@@ -58,21 +56,13 @@ define([
             function bonusLoad(){
                 var strips = [];
                 var cars = [];
-                var bonuses = [];
                 strips.push(new Strip({
                     y: 600 - 37.5,
                     type: "grass"
                 }));
-                generateStrips(0, strips, cars, bonuses);
+                generateStrips(0, strips, cars);
 
-                var playerHitbox = {"width" : 40, "height" : 40, "offsetX" : 10, "offsetY" : 10};
-                var player = new Player({
-                    x: 400,
-                    y: 600 - 37.5,
-                    width: 60,
-                    height: 60,
-                    hitbox: playerHitbox
-                });
+                var player = new Player();
 
                 eventBus.on("new frame", function() {
                     ctx.fillStyle = "rgb(0,0,0)";
@@ -81,22 +71,13 @@ define([
                     if (player.dead) {
                         ctx.fillStyle = "rgb(255,255,255)";
                         ctx.font = "20px Verdana";
-                        ctx.fillText("Vous avez obtenu " + score + " points", 200, 300);
+                        ctx.fillText("Vous avez obtenu " + player.score + " points", 200, 300);
                         return;
                     }
 
                     var i;
                     for (i = 0; i < strips.length; i++) {
                         eventBus.emit("render object", strips[i], ctx);
-                                        }
-                    for (i = 0; i < bonuses.length; i++) {
-                        eventBus.emit("render object", bonuses[i], ctx);
-                        if (player.isInside(bonuses[i])) {
-                            eventBus.emit("add points", bonuses[i].points);
-                            score += bonuses[i].points;
-                            bonuses.splice(i, 1);
-                            i--;
-                        }
                     }
 
                     for (i = 0; i < cars.length; i++) {
@@ -107,31 +88,11 @@ define([
                             player.dead = true;
                         }
                     }
+                    bonusManageur.loop(player);
 
                     eventBus.emit("animate object", player);
                     eventBus.emit("render object", player, ctx);
                     player.move();
-                    if (player.y <= 75 / 2) {
-                        strips = [];
-                        bonuses = [];
-                        cars = [];
-                        strips.push(new Strip({
-                            y: 600 - 37.5 - 600,
-                            type: "grass"
-                        }));
-                        generateStrips(-600, strips, cars, bonuses);
-                        var j;
-                        for (j = 0; j < strips.length; j++) {
-                            strips[i].y += 600;
-                        }
-                        for (j = 0; j < bonuses.length; j++) {
-                            bonuses[j].y += 600;
-                        }
-                        for (j = 0; j < cars.length; j++) {
-                            cars[j].y += 600;
-                        }
-                        player.y = 600 - 37.5;
-                    }
                 });
             }
         });
