@@ -24,7 +24,7 @@ define([
             this.grid = null;
             this.mouse = null;
         };
-    var test = new Test();
+    window.test = new Test();
 
     var params = {
         context: canvas.context,
