@@ -5,8 +5,9 @@ define([
     'modules/collisionEngine',
     'modules/simpleWall',
     'modules/gravityEngine',
-    'modules/canvas'
-], function(eventBus, heroEngine, collisionEngine, wall, gravityEngine, Canvas) {
+    'modules/canvas',
+    'modules/collisions'
+], function(eventBus, heroEngine, collisionEngine, wall, gravityEngine, Canvas, collision) {
 
     return function(params){
         var game = {};
