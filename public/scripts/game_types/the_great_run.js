@@ -21,32 +21,9 @@ define([
 
     'game_types/theGreatRun/generateBonuses',
     'game_types/theGreatRun/generateStrips',
-    'game_types/theGreatRun/strips'
-], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, generateBonuses, generateStrips, Strip) {
-   
-
-    var isInside = function inInside (objectB){
-        if(this.x < objectB.x){
-            if(this.x + this.width/2 > objectB.x - objectB.width/2){
-                if(this.y < objectB.y){
-                    if(this.y + this.height/2 > objectB.y - objectB.height/2){
-                        return true;
-                    }
-                }else if(this.y - this.width/2 < objectB.y + objectB.width/2){
-                    return true;
-                }
-            }
-        }else if(this.x - this.width/2 < objectB.x + objectB.width/2){
-            if(this.y < objectB.y){
-                if(this.y + this.height/2 > objectB.y - objectB.height/2){
-                        return true;
-                    }
-            }else if(this.y - this.width/2 < objectB.y + objectB.width/2){
-                return true;
-            }
-        }
-        return false;
-    }
+    'game_types/theGreatRun/strips',
+    'game_types/theGreatRun/player'
+], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, generateBonuses, generateStrips, Strip, Player) {
 
     return function(globalParams) {
 
@@ -79,123 +56,6 @@ define([
             }
 
             function bonusLoad(){
-                function Player(params) {
-                    this.x = params.x;
-                    this.y = params.y;
-                    this.width = params.width;
-                    this.height = this.width;
-                    this.speed = 74;
-                    this.rotation = 0;
-                    this.canMove = true;
-                    var movedDistance = 0;
-                    var moveDirection = {
-                        x: 0,
-                        y: 0
-                    };
-
-                    eventBus.emit('init render', {
-                        object: this,
-                        sprite: {
-                            x: 0,
-                            y: 0,
-                            width: 25,
-                            height: 25,
-                            img: imageLoader("frog.png")
-                        },
-                        rotating: true
-                    });
-
-                    eventBus.emit("add animation", this, {
-                        name: "jump",
-                        sprites: [{
-                            x: 0,
-                            y: 0,
-                            width: 25,
-                            height: 25
-                        }, {
-                            x: 50,
-                            y: 0,
-                            width: 25,
-                            height: 25
-                        }, {
-                            x: 25,
-                            y: 0,
-                            width: 25,
-                            height: 25
-                        }]
-                    });
-
-                    Player.prototype.move = function() {
-                        if (Math.abs(movedDistance) >= this.width) {
-                            movedDistance = 0;
-                            this.canMove = true;
-                            moveDirection = {
-                                x: 0,
-                                y: 0
-                            };
-                        } else {
-                            this.x += moveDirection.x * this.speed;
-                            this.y += moveDirection.y * this.speed;
-                            movedDistance += moveDirection.x * this.speed + moveDirection.y * this.speed;
-                        }
-                    };
-
-                    Player.prototype.isInside = isInside;
-
-                    eventBus.on("key pressed", function(keycode) {
-                        if (!player.canMove) return;
-                        var x = 0;
-                        var y = 0;
-                        switch (keycode) {
-                        case "left":
-                            if (player.x - player.width <= 0) {
-                                x = 0;
-                            } else {
-                                x = -1;
-                            }
-                            player.rotation = Math.PI / 2;
-                            break;
-                        case "up":
-                            if (player.y - player.height <= 0) {
-                                y = 0;
-                            } else {
-                                y = -1;
-                            }
-                            player.rotation = Math.PI;
-                            break;
-                        case "right":
-                            if (player.x + player.width >= canvas.canvas.width) {
-                                x = 0;
-                            } else {
-                                x = 1;
-                            }
-                            player.rotation = -Math.PI / 2;
-                            break;
-                        case "down":
-                            if (player.y + player.height >= canvas.canvas.height) {
-                                y = 0;
-                            } else {
-                                y = 1;
-                            }
-                            player.rotation = 0;
-                            break;
-                        default:
-                            return;
-                            break;
-                        }
-                        canMove = false;
-                        moveDirection = {
-                            x: x,
-                            y: y
-                        };
-                        eventBus.emit("play animation", player, "jump");
-                    });
-
-                    eventBus.on("collision", function(parama, paramb) {
-                        console.log(parama, paramb);
-                    });
-                }
-
                 var strips = [];
                 var cars = [];
                 var bonuses = [];
@@ -204,11 +64,14 @@ define([
                     type: "grass"
                 }));
                 generateStrips(0, strips, cars, bonuses);
+
+                var playerHitbox = {"width" : 40, "height" : 40, "offsetX" : 10, "offsetY" : 10};
                 var player = new Player({
                     x: 400,
                     y: 600 - 37.5,
                     width: 60,
-                    height: 60
+                    height: 60,
+                    hitbox: playerHitbox
                 });
 
                 eventBus.on("new frame", function() {

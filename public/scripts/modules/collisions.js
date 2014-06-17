@@ -11,8 +11,10 @@ define(['event_bus'], function(eventBus) {
 	
 
 	function collisionSquares(s1, s2){
-		if (s1.x+s1.width >= s2.x && s1.x+s1.width <= s2.x + s2.width
-			&& s1.y +s1.length >= s2.y && s1.y+s1.length <= s2.y+s2.width){
+		if (s1.x+s1.width >= s2.x && 
+			s1.x <= s2.x + s2.width && 
+			s1.y + s1.height >= s2.y && 
+			s1.y <= s2.y + s2.height){
 			return true;
 		}
 		else
@@ -38,8 +40,8 @@ define(['event_bus'], function(eventBus) {
 			return false;
 	}
 
-	return {CollisionSquares: collisionSquares, 
-			CollisionCircles: collisionCircles,
-			CollisionCircleAndPoint:collisionCircleAndPoint,
-			CollisionSquareAndPoint: collisionSquareAndPoint}					
+	return {"squares": collisionSquares, 
+			"circles": collisionCircles,
+			"circlePoint":collisionCircleAndPoint,
+			"squarePoint": collisionSquareAndPoint}					
 });
