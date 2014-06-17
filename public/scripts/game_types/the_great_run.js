@@ -57,17 +57,24 @@ define([
             var canvas = canvasModule.create(paramsCanvas);
             var ctx = canvas.context;
 
-            eventBus.emit("load images");
-            // eventBus.on("images loaded", function(images) {
+            var bonusToLoad = 2;
+            var bonusLoaded = 0;
 
-                // var bonusImage = images[globalParams.bonusUrl.split('/')[1].split('.')[0]];
-                // var malusImage = images[globalParams.malusUrl.split('/')[1].split('.')[0]];
-                var bonusImage = new Image();
-                bonusImage.src = globalParams.bonusUrl;
-                var malusImage = new Image();
-                malusImage.src = globalParams.malusUrl;
+            var bonusImage = new Image();
+            bonusImage.src = globalParams.bonusUrl;
+            bonusImage.onload = thenBonusLoaded;
 
+            var malusImage = new Image();
+            malusImage.src = globalParams.malusUrl;
+            malusImage.onload = thenBonusLoaded;
 
+            function thenBonusLoaded(){
+                bonusLoaded++;
+                if (bonusToLoad == bonusLoaded)
+                    bonusLoad();
+            }
+
+            function bonusLoad(){
                 function Player(params) {
                     this.x = params.x;
                     this.y = params.y;
@@ -265,7 +272,7 @@ define([
 
                 var strips = [];
                 var cars = [];
-                var bonuses = [];
+                var bonuses = window.bonuses = [];
                 strips.push(new Strip({
                     y: 600 - 37.5,
                     type: "grass"
@@ -290,10 +297,12 @@ define([
                     }
 
                     var i;
-
+                       console.log(strips[0]);
+                       console.log(bonuses[0]);
+                       debugger;
                     for (i = 0; i < strips.length; i++) {
                         eventBus.emit("render object", strips[i], ctx);
-                    }
+                                        }
                     for (i = 0; i < bonuses.length; i++) {
                         eventBus.emit("render object", bonuses[i], ctx);
                         if (player.isInside(bonuses[i])) {
@@ -380,6 +389,9 @@ define([
                     var moreBonusesNumber = Math.round(Math.random() * 2);
                     var x = 75 / 2 + Math.round(Math.random() * 10) * 75;
                     var y = 75 / 2 + Math.round(Math.random() * 8) * 75;
+
+                    x = 200;
+
                     bonuses.push(new Bonus({
                         x: x,
                         y: y + offset,
@@ -403,7 +415,7 @@ define([
                         }));
                     }
                 }
-            // });
+            }
         });
     };
 });
