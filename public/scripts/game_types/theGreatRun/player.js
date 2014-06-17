@@ -4,8 +4,6 @@ define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/th
             this[key] = config.player[key];
 
         this.score = 0;
-
-        this.speed = 74;
         this.rotation = 0;
         this.canMove = true;
         var movedDistance = 0;
