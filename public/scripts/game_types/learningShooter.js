@@ -23,7 +23,7 @@ define([
     'modules/gauge',
     'modules/color',
     'modules/game_over',
-    'modules/win',
+    'modules/game_win',
     'modules/bonus_chooser',
     'modules/bonus_fader'
 ], function(eventBus, canvasCreate, score, frames, keyListener, Render, tools, mouse, particles, Gauge) {

@@ -2,7 +2,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
 
     return function() {
 
-        var particleTable = [];
+        var particles = [];
         var context = "";
         eventBus.on('newCanvas', function(canvas) {
             context = canvas.context;
@@ -25,7 +25,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
                 this.x += Math.cos(this.angle) * this.speed;
                 this.y -= Math.sin(this.angle) * this.speed;
                 if (this.lifeTime <= 0) {
-                    particleTable.splice(particleTable.indexOf(this), 1);
+                    particles.splice(particles.indexOf(this), 1);
                 }
             };
 
@@ -55,9 +55,9 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
         }
 
         eventBus.on("new frame", function() {
-            for (var i = 0; i < particleTable.length; i++) {
-                if (particleTable[i] != undefined) {
-                    particleTable[i].update();
+            for (var i = 0; i < particles.length; i++) {
+                if (particles[i] != undefined) {
+                    particles[i].update();
                 }
             }
         });
@@ -65,7 +65,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
         eventBus.on('CreateParticles', function(params) {
         for (var i = 0; i < params.count; i++) {
                 var star = new Particle(params);
-                particleTable.push(star);
+                particles.push(star);
             }
         });
     };

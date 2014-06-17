@@ -17,8 +17,11 @@ define([
     'modules/mouse',
     'modules/collisions',
     "modules/text_canvas",
-    "modules/dat_gui"
-], function(eventBus,canvasFactory,frames,mouse,collisions,createTextDisplay,DatGui) {
+    "modules/dat_gui",
+    "modules/resize_img"
+], function(eventBus,canvasFactory,frames,mouse,collisions,createTextDisplay,DatGui,resizeImg) {
+
+    var SIZE_IMG = 66;
 
     return function(params) {
         var config = {
@@ -58,7 +61,12 @@ define([
         var text = createTextDisplay();
         var cloudX = 0;
 
-        //To refactor avec image Loader.
+        imgplus.addEventListener("load",function() {
+            imgplus = resizeImg(imgplus,SIZE_IMG,SIZE_IMG,"fit");
+        });
+        imgmoin.addEventListener("load",function() {
+            imgmoin = resizeImg(imgmoin,SIZE_IMG,SIZE_IMG,"fit");
+        });
 
         function resetLevel() {
             anchors = [];
@@ -192,10 +200,10 @@ define([
            
             for (var i = 0; i < anchors.length; i++) {
                 var file = anchors[i].good ? imgplus : imgmoin
-                ctx.drawImage(file,0,0,file.width,file.height,
+                ctx.drawImage(file,
                               anchors[i].x-anchors[i].radius,
-                              anchors[i].y-anchors[i].radius-scrolling,
-                              anchors[i].radius*2,anchors[i].radius*2);
+                              anchors[i].y-anchors[i].radius-scrolling
+                );
                 /*ctx.beginPath();
                 ctx.arc(anchors[i].x,anchors[i].y - scrolling,anchors[i].radius,0,Math.PI*2);
                 ctx.globalCompositeOperation = "destination-in";
@@ -213,7 +221,7 @@ define([
 
                 x:Math.random()*300+50,
                 y:y || Math.random()*600,
-                radius: 20,
+                radius: SIZE_IMG*0.5,
                 good: good//Math.random()>0.5
                 //x:Math.random()*canvasWidth,
                 //y:y || Math.random()*canvasHeight,
