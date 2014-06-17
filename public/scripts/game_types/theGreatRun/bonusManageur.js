@@ -1,5 +1,6 @@
-define(['event_bus', 'game_types/theGreatRun/config'], function(eventBus, config){
-
+define(['event_bus', 'game_types/theGreatRun/config'], 
+function(eventBus, config){
+	particleGenerator();
 	var BonusManageur = function(){
 		this.content = [];
 		this.bonusConfig = config.bonus;
@@ -43,6 +44,10 @@ define(['event_bus', 'game_types/theGreatRun/config'], function(eventBus, config
         	if (player.isInside(this.content[i])){				//Si collision avec le joueur
         		player.score += this.content[i].points;
         		this.content.splice(i,1);
+
+        		config.particle.x = this.content[i].x;
+        		config.particle.y = this.content[i].y;
+	            // eventBus.emit('CreateParticles', config.particle);
         	}
         	else if (this.content[i].nbFrameLife <= 0)			//Si l'esperence de vie du bonus est atteinte
         		this.content.splice(i, 1);
@@ -55,8 +60,6 @@ define(['event_bus', 'game_types/theGreatRun/config'], function(eventBus, config
 		if (side){
 			bonus.width += config.bonus.pxGrowPerFrame * side;
 			bonus.height += config.bonus.pxGrowPerFrame * side;
-			// bonus.x -= config.bonus.pxGrowPerFrame/2 * side;
-			// bonus.y -= config.bonus.pxGrowPerFrame/2 * side;
 		}
 	}
 

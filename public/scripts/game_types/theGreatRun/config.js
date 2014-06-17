@@ -24,5 +24,15 @@ define([], function(){
 	config.player.hitbox.width = 30;
 	config.player.hitbox.height = 40;
 
+	config.particle = {};
+	config.particle.size = 5,
+	config.particle.style = false,
+	config.particle.lifeTime = 30,
+	config.particle.alpha = true,
+	config.particle.speed = 2,
+	config.particle.count=10,
+	config.particle.angle = 0,
+	config.particle.color = "red";
+
 	return config;
 });    	

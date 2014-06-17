@@ -1,4 +1,5 @@
-define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config'], function(eventBus, imageLoader, collisions, config){
+define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config'], 
+function(eventBus, imageLoader, collisions, config){
     function Player() {
         for (var key in config.player)
             this[key] = config.player[key];
