@@ -297,9 +297,6 @@ define([
                     }
 
                     var i;
-                       console.log(strips[0]);
-                       console.log(bonuses[0]);
-                       debugger;
                     for (i = 0; i < strips.length; i++) {
                         eventBus.emit("render object", strips[i], ctx);
                                         }
