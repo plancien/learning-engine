@@ -6,25 +6,24 @@
 		
 		socket.on('send images names', function(data) {//populate selects with all images in the image folder
 
-			$("#bonusImg").html('');
-			$("#malusImg").html('');
+            var $bonusImg = $("#bonusImg")
+			$bonusImg.html('');
+            var $malusImg = $("#malusImg").html('');
+			$malusImg.html('');
             
 			var display = "";
             var selectBonus = "";
             var selectMalus = "";
 			var imageTypes = [".jpeg",".jpg",".png",".gif"];
-            console.log(data)
 			for(var i=data.length-1; i>=0; i--){
-
-                if (data[i].name == "pomme pourrie")
-                    selectBonus = '<option value="' + data[i].url + '" selected="selected">' + data[i].name + '</option>';
-                else if (data[i].name == "pomme or")
-                    selectMalus = '<option value="' + data[i].url + '" selected="selected">' + data[i].name + '</option>';
-                else
-    				display += '<option value="' + data[i].url + '">' + data[i].name + '</option>';
+    			display += '<option value="' + data[i].url + '" data-img-src="' + data[i].url + '">' + data[i].name + '</option>';
 			}
-			$("#bonusImg").html(display+selectMalus);
-			$("#malusImg").html(display+selectBonus);
+
+			$bonusImg.html(display+selectMalus);
+			$malusImg.html(display+selectBonus);
+
+            $bonusImg.imagepicker();
+            $malusImg.imagepicker();
         });
 
         socket.on('inject css', function(data) {
@@ -171,8 +170,10 @@
 
                 var question = $("#question")[0].value;
                 var params = {
-                    bonusUrl: $("#bonusImg option:selected")[0].value,
-                    malusUrl: $("#malusImg option:selected")[0].value
+                    bonusUrl: $("#bonusImg").val()[0],
+                    malusUrl: $("#malusImg").val()[0],
+                    bonus: $("#bonusImg").val(),
+                    malus: $("#malusImg").val()
                 };
 
                 require(['game', modelSelectedPath], function(game, setGame) {

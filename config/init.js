@@ -11,6 +11,7 @@ module.exports = function(app) {
     // app.use(express.logger());
     app.use(express.static(rootPath + '/public'));
     app.set('views', rootPath + '/views');
+    app.engine('.html', require('ejs').__express);
     app.use(express.bodyParser());
     var server = http.createServer(app);
     server.listen(8075);

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Serious Game</title>
+    <link type="text/css" rel="stylesheet" href="/css/image-picker.css">
+    <link type="text/css" rel="stylesheet" href="/css/main.css">
+    <script type="text/javascript" src="/scripts/ext_libs/jquery.js"></script>
+    <script type="text/javascript" src="/scripts/ext_libs/image-picker.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="/scripts/ext_libs/require.js" data-main="/scripts/main"></script>
+  </head>
+  <body>
+    <div id="user">
+      <header><img src="images/sprites/header.png"></header>
+      <div id="socialBar">
+        <h1 id="bienvenu">Bienvenue !</h1>Nom d'utilisateur :  
+        <input id="userName" type="text" placeholder="Nom d'utilisateur">
+        <button class="button">Validez !</button>
+        <div class="alert">
+          <p id="userAlert"></p>
+        </div>
+      </div>
+    </div>
+    <div id="mainMenu">
+      <div id="blocLeft">
+        <div id="blocUser"></div>
+        <div id="imageUploader"></div>
+        <div id="gameSelect" class="gameOptions">
+          <h1>Play an existant game !</h1>
+          <select id="gameList"></select>
+          <button class="button">Play !</button>
+          <div id="gameDescription">Game description.</div>
+        </div>
+      </div>
+      <form id="gameCreation" class="gameOptions">
+        <h1>Create a custom game !</h1>Question : 
+        <input id="question"><br>Bonus image : 
+        <select id="bonusImg" multiple="multiple">
+          <option value="images/burns.png">Burns</option>
+          <option value="images/dalek.png">Dalek</option>
+          <option value="images/doctor.png">Doctor</option>
+          <option value="images/homer.png">Homer</option>
+          <option value="images/flag_french.png">French flag</option>
+          <option value="images/flag_romanian.png">Romanian flag</option>
+        </select><br>Malus image : 
+        <select id="malusImg"  multiple="multiple">
+          <option value="images/homer.png">Homer</option>
+          <option value="images/doctor.png">Doctor</option>
+          <option value="images/burns.png">Burns</option>
+          <option value="images/dalek.png">Dalek</option>
+          <option value="images/flag_french.png">French flag</option>
+          <option value="images/flag_romanian.png">Romanian flag</option>
+        </select><br>Game Model : 
+        <select id="modelList"></select>
+        <div id="modelDescription">Model description.</div>
+        <div id="modelParams"></div>
+        <input type="submit" value="Create !">
+      </form>
+    </div>
+    <div id="container">
+      <div id="containerGameover"></div>
+    </div>
+    <footer>Copyright 2014-2015 - Learning Engine
+      <div id="changeColor">Change Color Theme -
+        <button id="rouge" class="btnThemes">Rouge !</button>
+        <button id="jaune" class="btnThemes">Jaune !</button>
+        <button id="violet" class="btnThemes">Violet !</button>
+        <button id="bleu" class="btnThemes">Bleu !</button>
+      </div>
+    </footer>
+  </body>
+</html>

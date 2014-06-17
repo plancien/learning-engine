@@ -8,7 +8,7 @@ module.exports = function(app) {
     });
 
     app.get('/', function(req, res) {
-        res.render('home.jade');
+        res.render('index.html');
     });
 
     app.post("/upload",function(req,res) {

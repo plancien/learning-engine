@@ -18,8 +18,10 @@ define([
     'modules/collisions',
     "modules/text_canvas",
     "modules/dat_gui",
-    "modules/resize_img"
-], function(eventBus,canvasFactory,frames,mouse,collisions,createTextDisplay,DatGui,resizeImg) {
+    "modules/resize_img",
+    "modules/img_loader",
+    "modules/load_bonus"
+], function(eventBus,canvasFactory,frames,mouse,collisions,createTextDisplay,DatGui,resizeImg,imgLoad,loadBonus) {
 
     var SIZE_IMG = 66;
 
@@ -53,20 +55,41 @@ define([
             ctx.fillRect(0,0,1,100*101);
             return canvas;
         })();
-
-        var imgCube = loadImage("/images/sprites/cube.png");
-        var imgplus = loadImage(params.bonusUrl);
-        var imgmoin = loadImage(params.malusUrl);
-        var imgcloud = loadImage("/images/sprites/cloud1.png");
         var text = createTextDisplay();
         var cloudX = 0;
 
-        imgplus.addEventListener("load",function() {
-            imgplus = resizeImg(imgplus,SIZE_IMG,SIZE_IMG,"fit");
-        });
-        imgmoin.addEventListener("load",function() {
-            imgmoin = resizeImg(imgmoin,SIZE_IMG,SIZE_IMG,"fit");
-        });
+
+        
+        var imgCube = imgLoad.add("/images/sprites/cube.png","cube");
+        var imgcloud = imgLoad.add("/images/sprites/cloud1.png","cloud");
+        var bonusImgName = loadBonus(params.bonus);
+        var malusImgName = loadBonus(params.malus);
+
+
+        var imgs = imgLoad({},function() {
+            for (var i = bonusImgName.length - 1; i >= 0; i--) {
+                imgs[bonusImgName[i]] = resizeImg(imgs[bonusImgName[i]],SIZE_IMG,SIZE_IMG,"fit");
+            };
+
+            for (var i = malusImgName.length - 1; i >= 0; i--) {
+                imgs[malusImgName[i]] = resizeImg(imgs[malusImgName[i]],SIZE_IMG,SIZE_IMG,"fit");
+            };
+
+            imgCube = imgs.cube;
+            imgcloud = imgs.cloud;
+
+            resetLevel();
+
+            eventBus.on("new frame", function (dt) {
+                updatePlayer(dt);
+                updateScrolling();
+                if (isPlayerOutsideOfScreen()) {
+                    resetLevel();
+                }
+                draw();
+
+            });
+        })
 
         function resetLevel() {
             anchors = [];
@@ -83,35 +106,8 @@ define([
             };
         }
 
-        resetLevel();
-
-        // function updatePlayer (dt) {
-        //             player.x += player.vx;
-        //             player.y += player.vy;
-        //             
-        //             
-        //             if (player.linkTo) {
-        //                 var dis = {
-        //                     x:player.linkTo.x-player.x,
-        //                     y:player.linkTo.y-player.y
-        //                 };
-        //                 var length = Math.sqrt(dis.x*dis.x+dis.y*dis.y);
-        //                 var tan = {
-        //                     x:-dis.y/length,
-        //                     y:dis.x/length
-        //                 };
-        //                 dis.x = dis.x/length * (length-100);
-        //                 dis.y = dis.y/length * (length-100);
-        //                 player.vx += dis.x*0.001+tan.x*0.01;
-        //                 player.vy += dis.y*0.001+tan.y*0.01;
-        //                 player.vx *= 0.99;
-        //                 player.vy *= 0.99;
-        //             } else {
-        //                 player.vy += gravity;
-        //                 
-        //             }
-        //         }
         
+
         
         function updatePlayer (dt) {
             player.x += player.vx * dt;
@@ -184,12 +180,6 @@ define([
                 ctx.lineTo(player.linkTo.x, player.linkTo.y - scrolling);
                 ctx.stroke();
             };
-            /*
-            ctx.beginPath();
-            ctx.arc(player.x,player.y - scrolling ,20,0,Math.PI*2);
-            ctx.fill();
->>>>>>> 52bb9bd85ec996d7e2e461ead55195e1020eefc8
-            */
             if (player.vx>0) {
                 ctx.drawImage(imgCube,0,0,66,66,player.x-33,player.y-33-scrolling,66,66);
             } else {
@@ -199,33 +189,23 @@ define([
             
            
             for (var i = 0; i < anchors.length; i++) {
-                var file = anchors[i].good ? imgplus : imgmoin
-                ctx.drawImage(file,
+                ctx.drawImage(anchors[i].img,
                               anchors[i].x-anchors[i].radius,
                               anchors[i].y-anchors[i].radius-scrolling
                 );
-                /*ctx.beginPath();
-                ctx.arc(anchors[i].x,anchors[i].y - scrolling,anchors[i].radius,0,Math.PI*2);
-                ctx.globalCompositeOperation = "destination-in";
-                ctx.fill();
-                ctx.globalCompositeOperation = "source-over";
-                debugger;
-                */
             };
             ctx.drawImage(text,5,5);
             
         }
 
         function createAnchor(y,good) {
+            var table = good ? bonusImgName : malusImgName;
             var anchor = {
-
                 x:Math.random()*300+50,
                 y:y || Math.random()*600,
                 radius: SIZE_IMG*0.5,
-                good: good//Math.random()>0.5
-                //x:Math.random()*canvasWidth,
-                //y:y || Math.random()*canvasHeight,
-                //radius: 20
+                good: good,
+                img: imgs[table[(table.length*Math.random())|0]]
             };
             anchors.push(anchor);
             return anchor;
@@ -243,25 +223,7 @@ define([
             return (player.x<-100 || player.x>500 || player.y <scrolling-50 || player.y > scrolling+800)
         }
 
-        function loadImage(url,callback) {
-            var img = new Image();
-            img.src = url;
-            img.addEventListener("load",function() {
-                callback && callback();
-            });
-            return img;
-
-        }
-
-        eventBus.on("new frame", function (dt) {
-            updatePlayer(dt);
-            updateScrolling();
-            if (isPlayerOutsideOfScreen()) {
-                resetLevel();
-            }
-            draw();
-
-        });
+        
 
         eventBus.on("mouse left start clicking",function(mouse) {
             var realMouse = {
