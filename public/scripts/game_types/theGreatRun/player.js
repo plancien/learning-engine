@@ -1,5 +1,5 @@
-define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config', 'game_types/theGreatRun/replay', 'ext_libs/howler.min'], 
-function(eventBus, imageLoader, collisions, config, replay){
+define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config', 'ext_libs/howler.min'], 
+function(eventBus, imageLoader, collisions, config){
     var jump = new Howl({
         urls: ['sounds/TGR_jump.wav']
     });
