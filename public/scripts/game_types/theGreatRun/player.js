@@ -1,5 +1,5 @@
-define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config', 'ext_libs/howler.min'], 
-function(eventBus, imageLoader, collisions, config){
+define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config', 'game_types/theGreatRun/gridOccuped', 'ext_libs/howler.min'], 
+function(eventBus, imageLoader, collisions, config, grid){
     var jump = new Howl({
         urls: ['sounds/TGR_jump.wav']
     });
@@ -25,6 +25,7 @@ function(eventBus, imageLoader, collisions, config){
         var that = this;
         eventBus.on("key pressed", function(keycode) {
             if (!that.canMove) return;
+            grid.freedom(that.x, that.y);
             var x = 0;
             var y = 0;
             switch (keycode) {
@@ -77,6 +78,7 @@ function(eventBus, imageLoader, collisions, config){
                 x: x,
                 y: y
             };
+            grid.trap(that.x + x, that.y + y);
             eventBus.emit("play animation", that, "jump");
         });
 

@@ -102,7 +102,7 @@ define([
                     for (i = 0; i < strips.length; i++) {
                         eventBus.emit("render object", strips[i], ctx);
                     }
-
+                    bonusManageur.loop(player);
                     for (i = 0; i < cars.length; i++) {
                         cars[i].move();
                         eventBus.emit("render object", cars[i], ctx);
@@ -112,7 +112,6 @@ define([
                             die.play();
                         }
                     }
-                    bonusManageur.loop(player);
 
                     eventBus.emit("animate object", player);
                     eventBus.emit("render object", player, ctx);

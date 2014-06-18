@@ -1,5 +1,5 @@
-define(['event_bus', 'game_types/theGreatRun/config', 'modules/particle_generator', 'ext_libs/howler.min'], 
-function(eventBus, config, particleGenerator){
+define(['event_bus', 'game_types/theGreatRun/config', 'modules/particle_generator', 'game_types/theGreatRun/gridOccuped','ext_libs/howler.min'], 
+function(eventBus, config, particleGenerator, grid){
     var malusSound = new Howl({
         urls: ['sounds/TGR_malus.wav']
     });
@@ -16,9 +16,14 @@ function(eventBus, config, particleGenerator){
 	}
 	BonusManageur.prototype.create = function(){
 		var newBonus = {};
-            
-        newBonus.x = Math.floor(Math.random()*config.nbTilesLine) * config.tilesSize+config.tilesSize/2;
-        newBonus.y = Math.floor(Math.random()*config.nbTilesColumn) * config.tilesSize+config.tilesSize/2;
+        
+        for (var i = 10 ; i > 0 ; i--){   
+            newBonus.x = Math.floor(Math.random()*config.nbTilesColumn) * config.tilesSize+config.tilesSize/2;
+            newBonus.y = Math.floor(Math.random()*config.nbTilesLine) * config.tilesSize+config.tilesSize/2;
+            if (grid.checkTilesFree(newBonus.x, newBonus.y))    //Si la case est libre on passe a la suite
+                break;
+        }
+        grid.trap(newBonus.x, newBonus.y);
         newBonus.width = 0;     //Les bonus vont grossir a leur apparition, ils commencent donc avec une taille nul
         newBonus.height = 0;
 
@@ -61,10 +66,13 @@ function(eventBus, config, particleGenerator){
                 config.particle.color = this.content[i].particleColor;
                 eventBus.emit('CreateParticles', config.particle);
         		player.score += this.content[i].points;
+                grid.freedom(this.content[i].x, this.content[i].y);
         		this.content.splice(i,1);
         	}
-        	else if (this.content[i].nbFrameLife <= 0)			//Si l'esperence de vie du bonus est atteinte
+        	else if (this.content[i].nbFrameLife <= 0){			//Si l'esperence de vie du bonus est atteinte
+                grid.freedom(this.content[i].x, this.content[i].y);
         		this.content.splice(i, 1);
+            }
         };
 	}
 	BonusManageur.prototype.growBonus = function(bonus){
