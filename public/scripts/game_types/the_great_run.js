@@ -22,9 +22,8 @@ define([
     'game_types/theGreatRun/bonusManageur',
     'game_types/theGreatRun/generateStrips',
     'game_types/theGreatRun/strips',
-    'game_types/theGreatRun/player',
-    'modules/particle_generator'
-], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, bonusManageur, generateStrips, Strip, Player, particleGenerator) {
+    'game_types/theGreatRun/player'
+], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, bonusManageur, generateStrips, Strip, Player) {
     return function(globalParams) {
 
         var paramsCanvas = {
@@ -62,8 +61,7 @@ define([
                 }));
                 generateStrips(0, strips, cars);
 
-                var player = new Player();
-                particleGenerator();
+                window.player = new Player();
                 eventBus.on("new frame", function() {
                     ctx.fillStyle = "rgb(0,0,0)";
                     ctx.fillRect(0, 0, canvas.canvas.width, canvas.canvas.height);
@@ -93,6 +91,7 @@ define([
                     eventBus.emit("animate object", player);
                     eventBus.emit("render object", player, ctx);
                     player.move();
+                    eventBus.emit("updates particles");
                 });
             }
         });

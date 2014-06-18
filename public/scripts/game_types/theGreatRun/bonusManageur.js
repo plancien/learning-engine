@@ -1,6 +1,6 @@
-define(['event_bus', 'game_types/theGreatRun/config'], 
-function(eventBus, config){
-	particleGenerator();
+define(['event_bus', 'game_types/theGreatRun/config', 'modules/particle_generator'], 
+function(eventBus, config, particleGenerator){
+    particleGenerator();
 	var BonusManageur = function(){
 		this.content = [];
 		this.bonusConfig = config.bonus;
@@ -8,15 +8,17 @@ function(eventBus, config){
 	}
 	BonusManageur.prototype.create = function(){
 		var newBonus = {};
-        newBonus.x = (Math.random()*(canvas.canvas.width-config.bonus.size))|0;
-        newBonus.y = (Math.random()*(canvas.canvas.height-config.bonus.size))|0;
-        newBonus.width = 0//config.bonus.size;
-        newBonus.height = 0//config.bonus.size;
+            
+        newBonus.x = Math.floor(Math.random()*config.nbTilesLine) * config.tilesSize+config.tilesSize/2;
+        newBonus.y = Math.floor(Math.random()*config.nbTilesColumn) * config.tilesSize+config.tilesSize/2;
+        newBonus.width = 0;     //Les bonus vont grossir a leur apparition, ils commencent donc avec une taille nul
+        newBonus.height = 0;
 
         newBonus.good = (Math.random() <= this.bonusConfig.percentOfBonus) ? true : false;
-        newBonus.points = newBonus.good ? this.bonusConfig.malusImageScore : this.bonusConfig.bonusImageScore;
-        newBonus.image = newBonus.good ? bonusImage : malusImage;
+        newBonus.points = (newBonus.good) ? this.bonusConfig.malusImageScore : this.bonusConfig.bonusImageScore;
+        newBonus.image = (newBonus.good) ? bonusImage : malusImage;
         newBonus.nbFrameLife = this.bonusConfig.nbFrameLife;
+        newBonus.particleColor = (newBonus.good) ? config.bonus.bonusParticleColor : config.bonus.malusParticleColor;
 
         eventBus.emit("init render", {
             object: newBonus,
@@ -42,12 +44,12 @@ function(eventBus, config){
         	eventBus.emit("render object", this.content[i], ctx);
 
         	if (player.isInside(this.content[i])){				//Si collision avec le joueur
+                config.particle.x = this.content[i].x;
+                config.particle.y = this.content[i].y;
+                config.particle.color = this.content[i].particleColor;
+                eventBus.emit('CreateParticles', config.particle);
         		player.score += this.content[i].points;
         		this.content.splice(i,1);
-
-        		config.particle.x = this.content[i].x;
-        		config.particle.y = this.content[i].y;
-	            // eventBus.emit('CreateParticles', config.particle);
         	}
         	else if (this.content[i].nbFrameLife <= 0)			//Si l'esperence de vie du bonus est atteinte
         		this.content.splice(i, 1);

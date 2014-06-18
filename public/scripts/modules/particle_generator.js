@@ -62,6 +62,14 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
             }
         });
 
+        eventBus.on("updates particles", function() {
+            for (var i = 0; i < particles.length; i++) {
+                if (particles[i] != undefined) {
+                    particles[i].update();
+                }
+            }
+        });
+
         eventBus.on('CreateParticles', function(params) {
         for (var i = 0; i < params.count; i++) {
                 var star = new Particle(params);
