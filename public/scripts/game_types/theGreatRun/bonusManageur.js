@@ -16,7 +16,7 @@ function(eventBus, config, particleGenerator){
 
         newBonus.good = (Math.random() <= this.bonusConfig.percentOfBonus) ? true : false;
         newBonus.points = (newBonus.good) ? this.bonusConfig.malusImageScore : this.bonusConfig.bonusImageScore;
-        newBonus.image = (newBonus.good) ? bonusImage : malusImage;
+        newBonus.image = (newBonus.good) ? bonusImage[(Math.random()*bonusImage.length)|0] : malusImage[(Math.random()*malusImage.length)|0];
         newBonus.nbFrameLife = this.bonusConfig.nbFrameLife;
         newBonus.particleColor = (newBonus.good) ? config.bonus.bonusParticleColor : config.bonus.malusParticleColor;
 

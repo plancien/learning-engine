@@ -25,7 +25,6 @@ define([
     'game_types/theGreatRun/player'
 ], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, bonusManageur, generateStrips, Strip, Player) {
     return function(globalParams) {
-
         var paramsCanvas = {
             id: "frogger",
             width: 800,
@@ -35,16 +34,22 @@ define([
             window.canvas = canvasModule.create(paramsCanvas);
             window.ctx = canvas.context;
 
-            var bonusToLoad = 2;
+            var bonusToLoad = globalParams.bonus.length + globalParams.malus.length;
             var bonusLoaded = 0;
 
-            window.bonusImage = new Image();
-            bonusImage.src = globalParams.bonusUrl;
-            bonusImage.onload = thenBonusLoaded;
+            window.bonusImage = [];
+            window.malusImage = [];
+            for (var i = 0; i < globalParams.bonus.length; i++) {
+                bonusImage.push(new Image());
+                bonusImage[i].src = globalParams.bonus[i];
+                bonusImage[i].onload = thenBonusLoaded;
+            };
 
-            window.malusImage = new Image();
-            malusImage.src = globalParams.malusUrl;
-            malusImage.onload = thenBonusLoaded;
+            for (var i = 0; i < globalParams.malus.length; i++) {
+                malusImage.push(new Image());
+                malusImage[i].src = globalParams.malus[i];
+                malusImage[i].onload = thenBonusLoaded;
+            };
 
             function thenBonusLoaded(){
                 bonusLoaded++;
