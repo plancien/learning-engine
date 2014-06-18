@@ -17,13 +17,17 @@ function(eventBus, config, particleGenerator, grid){
 	BonusManageur.prototype.create = function(){
 		var newBonus = {};
         
-        for (var i = 10 ; i > 0 ; i--){   
-            newBonus.x = Math.floor(Math.random()*config.nbTilesColumn) * config.tilesSize+config.tilesSize/2;
-            newBonus.y = Math.floor(Math.random()*config.nbTilesLine) * config.tilesSize+config.tilesSize/2;
+        for (var i = 1000 ; i > 0 ; i--){   
+            newBonus.x = Math.floor(Math.random()*config.nbTilesColumn) * config.tilesSize;
+            newBonus.y = Math.floor(Math.random()*config.nbTilesLine) * config.tilesSize;
             if (grid.checkTilesFree(newBonus.x, newBonus.y))    //Si la case est libre on passe a la suite
                 break;
         }
+
         grid.trap(newBonus.x, newBonus.y);
+        newBonus.x += config.tilesSize/2;
+        newBonus.y += config.tilesSize/2;
+
         newBonus.width = 0;     //Les bonus vont grossir a leur apparition, ils commencent donc avec une taille nul
         newBonus.height = 0;
 

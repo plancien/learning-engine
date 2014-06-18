@@ -25,7 +25,6 @@ function(eventBus, imageLoader, collisions, config, grid){
         var that = this;
         eventBus.on("key pressed", function(keycode) {
             if (!that.canMove) return;
-            grid.freedom(that.x, that.y);
             var x = 0;
             var y = 0;
             switch (keycode) {
@@ -78,7 +77,6 @@ function(eventBus, imageLoader, collisions, config, grid){
                 x: x,
                 y: y
             };
-            grid.trap(that.x + x, that.y + y);
             eventBus.emit("play animation", that, "jump");
         });
 
@@ -115,6 +113,7 @@ function(eventBus, imageLoader, collisions, config, grid){
         });
 
         Player.prototype.move = function() {
+            grid.freedom(this.x-30, this.y-44.5);       //Mise en brut d'un decalage car les positions on ete faite n'importe comment
             if (Math.abs(movedDistance) >= this.width) {
                 movedDistance = 0;
                 this.canMove = true;
@@ -127,6 +126,7 @@ function(eventBus, imageLoader, collisions, config, grid){
                 this.y += moveDirection.y * this.speed;
                 movedDistance += moveDirection.x * this.speed + moveDirection.y * this.speed;
             }
+            grid.trap(this.x-30, this.y-44.5);
         };
 
         Player.prototype.isInside = function(target){

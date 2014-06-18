@@ -8,8 +8,6 @@ define(['game_types/theGreatRun/config'], function(config){
                 this.content[i][j] = false;
             };
         };
-        console.log(this.content);
-            
     }
     Grid.prototype.checkTilesFree = function(x, y){
         var pos = this.pxToIndex(x, y);
@@ -26,7 +24,7 @@ define(['game_types/theGreatRun/config'], function(config){
     } 
     Grid.prototype.freedom = function(x, y){
         var pos = this.pxToIndex(x, y);
-        this.content[pos.x][pos.y];
+        this.content[pos.x][pos.y] = false;
     }
 
     Grid.prototype.pxToIndex = function(x, y){
@@ -35,6 +33,6 @@ define(['game_types/theGreatRun/config'], function(config){
 
         return {"x" : realX, "y" : realY};
     }
-    var grid = new Grid();
+    window.grid = new Grid();
     return grid;
 });
