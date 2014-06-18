@@ -1,5 +1,13 @@
-define(['event_bus', 'game_types/theGreatRun/config', 'modules/particle_generator'], 
+define(['event_bus', 'game_types/theGreatRun/config', 'modules/particle_generator', 'ext_libs/howler.min'], 
 function(eventBus, config, particleGenerator){
+    var malusSound = new Howl({
+        urls: ['sounds/TGR_malus.wav']
+    });
+
+    var bonusSound = new Howl({
+        urls: ['sounds/TGR_bonus.wav']
+    });
+
     particleGenerator();
 	var BonusManageur = function(){
 		this.content = [];
@@ -15,8 +23,8 @@ function(eventBus, config, particleGenerator){
         newBonus.height = 0;
 
         newBonus.good = (Math.random() <= this.bonusConfig.percentOfBonus) ? true : false;
-        newBonus.points = (newBonus.good) ? this.bonusConfig.malusImageScore : this.bonusConfig.bonusImageScore;
-        newBonus.image = (newBonus.good) ? bonusImage : malusImage;
+        newBonus.points = (newBonus.good) ? this.bonusConfig.bonusImageScore : this.bonusConfig.malusImageScore;
+        newBonus.image = (newBonus.good) ? bonusImage[(Math.random()*bonusImage.length)|0] : malusImage[(Math.random()*malusImage.length)|0];
         newBonus.nbFrameLife = this.bonusConfig.nbFrameLife;
         newBonus.particleColor = (newBonus.good) ? config.bonus.bonusParticleColor : config.bonus.malusParticleColor;
 
@@ -44,6 +52,10 @@ function(eventBus, config, particleGenerator){
         	eventBus.emit("render object", this.content[i], ctx);
 
         	if (player.isInside(this.content[i])){				//Si collision avec le joueur
+                if (this.content[i].good)
+                    bonusSound.play();
+                else
+                    malusSound.play();
                 config.particle.x = this.content[i].x;
                 config.particle.y = this.content[i].y;
                 config.particle.color = this.content[i].particleColor;
@@ -64,6 +76,10 @@ function(eventBus, config, particleGenerator){
 			bonus.height += config.bonus.pxGrowPerFrame * side;
 		}
 	}
+    BonusManageur.prototype.restart = function(){
+        this.content = [];
+        this.frame = 0;
+    }
 
 	return new BonusManageur();
 });    	

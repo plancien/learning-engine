@@ -25,6 +25,14 @@ define([
     'game_types/theGreatRun/player'
 ], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, bonusManageur, generateStrips, Strip, Player) {
     return function(globalParams) {
+        var die = new Howl({
+            urls: ['sounds/TGR_die.wav']
+        });
+
+        var music = new Howl({
+            urls: ['sounds/TGR_notFree_POL-snowy-hill-short.wav'],
+            loop: true
+        });
 
         var paramsCanvas = {
             id: "frogger",
@@ -35,16 +43,22 @@ define([
             window.canvas = canvasModule.create(paramsCanvas);
             window.ctx = canvas.context;
 
-            var bonusToLoad = 2;
+            var bonusToLoad = globalParams.bonus.length + globalParams.malus.length;
             var bonusLoaded = 0;
 
-            window.bonusImage = new Image();
-            bonusImage.src = globalParams.bonusUrl;
-            bonusImage.onload = thenBonusLoaded;
+            window.bonusImage = [];
+            window.malusImage = [];
+            for (var i = 0; i < globalParams.bonus.length; i++) {
+                bonusImage.push(new Image());
+                bonusImage[i].src = globalParams.bonus[i];
+                bonusImage[i].onload = thenBonusLoaded;
+            };
 
-            window.malusImage = new Image();
-            malusImage.src = globalParams.malusUrl;
-            malusImage.onload = thenBonusLoaded;
+            for (var i = 0; i < globalParams.malus.length; i++) {
+                malusImage.push(new Image());
+                malusImage[i].src = globalParams.malus[i];
+                malusImage[i].onload = thenBonusLoaded;
+            };
 
             function thenBonusLoaded(){
                 bonusLoaded++;
@@ -53,6 +67,17 @@ define([
             }
 
             function bonusLoad(){
+                music.play();
+                window.player = new Player();
+                eventBus.on("key pressed", function(keycode) {
+                    if (player.dead && keycode === 'enter'){
+                        player = new Player();
+                        cars = [];
+                        bonusManageur.restart(); 
+                        generateStrips(0, strips, cars);
+                    }
+                });
+
                 var strips = [];
                 var cars = [];
                 strips.push(new Strip({
@@ -61,7 +86,6 @@ define([
                 }));
                 generateStrips(0, strips, cars);
 
-                window.player = new Player();
                 eventBus.on("new frame", function() {
                     ctx.fillStyle = "rgb(0,0,0)";
                     ctx.fillRect(0, 0, canvas.canvas.width, canvas.canvas.height);
@@ -70,6 +94,7 @@ define([
                         ctx.fillStyle = "rgb(255,255,255)";
                         ctx.font = "20px Verdana";
                         ctx.fillText("Vous avez obtenu " + player.score + " points", 200, 300);
+                        ctx.fillText("Pressez 'Entrée' pour rejouer", 200, 340);
                         return;
                     }
 
@@ -84,6 +109,7 @@ define([
                         if (player.isInside(cars[i])) {
                             player.canMove = "false";
                             player.dead = true;
+                            die.play();
                         }
                     }
                     bonusManageur.loop(player);

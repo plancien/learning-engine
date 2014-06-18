@@ -1,5 +1,13 @@
-define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config'], 
+define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config', 'ext_libs/howler.min'], 
 function(eventBus, imageLoader, collisions, config){
+    var jump = new Howl({
+        urls: ['sounds/TGR_jump.wav']
+    });
+    var stopWall = new Howl({
+        urls: ['sounds/TGR_wallStop.wav']
+    });
+
+
     function Player() {
         for (var key in config.player)
             this[key] = config.player[key];
@@ -7,6 +15,7 @@ function(eventBus, imageLoader, collisions, config){
         this.score = 0;
         this.rotation = 0;
         this.canMove = true;
+        this.dead = false;
         var movedDistance = 0;
         var moveDirection = {
             x: 0,
@@ -22,23 +31,29 @@ function(eventBus, imageLoader, collisions, config){
             case "left":
                 if (that.x - that.width <= 0) {
                     x = 0;
+                    stopWall.play();
                 } else {
                     x = -1;
+                    jump.play();
                 }
                 that.rotation = Math.PI / 2;
                 break;
             case "up":
                 if (that.y - that.height <= 0) {
                     y = 0;
+                    stopWall.play();
                 } else {
-                    y = -1;
+                    jump.play();
+                     y = -1;
                 }
                 that.rotation = Math.PI;
                 break;
             case "right":
                 if (that.x + that.width >= canvas.canvas.width) {
                     x = 0;
+                    stopWall.play();
                 } else {
+                    jump.play();
                     x = 1;
                 }
                 that.rotation = -Math.PI / 2;
@@ -46,7 +61,9 @@ function(eventBus, imageLoader, collisions, config){
             case "down":
                 if (that.y + that.height >= canvas.canvas.height) {
                     y = 0;
+                    stopWall.play();
                 } else {
+                    jump.play();
                     y = 1;
                 }
                 that.rotation = 0;
