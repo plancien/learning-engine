@@ -13,4 +13,9 @@ define(['event_bus'], function(eventBus) {
         scoreContainer.html(score);
     });
 
+    eventBus.on("set score", function(points) {
+        score = points;
+        scoreContainer.html(score);
+    });
+
 });

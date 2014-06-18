@@ -1,0 +1,12 @@
+*** BUG
+
+
+*** AMMELIORATION
+
+* Systeme de template et de parametre bonus
+
+*** EN COURS
+
+* Refactor SpiderGame
+
+*** DONE
