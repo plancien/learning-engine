@@ -21,8 +21,12 @@ define([
         var bonusPoints = parseInt($("#bonusPoints")[0].value, 10) || 1;
         var malusPoints = parseInt($("#malusPoints")[0].value, 10) || 3;
 
-        eventBus.emit('init bonus', true, params.bonusUrl);
-        eventBus.emit('init bonus', false, params.malusUrl);
+        for (var i = params.bonus.length - 1; i >= 0; i--) {
+            eventBus.emit('init bonus', true, params.bonus[i]);
+        };
+        for (var i = params.malus.length - 1; i >= 0; i--) {
+            eventBus.emit('init bonus', false, params.malus[i]);
+        };
 
         eventBus.on('add bonus', function(good, url) {
             var htmlClass = good ? 'good' : 'bad';
