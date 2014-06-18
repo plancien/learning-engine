@@ -1,5 +1,5 @@
-define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config', 'ext_libs/howler.min'], 
-function(eventBus, imageLoader, collisions, config){
+define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config', 'game_types/theGreatRun/replay', 'ext_libs/howler.min'], 
+function(eventBus, imageLoader, collisions, config, replay){
     var jump = new Howl({
         urls: ['sounds/TGR_jump.wav']
     });
@@ -7,7 +7,7 @@ function(eventBus, imageLoader, collisions, config){
         urls: ['sounds/TGR_wallStop.wav']
     });
 
-    
+
     function Player() {
         for (var key in config.player)
             this[key] = config.player[key];
@@ -15,6 +15,7 @@ function(eventBus, imageLoader, collisions, config){
         this.score = 0;
         this.rotation = 0;
         this.canMove = true;
+        this.dead = false;
         var movedDistance = 0;
         var moveDirection = {
             x: 0,
@@ -23,7 +24,6 @@ function(eventBus, imageLoader, collisions, config){
 
         var that = this;
         eventBus.on("key pressed", function(keycode) {
-            jump.play();
             if (!that.canMove) return;
             var x = 0;
             var y = 0;
@@ -34,6 +34,7 @@ function(eventBus, imageLoader, collisions, config){
                     stopWall.play();
                 } else {
                     x = -1;
+                    jump.play();
                 }
                 that.rotation = Math.PI / 2;
                 break;
@@ -42,7 +43,8 @@ function(eventBus, imageLoader, collisions, config){
                     y = 0;
                     stopWall.play();
                 } else {
-                    y = -1;
+                    jump.play();
+                     y = -1;
                 }
                 that.rotation = Math.PI;
                 break;
@@ -51,6 +53,7 @@ function(eventBus, imageLoader, collisions, config){
                     x = 0;
                     stopWall.play();
                 } else {
+                    jump.play();
                     x = 1;
                 }
                 that.rotation = -Math.PI / 2;
@@ -60,6 +63,7 @@ function(eventBus, imageLoader, collisions, config){
                     y = 0;
                     stopWall.play();
                 } else {
+                    jump.play();
                     y = 1;
                 }
                 that.rotation = 0;

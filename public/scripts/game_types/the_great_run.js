@@ -68,6 +68,16 @@ define([
 
             function bonusLoad(){
                 music.play();
+                window.player = new Player();
+                eventBus.on("key pressed", function(keycode) {
+                    if (player.dead && keycode === 'enter'){
+                        player = new Player();
+                        cars = [];
+                        bonusManageur.restart(); 
+                        generateStrips(0, strips, cars);
+                    }
+                });
+
                 var strips = [];
                 var cars = [];
                 strips.push(new Strip({
@@ -76,7 +86,6 @@ define([
                 }));
                 generateStrips(0, strips, cars);
 
-                window.player = new Player();
                 eventBus.on("new frame", function() {
                     ctx.fillStyle = "rgb(0,0,0)";
                     ctx.fillRect(0, 0, canvas.canvas.width, canvas.canvas.height);
@@ -85,6 +94,7 @@ define([
                         ctx.fillStyle = "rgb(255,255,255)";
                         ctx.font = "20px Verdana";
                         ctx.fillText("Vous avez obtenu " + player.score + " points", 200, 300);
+                        ctx.fillText("Pressez 'Entrée' pour rejouer", 200, 340);
                         return;
                     }
 

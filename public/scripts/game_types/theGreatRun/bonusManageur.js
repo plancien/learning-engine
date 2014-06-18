@@ -76,6 +76,10 @@ function(eventBus, config, particleGenerator){
 			bonus.height += config.bonus.pxGrowPerFrame * side;
 		}
 	}
+    BonusManageur.prototype.restart = function(){
+        this.content = [];
+        this.frame = 0;
+    }
 
 	return new BonusManageur();
 });    	
