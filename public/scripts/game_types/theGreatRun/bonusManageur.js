@@ -1,5 +1,13 @@
-define(['event_bus', 'game_types/theGreatRun/config', 'modules/particle_generator'], 
+define(['event_bus', 'game_types/theGreatRun/config', 'modules/particle_generator', 'ext_libs/howler.min'], 
 function(eventBus, config, particleGenerator){
+    var malusSound = new Howl({
+        urls: ['sounds/TGR_malus.wav']
+    });
+
+    var bonusSound = new Howl({
+        urls: ['sounds/TGR_bonus.wav']
+    });
+
     particleGenerator();
 	var BonusManageur = function(){
 		this.content = [];
@@ -44,6 +52,10 @@ function(eventBus, config, particleGenerator){
         	eventBus.emit("render object", this.content[i], ctx);
 
         	if (player.isInside(this.content[i])){				//Si collision avec le joueur
+                if (this.content[i].good)
+                    bonusSound.play();
+                else
+                    malusSound.play();
                 config.particle.x = this.content[i].x;
                 config.particle.y = this.content[i].y;
                 config.particle.color = this.content[i].particleColor;

@@ -9,7 +9,7 @@ define([], function(){
 	config.bonus.size = 60;
 	config.bonus.nbFrameLife = 180;
 	config.bonus.nbFramePop = 45;
-	config.bonus.malusImageScore = -20;
+	config.bonus.malusImageScore = -5;
 	config.bonus.bonusImageScore = 15;
 	config.bonus.bonusParticleColor = "blue";
 	config.bonus.malusParticleColor = "red";

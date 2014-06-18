@@ -25,6 +25,15 @@ define([
     'game_types/theGreatRun/player'
 ], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, bonusManageur, generateStrips, Strip, Player) {
     return function(globalParams) {
+        var die = new Howl({
+            urls: ['sounds/TGR_die.wav']
+        });
+
+        var music = new Howl({
+            urls: ['sounds/TGR_notFree_POL-snowy-hill-short.wav'],
+            loop: true
+        });
+
         var paramsCanvas = {
             id: "frogger",
             width: 800,
@@ -58,6 +67,7 @@ define([
             }
 
             function bonusLoad(){
+                music.play();
                 var strips = [];
                 var cars = [];
                 strips.push(new Strip({
@@ -89,6 +99,7 @@ define([
                         if (player.isInside(cars[i])) {
                             player.canMove = "false";
                             player.dead = true;
+                            die.play();
                         }
                     }
                     bonusManageur.loop(player);

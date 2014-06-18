@@ -1,5 +1,13 @@
-define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config'], 
+define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config', 'ext_libs/howler.min'], 
 function(eventBus, imageLoader, collisions, config){
+    var jump = new Howl({
+        urls: ['sounds/TGR_jump.wav']
+    });
+    var stopWall = new Howl({
+        urls: ['sounds/TGR_wallStop.wav']
+    });
+
+    
     function Player() {
         for (var key in config.player)
             this[key] = config.player[key];
@@ -15,6 +23,7 @@ function(eventBus, imageLoader, collisions, config){
 
         var that = this;
         eventBus.on("key pressed", function(keycode) {
+            jump.play();
             if (!that.canMove) return;
             var x = 0;
             var y = 0;
@@ -22,6 +31,7 @@ function(eventBus, imageLoader, collisions, config){
             case "left":
                 if (that.x - that.width <= 0) {
                     x = 0;
+                    stopWall.play();
                 } else {
                     x = -1;
                 }
@@ -30,6 +40,7 @@ function(eventBus, imageLoader, collisions, config){
             case "up":
                 if (that.y - that.height <= 0) {
                     y = 0;
+                    stopWall.play();
                 } else {
                     y = -1;
                 }
@@ -38,6 +49,7 @@ function(eventBus, imageLoader, collisions, config){
             case "right":
                 if (that.x + that.width >= canvas.canvas.width) {
                     x = 0;
+                    stopWall.play();
                 } else {
                     x = 1;
                 }
@@ -46,6 +58,7 @@ function(eventBus, imageLoader, collisions, config){
             case "down":
                 if (that.y + that.height >= canvas.canvas.height) {
                     y = 0;
+                    stopWall.play();
                 } else {
                     y = 1;
                 }
