@@ -21,6 +21,8 @@ define([
     "modules/load_bonus",
     "game_types/spider_game/draw",
     "game_types/spider_game/player",
+    "game_types/spider_game/level",
+    "game_types/spider_game/config",
     "modules/score"
 
 ], function(
@@ -34,39 +36,29 @@ define([
             loadBonus,
             draw,
             Player,
+            Level,
+            config,
             score
     ) {
 
-    var SIZE_IMG = 66;
 
     return function(params) {
-        var config = {
-            maxRopeDistance: 300,
-            gravity: 0.001,
-            scrollingSpeed : 0.1,
-            playerScroll : 400,
-            stepBetweenAnchors: 100
-        }
-        var canvasWidth = 400;
-        var canvasHeight = 600
-        var canvas = canvasFactory.create({"width" : canvasWidth, "height" : canvasHeight});
-        var player = new Player();
-        var anchors, scrolling;
-
+        var canvas = canvasFactory.create({"width" : config.canvasWidth, "height" : config.canvasHeight});
         var bonusImgName = loadBonus(params.bonus);
         var malusImgName = loadBonus(params.malus);
 
+        var level = new Level(bonusImgName,malusImgName);
+        var player = new Player();
+        var scrolling = 0;
 
         var imgs = imgLoad({cube:"/images/sprites/cube.png",cloud:"/images/sprites/cloud1.png"},function() {
             for (var i = bonusImgName.length - 1; i >= 0; i--) {
-                imgs[bonusImgName[i]] = resizeImg(imgs[bonusImgName[i]],SIZE_IMG,SIZE_IMG,"fit");
+                imgs[bonusImgName[i]] = resizeImg(imgs[bonusImgName[i]],config.size_img,config.size_img,"fit");
             };
 
             for (var i = malusImgName.length - 1; i >= 0; i--) {
-                imgs[malusImgName[i]] = resizeImg(imgs[malusImgName[i]],SIZE_IMG,SIZE_IMG,"fit");
+                imgs[malusImgName[i]] = resizeImg(imgs[malusImgName[i]],config.size_img,config.size_img,"fit");
             };
-
-            resetLevel();
 
             eventBus.on("new frame", function (dt) {
                 player.update(dt,config.gravity);
@@ -74,22 +66,18 @@ define([
                 if (player.isOutsideOfScreen(scrolling)) {
                     resetLevel();
                 }
-                draw(canvas.context,{
-                    canvasWidth: canvasWidth,
-                    canvasHeight: canvasHeight,
-                    scrolling: scrolling,
-                    config: config
-                },imgs,player,anchors)
+                draw(canvas.context,scrolling,imgs,player,level.anchors)
             });
+
+            resetLevel();
         })
 
         function resetLevel() {
-            anchors = [];
             scrolling = 0;
-            generateLevel();
-            anchors[1].ropeRadius = 50;
-            player.reset(anchors[0].x,anchors[0].y+50);
-            player.linkTo = anchors[1];
+            level.generate(imgs);
+            player.reset(level.anchors[0].x,level.anchors[0].y+50);
+            player.linkTo = level.anchors[1];
+            level.anchors[1].ropeRadius = 50;
         }
 
         function updateScrolling() {
@@ -98,47 +86,22 @@ define([
                 eventBus.emit("set score", Math.floor((-scrolling+config.playerScroll)/50));
             }
             scrolling-=config.scrollingSpeed || 0.1;
-            if (anchors[0]>scrolling+660) {
-                anchors.shift();
+            if (level.anchors[0]>scrolling+660) {
+                level.anchors.shift();
             }
         }
-
-        function createAnchor(y,good) {
-            var table = good ? bonusImgName : malusImgName;
-            var anchor = {
-                x:Math.random()*300+50,
-                y:y || Math.random()*600,
-                radius: SIZE_IMG*0.5,
-                good: good,
-                img: imgs[table[(table.length*Math.random())|0]]
-            };
-            anchors.push(anchor);
-            return anchor;
-        }
-
-        function generateLevel() {
-            for (var i = 0; i < 10000; i+=config.stepBetweenAnchors) {
-                createAnchor(-200-i+Math.random()*50,false);
-                createAnchor(-200-i+Math.random()*50,true);
-            };
-        }
-
-        
 
         eventBus.on("mouse left start clicking",function(mouse) {
             var realMouse = {
                     x: mouse.canvasX,
                     y: mouse.canvasY+scrolling
                 };
-            for (var i = 0; i < anchors.length; i++) {
-                if (collisions.circlePoint(realMouse,anchors[i])) {
-
-                    player.tryToLink(anchors[i],config);
+            for (var i = 0; i < level.anchors.length; i++) {
+                if (collisions.circlePoint(realMouse,level.anchors[i])) {
+                    player.tryToLink(level.anchors[i],config);
                 }
             };
         });
-
-        resetLevel();
     };
 
 });

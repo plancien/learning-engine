@@ -1,4 +1,4 @@
-define([], function(){
+define(["game_types/spider_game/config"], function(config){
     "use strict";
     var cloudX =0;
     var background = (function() {
@@ -16,74 +16,74 @@ define([], function(){
             return canvas;
         })();
 
-    function draw(ctx, info,imgs,player,anchors) {
-        drawSky(ctx, info,imgs,player);
-        drawCloud(ctx, info,imgs,player);
-        drawMaxDistance(ctx, info,imgs,player);
-        drawRope(ctx, info,imgs,player);
-        drawPlayer(ctx, info,imgs,player);
-        drawAnchor(ctx, info,imgs,player,anchors);
+    function draw(ctx, scrolling,imgs,player,anchors) {
+        drawSky(ctx, scrolling,imgs,player);
+        drawCloud(ctx, scrolling,imgs,player);
+        drawMaxDistance(ctx, scrolling,imgs,player);
+        drawRope(ctx, scrolling,imgs,player);
+        drawPlayer(ctx, scrolling,imgs,player);
+        drawAnchor(ctx, scrolling,imgs,player,anchors);
     }
 
-    function drawSky(ctx,info,imgs,player) {
+    function drawSky(ctx,scrolling,imgs,player) {
         ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, info.canvasWidth, info.canvasHeight);
-        ctx.drawImage(background, 0, 100*101-600+info.scrolling,1,600,0,0,400,600);
+        ctx.fillRect(0, 0, config.canvasWidth, config.canvasHeight);
+        ctx.drawImage(background, 0, 100*101-600+scrolling,1,600,0,0,400,600);
     }
 
-    function drawCloud(ctx,info,imgs,player) {
+    function drawCloud(ctx,scrolling,imgs,player) {
         cloudX = (cloudX+1)%(649*2)
-        ctx.drawImage(imgs.cloud,-649+cloudX,-20000+info.scrolling);
+        ctx.drawImage(imgs.cloud,-649+cloudX,-20000+scrolling);
     }
 
-    function drawMaxDistance(ctx,info,imgs,player) {
-        var grd= ctx.createRadialGradient(player.x, player.y - info.scrolling, info.config.maxRopeDistance * 0.5, player.x, player.y - info.scrolling, info.config.maxRopeDistance);
+    function drawMaxDistance(ctx,scrolling,imgs,player) {
+        var grd= ctx.createRadialGradient(player.x, player.y - scrolling, config.maxRopeDistance * 0.5, player.x, player.y - scrolling, config.maxRopeDistance);
         grd.addColorStop(0, "rgba(0, 0, 0, 0.0)");
         grd.addColorStop(1, "rgba(0, 0, 0, 0.2)");
         
         ctx.fillStyle = grd;
         ctx.strokeStyle = "rgba(0, 0, 0, 0.6)";
         ctx.beginPath();
-        ctx.arc(player.x,player.y - info.scrolling, info.config.maxRopeDistance, 0, Math.PI*2);
+        ctx.arc(player.x,player.y - scrolling, config.maxRopeDistance, 0, Math.PI*2);
         ctx.fill();
         ctx.stroke();
     }
 
-    function drawRope(ctx,info,imgs,player) {
+    function drawRope(ctx,scrolling,imgs,player) {
         ctx.fillStyle = "red";
         if (player.linkTo) {
             ctx.beginPath();
             ctx.strokeStyle = "#FF0000";
-            ctx.moveTo(player.x, player.y - info.scrolling);
-            ctx.lineTo(player.linkTo.x, player.linkTo.y - info.scrolling);
+            ctx.moveTo(player.x, player.y - scrolling);
+            ctx.lineTo(player.linkTo.x, player.linkTo.y - scrolling);
             ctx.stroke();
         };
     }
 
-    function drawPlayer(ctx,info,imgs,player) {
+    function drawPlayer(ctx,scrolling,imgs,player) {
         if (player.vx>0) {
             ctx.drawImage(imgs.cube,
                           0,0,66,66,
-                          player.x - 33, player.y - 33 - info.scrolling, 66, 66
+                          player.x - 33, player.y - 33 - scrolling, 66, 66
                           );
         } else {
             ctx.drawImage(imgs.cube,
                           0,66,66,66,
-                          player.x - 33, player.y - 33 - info.scrolling, 66, 66
+                          player.x - 33, player.y - 33 - scrolling, 66, 66
                           );
         }
     }
 
-    function drawAnchor(ctx,info,imgs,player,anchors) {
+    function drawAnchor(ctx,scrolling,imgs,player,anchors) {
         for (var i = 0; i < anchors.length; i++) {
             ctx.drawImage(anchors[i].img,
                           anchors[i].x-anchors[i].radius,
-                          anchors[i].y-anchors[i].radius-info.scrolling
+                          anchors[i].y-anchors[i].radius-scrolling
             );
         };
     }
 
-    function drawScore(ctx,info,imgs,player) {
+    function drawScore(ctx,scrolling,imgs,player) {
         ctx.fillStyle = "blue";
         ctx.drawImage(text,5,5);
     }

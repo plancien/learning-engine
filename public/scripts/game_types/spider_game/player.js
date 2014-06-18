@@ -1,4 +1,4 @@
-define([], function(){
+define(["game_types/spider_game/config"], function(config){
     "use strict";
     
     function Player(x,y) {
@@ -46,7 +46,7 @@ define([], function(){
         return (this.y > scrolling+700);
     };
 
-    Player.prototype.tryToLink = function(anchor,config) {
+    Player.prototype.tryToLink = function(anchor) {
         var dis = {
             x:anchor.x-this.x,
             y:anchor.y-this.y
