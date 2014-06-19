@@ -8,14 +8,14 @@ define(['event_bus',
         'game_types/frogAdventure/hero',
         'game_types/frogAdventure/config',
         ],
-function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, loadLevel, Hero, config){
+function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, loadLevel, initHero, config){
     var init = function(game){
 
         game.frame = 0;
 
         game.gravityEngine = gravityEngine;
-        game.gravityEngine.acceleration = 1;
-        game.gravityEngine.maxSpeed = 30;
+        game.gravityEngine.acceleration = config.gravity.acceleration;
+        game.gravityEngine.maxSpeed = config.gravity.maxSpeed;
 
         game.canvas = Canvas.create({"width" : 800, "height" : 600});
         game.canvas.width = 800;
@@ -33,8 +33,7 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
         game.collisionEngine.addGroup("hero", ["wall"], false, false);
 
         loadLevel(game);
-
-        Hero(game);
+        initHero(game);
 }
 
     return init;

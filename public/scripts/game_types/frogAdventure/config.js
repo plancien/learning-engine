@@ -4,6 +4,10 @@ define([], function(){
 	config.bonus = {}
 	config.bonus.size = 50;
 
+	config.gravity = {};
+	config.gravity.acceleration = 1;
+	config.gravity.maxSpeed = 30;
+
 	config.hero = {};
 	config.hero.x = 1200;
 	config.hero.y = 1100;

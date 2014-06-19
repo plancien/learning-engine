@@ -1,5 +1,6 @@
 define(['event_bus', 'game_types/frogAdventure/config'], 
 function(eventBus, config){
+
 	var BonusManageur = function(game){
 		this.bonusImageName = [];
 		this.malusImageName = [];
@@ -38,17 +39,62 @@ function(eventBus, config){
 
 		eventBus.emit("bonus create", element, this[callback]);
 	}
-	// BonusManageur.prototype.createGroup
+	BonusManageur.prototype.createGroup = function(nbBonus, nbMalus, bonusCallback, malusCallback, tabObjectPos){
+		var list = []; //On creer la liste des bonus malus
+
+		for (var i = nbBonus ; i > 0 ; i--){	//On ajoute bonus malus dans le tableau
+			list.push("bonus");
+		}
+		for (var i = nbMalus ; i > 0 ; i--){
+			list.push("malus");
+		}
+		shuffle(list);	//On melange
+
+		for (var i = list.length - 1; i >= 0; i--) {	//On creer un bonus avec la liste melange et les position envoye dans l'ordre
+			var callback = (list[i] === "bonus") ? bonusCallback : malusCallback;	//On recupere le callback en fonction de bonus malus
+			this.create(list[i], tabObjectPos[i].x, tabObjectPos[i].y, callback);	//creation
+		};
+	}
 
 		/*** 
 			Stockage des fonction de callback des bonus
 		***/
 	BonusManageur.prototype.jump = function(target){
 		target.speedY = -35; 
+		target.y -= 5;
 	}
 	BonusManageur.prototype.reject = function(target){
 		target.speedX = -10;
 	}
 
+
+
+
+
+
+
+	function shuffle(array) {
+	  var currentIndex = array.length
+	    , temporaryValue
+	    , randomIndex
+	    ;
+
+	  // While there remain elements to shuffle...
+	  while (0 !== currentIndex) {
+
+	    // Pick a remaining element...
+	    randomIndex = Math.floor(Math.random() * currentIndex);
+	    currentIndex -= 1;
+
+	    // And swap it with the current element.
+	    temporaryValue = array[currentIndex];
+	    array[currentIndex] = array[randomIndex];
+	    array[randomIndex] = temporaryValue;
+	  }
+
+	  return array;
+	}
+
 	return BonusManageur;
 });    	
+
