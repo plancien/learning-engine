@@ -8,7 +8,7 @@ define([], function(){
 		startX : 1000,
 		startY : 1000,
 		doorHeight : 120,
-		containerWallSize : 200
+		containerWallSize : 300
 	}
 
 	gravity = {	
