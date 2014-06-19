@@ -39,7 +39,7 @@ function(eventBus, config){
 
 		eventBus.emit("bonus create", element, this[callback]);
 	}
-	BonusManageur.prototype.createGroup = function(nbBonus, nbMalus, bonusCallback, malusCallback, tabObjectPos){
+	BonusManageur.prototype.createGroup = function(nbBonus, nbMalus, bonusCallback, malusCallback, tabObjectPos, offsetX, offsetY){
 		var list = []; //On creer la liste des bonus malus
 
 		for (var i = nbBonus ; i > 0 ; i--){	//On ajoute bonus malus dans le tableau
@@ -52,7 +52,7 @@ function(eventBus, config){
 
 		for (var i = list.length - 1; i >= 0; i--) {	//On creer un bonus avec la liste melange et les position envoye dans l'ordre
 			var callback = (list[i] === "bonus") ? bonusCallback : malusCallback;	//On recupere le callback en fonction de bonus malus
-			this.create(list[i], tabObjectPos[i].x, tabObjectPos[i].y, callback);	//creation
+			this.create(list[i], tabObjectPos[i].x + offsetX, tabObjectPos[i].y + offsetY, callback);	//creation
 		};
 	}
 

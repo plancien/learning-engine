@@ -2,17 +2,21 @@ define([], function(){
 	var gradient = function(context){
 		var list = {};
 
-		list.arcEnCiel = context.createLinearGradient(0,0,400,400);
-        list.arcEnCiel.addColorStop(0, '#00ABEB'); 
-        list.arcEnCiel.addColorStop(0.33, '#fff'); 
-        list.arcEnCiel.addColorStop(0.66, '#26C000'); 
-        list.arcEnCiel.addColorStop(1, '#fff');
+		list.rainbow = context.createRadialGradient(400, 300, 0, 400, 300, 400);
+        list.rainbow.addColorStop(0, 	'#0F0'); 
+        list.rainbow.addColorStop(0.2, 	'#0FF'); 
+        list.rainbow.addColorStop(0.4, 	'#00F'); 
+        list.rainbow.addColorStop(0.6, 	'#F0F'); 
+        list.rainbow.addColorStop(0.8, 	'#F00'); 
+        list.rainbow.addColorStop(1, 	'#FF0'); 
 
-		list.firstBase = context.createLinearGradient(0,0,600,300);
-        list.firstBase.addColorStop(0, '#0F0'); 
-        list.firstBase.addColorStop(0.33, '#088'); 
-        list.firstBase.addColorStop(0.66, '#04B'); 
-        list.firstBase.addColorStop(1, '#00F');
+		list.invertRainbow = context.createRadialGradient(400, 300, 0, 400, 300, 400);
+        list.invertRainbow.addColorStop(1, 	'#0F0'); 
+        list.invertRainbow.addColorStop(0.8, 	'#0FF'); 
+        list.invertRainbow.addColorStop(0.6, 	'#00F'); 
+        list.invertRainbow.addColorStop(0.4, 	'#F0F'); 
+        list.invertRainbow.addColorStop(0.2, 	'#F00'); 
+        list.invertRainbow.addColorStop(0, 	'#FF0'); 
 
         return list;
 	}
