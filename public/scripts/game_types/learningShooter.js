@@ -58,7 +58,7 @@ define([
         var paramsCanvas = {
             id: "learningShooter",
             width: 800,
-            height: 800
+            height: 600
         };
 
 
@@ -100,6 +100,7 @@ define([
                 particles();
                 eventBus.emit('need new bonus');
                 canvas = canvasCreate.create(paramsCanvas);
+                canvas.canvas.style.backgroundImage = "url(images/sprites/pikachuParallax.png)"
                 ctx = canvas.context;
 
                 ctx.fillStyle = "black";
@@ -113,7 +114,7 @@ define([
                     },
                     position: {
                         x: 700,
-                        y: 600
+                        y: 400
                     },
                     valueMax: 3000
                 });
@@ -128,9 +129,11 @@ define([
                     for (var j = 0; j < gameContainer.arrayAnswer.length; j++) {
                         updateAnswer(gameContainer.arrayAnswer[j]);
                     }
-                });
+                },null,100);
             });
         });
+
+        
 
         /***************************************************************************************
          * MAIN LOOP
@@ -143,7 +146,7 @@ define([
 
         function drawBackground() {
             ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, paramsCanvas.width, paramsCanvas.height);
+            ctx.clearRect(0, 0, paramsCanvas.width, paramsCanvas.height);
         }
 
         function updateBonus() {
@@ -156,6 +159,7 @@ define([
         function updateGauge() {
             gameContainer.gauge.currentValue--;
             if (gameContainer.gauge.currentValue <= 0 && !gameContainer.end) {
+                console.log("hey");
                 gameContainer.end = true;
                 if (gameContainer.scoreEnd >= 0){
                     eventBus.emit('win');
@@ -175,9 +179,7 @@ define([
                     point -= 10;
                 }
                 destroyAnswer(answer, point);
-                
-                
-                
+
             }
         }
 
@@ -235,11 +237,12 @@ define([
         }
 
         function showParticle(answer) {
+            var color = randomColor()
             var params = {
                 x: answer.x,
                 y: answer.y,
-                color : randomColor(),
-                count : 200,
+                color : color,
+                count : 50,
                 lifetime : 60,
             }
             eventBus.emit('CreateParticles', params);
@@ -289,7 +292,7 @@ define([
             for (var i = 0; i < gameContainer.arrayAnswer.length; i++) {
                 if (gameContainer.arrayAnswer[i] != undefined) {
                     var distance = tools.vectors.getDistance(gameContainer.arrayAnswer[i], mousePos);
-                    if (distance < 48 && mousePos.isClicking.left) {
+                    if (distance < 30 && mousePos.isClicking.left) {
                         var points = 0;
                         if (gameContainer.arrayAnswer[i].answer === "good"){
                             points += 5;

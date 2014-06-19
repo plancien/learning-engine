@@ -4,7 +4,7 @@ define(function() {
 
         object.listenersFor = {};
 
-        object.on = function(eventName, callback, instance) {
+        object.on = function(eventName, callback, instance, priority) {
             if (!this.listenersFor[eventName]) {
                 this.listenersFor[eventName] = [];
             }
@@ -13,9 +13,13 @@ define(function() {
             this.listenersFor[eventName].push({
                 origin: origin,
                 callback: callback,
-                instance: instance
+                instance: instance,
+                priority: priority || 0
             });
 
+            this.listenersFor[eventName].sort(function(a,b) {
+                return b.priority-a.priority
+            })
             object.emit('new event listener', eventName);
         };
 

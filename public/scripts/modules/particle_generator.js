@@ -48,6 +48,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
             };
 
             this.update = function update() {
+
                 this.lifeTime--;
                 this.draw();
                 this.move();
@@ -60,7 +61,7 @@ define(['event_bus', 'modules/frames'], function(eventBus) {
                     particles[i].update();
                 }
             }
-        });
+        },null,0);
 
         eventBus.on("updates particles", function() {
             for (var i = 0; i < particles.length; i++) {
