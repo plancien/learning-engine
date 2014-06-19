@@ -6,15 +6,9 @@ define([
     'modules/collisionEngine',
     'modules/imageLoader',
 
-    'modules/frames',
-    'modules/render',
-    'modules/mouse',
-    'modules/particle_generator',
-    'connector',
     'modules/key_listener',
     'game_types/RunTicles/Bonus',
     'game_types/RunTicles/Player',
-    'modules/bonus_chooser',
     'modules/add_canvasBoundingBox',
     'modules/countdown'
 ], function(eventBus, cameraRender, Canvas, collisionEngine, imageLoader) { // init,

@@ -13,6 +13,9 @@ define(['event_bus'], function(eventBus) {
     }
     GravityEngine.prototype.calcul = function(){
         for (var i = this.content.length - 1; i >= 0; i--) {
+            if (this.content[i].noGravity){ //Si on a demande de ne plus etre affecte par la gravite
+                return false;               
+            }
             this.content[i].speedY += this.acceleration;
             if (this.content[i].speedY > this.maxSpeed)
                 this.content[i].speedY = this.maxSpeed;
