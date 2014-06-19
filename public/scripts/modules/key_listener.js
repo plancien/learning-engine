@@ -83,6 +83,7 @@ define(['event_bus'], function(eventBus) {
 
     window.addEventListener("keyup", function(e) {
         var niceCode = keyCodes[e.keyCode] || String.fromCharCode(e.keyCode);
+        eventBus.emit('keys up ' + niceCode);
         delete keysStillDown[niceCode];
     }, false);
 
