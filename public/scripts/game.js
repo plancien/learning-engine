@@ -1,4 +1,4 @@
-define(['event_bus', 'modules/events_list'], function(eventBus) {
+define(['event_bus'], function(eventBus) {
 
     var game = {};
 
