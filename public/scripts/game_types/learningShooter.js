@@ -25,11 +25,34 @@ define([
     'modules/game_over',
     'modules/game_win',
     'modules/bonus_chooser',
-    'modules/bonus_fader'
-], function(eventBus, canvasCreate, score, frames, keyListener, Render, tools, mouse, particles, Gauge) {
+    'modules/bonus_fader',
+    "modules/img_loader",
+    "modules/load_bonus",
+    "modules/resize_img",
+    "ext_libs/randomColor"
+], function(eventBus, 
+            canvasCreate, 
+            score, 
+            frames, 
+            keyListener, 
+            Render, 
+            tools, 
+            mouse, 
+            particles, 
+            Gauge,
+            color,
+            game_over,
+            game_win,
+            bonus_chooser,
+            bonus_fader,
+            imgLoad,
+            loadBonus,
+            resizeImg,
+            randomColor
+        ) {
 
     return function(params) {
-        var canvas, ctx = "";
+        var canvas, ctx = null;
 
         var callBonuses = 0;
         var paramsCanvas = {
@@ -37,6 +60,7 @@ define([
             width: 800,
             height: 800
         };
+
 
         var mousePos = {
             x: 0,
@@ -58,41 +82,79 @@ define([
             scoreEnd: 0
         };
 
+        var bonusNames = loadBonus(params.bonus);
+        var malusNames = loadBonus(params.malus);
+        var imgs = []
+
         eventBus.on('init', function() {
-            particles();
-            eventBus.emit('need new bonus');
-            canvas = canvasCreate.create(paramsCanvas);
-            ctx = canvas.context;
+            imgs = imgLoad({},function() {
 
-            ctx.fillStyle = "black";
-            ctx.fillRect(0, 0, paramsCanvas.width, paramsCanvas.height);
+                for (var i = bonusNames.length - 1; i >= 0; i--) {
+                    imgs[bonusNames[i]] = resizeImg(imgs[bonusNames[i]],96,96,"fit");
+                };
 
-            gameContainer.gauge = new Gauge({
-                context: ctx,
-                size: {
-                    x: 100,
-                    y: 200
-                },
-                position: {
-                    x: 700,
-                    y: 600
-                },
-                valueMax: 3000
+                for (var i = malusNames.length - 1; i >= 0; i--) {
+                    imgs[malusNames[i]] = resizeImg(imgs[malusNames[i]],96,96,"fit");
+                };
+
+                particles();
+                eventBus.emit('need new bonus');
+                canvas = canvasCreate.create(paramsCanvas);
+                ctx = canvas.context;
+
+                ctx.fillStyle = "black";
+                ctx.fillRect(0, 0, paramsCanvas.width, paramsCanvas.height);
+
+                gameContainer.gauge = new Gauge({
+                    context: ctx,
+                    size: {
+                        x: 100,
+                        y: 200
+                    },
+                    position: {
+                        x: 700,
+                        y: 600
+                    },
+                    valueMax: 3000
+                });
+                createAnswers();
+
+                eventBus.on("new frame", function() {
+                    drawBackground();
+                    updateBonus();
+                    colliderObject(); //Mouse - Object collision
+                    updateGauge();
+                    
+                    for (var j = 0; j < gameContainer.arrayAnswer.length; j++) {
+                        updateAnswer(gameContainer.arrayAnswer[j]);
+                    }
+                });
             });
-            createAnswers();
         });
 
         /***************************************************************************************
          * MAIN LOOP
          ***************************************************************************************/
-        eventBus.on("new frame", function() {
+        
+        /***************************************************************************************
+         * CREATING THE PATTERN FOR THE ANSWERS
+         It's not dry, but i didn't find any possibility to pass dinamycly the path of the images, and know wich is the good or bad image.
+        ***************************************************************************************/
+
+        function drawBackground() {
             ctx.fillStyle = "black";
             ctx.fillRect(0, 0, paramsCanvas.width, paramsCanvas.height);
-            //Collider beetween the mouse and the objects
-            colliderObject();
+        }
 
+        function updateBonus() {
+            callBonuses++;
+            if (callBonuses % 180 === 0) {
+                createAnswers();
+            }
+        }
+
+        function updateGauge() {
             gameContainer.gauge.currentValue--;
-
             if (gameContainer.gauge.currentValue <= 0 && !gameContainer.end) {
                 gameContainer.end = true;
                 if (gameContainer.scoreEnd >= 0){
@@ -102,43 +164,23 @@ define([
                     eventBus.emit('gameover');
                 }
             }
+        }
 
-            callBonuses++;
-            if (callBonuses % 180 === 0) {
-                createAnswers();
-            }
+        function updateAnswer(answer) {
+            answer.update();
 
-            for (var j = 0; j < gameContainer.arrayAnswer.length; j++) {
-                gameContainer.arrayAnswer[j].update();
-                if (gameContainer.arrayAnswer[j].y > 800) {
-                    if (gameContainer.arrayAnswer[j].answer === "good"){
-                        gameContainer.points -= 10;
-                    }
-
-                    eventBus.emit('number random color', 1, 255, 255, 0, false);
-                    eventBus.on('random color', function(data) {
-                        gameContainer.colorParticles = data;
-                    });
-                    var params = {
-                        x: gameContainer.arrayAnswer[j].x,
-                        y: gameContainer.arrayAnswer[j].y,
-                        color : gameContainer.colorParticles,
-                        count : 200,
-                        lifetime : 60,
-                    }
-                    eventBus.emit('CreateParticles', params);
-                    eventBus.emit('add points', gameContainer.points);
-                    gameContainer.scoreEnd += gameContainer.points;
-                    gameContainer.points = 0;
-                    gameContainer.arrayAnswer.splice(j, 1);
+            if (answer.y > 800) {
+                var point = 0;
+                if (answer.answer === "good"){
+                    point -= 10;
                 }
+                destroyAnswer(answer, point);
+                
+                
+                
             }
-        });
+        }
 
-        /***************************************************************************************
-         * CREATING THE PATTERN FOR THE ANSWERS
-         It's not dry, but i didn't find any possibility to pass dinamycly the path of the images, and know wich is the good or bad image.
-         ***************************************************************************************/
 
         function createAnswers() {
             for (var i = 0; i < 3; i++) {
@@ -150,7 +192,6 @@ define([
                     speed: Math.round(Math.random() * 3) + 1,
                     answer: "good"
                 };
-                gameContainer.imageGood.src = params.bonusUrl;
                 gameContainer.answer = new FallingAnswer(paramsAnswer);
                 eventBus.emit('init render', {
                     object: gameContainer.answer,
@@ -159,12 +200,11 @@ define([
                         y: 0,
                         width: 96,
                         height: 96,
-                        img: gameContainer.imageGood
+                        img: imgs[bonusNames[(Math.random()*bonusNames.length)|0]]
                     }
                 });
                 var answerArray = gameContainer.arrayAnswer.push(gameContainer.answer);
             }
-            console.log(params.bonusUrl);
             createBadAnswer();
         }
 
@@ -178,8 +218,6 @@ define([
                     speed: Math.round(Math.random() * 3) + 1,
                     answer: "bad"
                 };
-
-                gameContainer.imageBad.src = params.malusUrl;
                 gameContainer.answer = new FallingAnswer(paramsBadAnswer);
                 eventBus.emit('init render', {
                     object: gameContainer.answer,
@@ -188,7 +226,7 @@ define([
                         y: 0,
                         width: 96,
                         height: 96,
-                        img: gameContainer.imageBad
+                        img: imgs[malusNames[(Math.random()*malusNames.length)|0]]
                     }
                 });
 
@@ -196,6 +234,25 @@ define([
             }
         }
 
+        function showParticle(answer) {
+            var params = {
+                x: answer.x,
+                y: answer.y,
+                color : randomColor(),
+                count : 200,
+                lifetime : 60,
+            }
+            eventBus.emit('CreateParticles', params);
+        }
+
+
+        function destroyAnswer(answer, point) {
+            point = point || 0;
+            showParticle(answer)
+            eventBus.emit('add points', point);
+            gameContainer.scoreEnd += point;
+            gameContainer.arrayAnswer.splice(gameContainer.arrayAnswer.indexOf(answer), 1);
+        }
         /***************************************************************************************
          * Bonus/malus falling from the "sky"
          ***************************************************************************************/
@@ -232,31 +289,15 @@ define([
             for (var i = 0; i < gameContainer.arrayAnswer.length; i++) {
                 if (gameContainer.arrayAnswer[i] != undefined) {
                     var distance = tools.vectors.getDistance(gameContainer.arrayAnswer[i], mousePos);
-
-                    if (distance < 80 && mousePos.isClicking.left) {
+                    if (distance < 48 && mousePos.isClicking.left) {
+                        var points = 0;
                         if (gameContainer.arrayAnswer[i].answer === "good"){
-                            gameContainer.points += 5;
+                            points += 5;
                         }
                         else {
-                            gameContainer.points -= 10;
+                            points -= 10;
                         }
-
-                        eventBus.emit('number random color', 1, 255, 255, 0, false);
-                        eventBus.on('random color', function(data) {
-                            gameContainer.colorParticles = data;
-                        });
-                        var params = {
-                            x: mousePos.x,
-                            y: mousePos.y,
-                            color : gameContainer.colorParticles,
-                            count : 200,
-                            lifetime : 60,
-                        }
-                        eventBus.emit('CreateParticles', params);
-                        eventBus.emit('add points', gameContainer.points);
-                        gameContainer.scoreEnd += gameContainer.points;
-                        gameContainer.points = 0;
-                        gameContainer.arrayAnswer.splice(i, 1);
+                        destroyAnswer(gameContainer.arrayAnswer[i],points);
                     }
                 }
             }
