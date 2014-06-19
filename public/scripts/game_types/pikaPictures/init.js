@@ -5,13 +5,15 @@ define([
     'modules/canvas',
     'modules/collisionEngine',
     'modules/imageLoader',
+    'game_types/pikaPictures/config',
 
     'modules/key_listener',
     'game_types/RunTicles/Bonus',
     'game_types/RunTicles/Player',
     'modules/add_canvasBoundingBox',
-    'modules/countdown'
-], function(eventBus, cameraRender, Canvas, collisionEngine, imageLoader) { // init,
+    'modules/countdown',
+    'game_types/pikaPictures/pikachu'
+], function(eventBus, cameraRender, Canvas, collisionEngine, imageLoader, config) { // init,
     var init = function(game){
          eventBus.on('init', function() {
             console.log("BOnjour LOOOL");
@@ -72,8 +74,8 @@ define([
             target.image = "goodImage";
             cameraRender.add(target, 20);
             collisionEngine.addElement(target, "bonus");
-            target.collisionCallback["pikachu"] = function(opponent){
-                opponent.speedY = -16;
+            target.collisionCallback["pikachu"] = function(pikachu){
+                pikachu.speedY = -16;
             }
         });
 
@@ -81,9 +83,8 @@ define([
             target.image = "badImage";
             cameraRender.add(target, 20);
             collisionEngine.addElement(target, "bonus");
-            target.collisionCallback["pikachu"] = function(opponent){
-                opponent.speedX *= -1;
-
+            target.collisionCallback["pikachu"] = function(pikachu){
+                pikachu.speedX = -config.malusRejectStrength;
             }
         });
 
