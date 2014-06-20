@@ -1,31 +1,14 @@
 define([ 'event_bus',
          'modules/simpleElement',
          'modules/simpleWall',
+         'modules/httpGet',
          'game_types/frogAdventure/bonusMalus',
          'game_types/frogAdventure/gradientList',
-         'game_types/frogAdventure/config'
+         'game_types/frogAdventure/config',
+         'game_types/frogAdventure/createWallBox'
 ], 
-function(eventBus, simpleElement, wall, BonusMalus, getGradientList, config){
-
-    // utility function for loading assets from server
-    function httpGet(theUrl) {
-        var xmlHttp = null;
-        xmlHttp = new XMLHttpRequest();
-        xmlHttp.open("GET", theUrl, false);
-        xmlHttp.send(null);
-        return xmlHttp.responseText;
-    }
-
-    // utility function for loading json data from server
-    function httpGetData(theUrl) {
-        var responseText = httpGet(theUrl);
-        return JSON.parse(responseText);
-    }
-
-
+function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, config, createWallBox){
     var loadLevel = function(game){
-
-        window.wall = wall;
 
         var bonusMalus = new BonusMalus(game);
 
@@ -42,14 +25,13 @@ function(eventBus, simpleElement, wall, BonusMalus, getGradientList, config){
             bonus.collisionCallback.hero = collisionCallback;
         });
 
+
         var gradient = getGradientList(game.canvas.context);
-
         var box = config.level;
-        for (var i = 1; i <= 3; i++) {
-            var level = httpGetData("scripts/game_types/frogAdventure/level/level"+i+".json");
 
-            console.log(box.startX);
-                
+        for (var i = 1; i <= load.nbLevel; i++) {
+            var randomLevel = (Math.random() * 4)|0 + 1;
+            var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+randomLevel+".json");
 
             if (i === 1){
                 game.hero.x = box.startX - game.hero.width;
@@ -59,47 +41,10 @@ function(eventBus, simpleElement, wall, BonusMalus, getGradientList, config){
                 box.startY -= level.startY - memoryEndY;
             }
 
-            //Creer le mur du bas
-            wall.create(box.startX,
-                        box.startY + level.height,
-                        level.width,
-                        box.containerWallSize, 
-                        "black");
+       
+            createWallBox(box, level, wall);
 
-            //Creer le mur de gauche haut
-            wall.create(box.startX - box.containerWallSize,
-                        box.startY - box.containerWallSize,
-                        box.containerWallSize, 
-                        level.startY - (box.doorHeight/2) + box.containerWallSize,
-                        "black");
 
-            //Cree le mur de gauche bas
-            wall.create(box.startX - box.containerWallSize,
-                        box.startY + (box.doorHeight/2) + level.startY,
-                        box.containerWallSize, 
-                        level.height - (level.startY + (box.doorHeight/2)) + box.containerWallSize,
-                        "black");
-
-            //Creer le mur de gauche haut
-            wall.create(box.startX + level.width,
-                        box.startY - box.containerWallSize,
-                        box.containerWallSize, 
-                        level.endY - (box.doorHeight/2) + box.containerWallSize,
-                        "black");
-
-            //Cree le mur de droite bas
-            wall.create(box.startX + level.width,
-                        box.startY + (box.doorHeight/2) + level.endY,
-                        box.containerWallSize, 
-                        level.height - (level.endY + (box.doorHeight/2)) + box.containerWallSize,
-                        "black");
-
-            //Cree le mur du haut
-            wall.create(box.startX,
-                        box.startY - box.containerWallSize,
-                        level.width, 
-                        box.containerWallSize,
-                        "black");
 
             for (var j = level.wall.length - 1; j >= 0; j--) {
                 var currentWall = level.wall[j];
@@ -109,7 +54,6 @@ function(eventBus, simpleElement, wall, BonusMalus, getGradientList, config){
                             currentWall.height, 
                             gradient[currentWall.color]);
             };
-
             for (var j = level.bonusGroup.length - 1; j >= 0; j--) {
                 var currentGroup = level.bonusGroup[j];
                 bonusMalus.createGroup(  currentGroup.bonus,

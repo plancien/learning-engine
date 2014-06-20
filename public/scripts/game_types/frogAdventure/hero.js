@@ -1,5 +1,11 @@
-define(['event_bus', 'modules/squareHero', 'game_types/frogAdventure/config', 'modules/key_listener', 'game_types/frogAdventure/initHeroInput'], 
-function(eventBus, heroEngine, config, keyListener, initHeroInput){
+define(['event_bus',
+         'modules/squareHero',
+         'game_types/frogAdventure/config',
+         'modules/key_listener',
+         'game_types/frogAdventure/initHeroInput',
+         'game_types/frogAdventure/soundList'
+ ],
+ function(eventBus, heroEngine, config, keyListener, initHeroInput, soundList){
     var Hero = function(game){
         game.hero = config.hero;
         game.cameraRender.putSpriteOn(game.hero, "hero", "idleRight");
@@ -29,8 +35,11 @@ function(eventBus, heroEngine, config, keyListener, initHeroInput){
                 }
                 else{
                     game.hero.y += vecY - 1;
-                    game.hero.wallGrip = wall;
-                    game.hero.noGravity = true;
+                    if (!game.hero.wallGrip){
+                        game.hero.wallGrip = wall;
+                        game.hero.noGravity = true;
+                        soundList.ceilingGrip.play();
+                    }
                 }
                 game.hero.speedY = 0;
             }
@@ -61,10 +70,13 @@ function(eventBus, heroEngine, config, keyListener, initHeroInput){
             if (this.speedX == 0){
                 this.currentFrameWaiting++;     //Quand il est a l'arret on attend pour lui faire jouer uen petite animation
                 var first = (this.currentFrameWaiting >= this.frameForWaitingAnimation) ? "waiting" : "idle";
+                soundList.step.mute();
             }
             else {
                 this.currentFrameWaiting = 0;
                 var first = "run";
+                if (this.speedY == 0)
+                    soundList.step.unmute();
             }
             var third = (this.speedY < 0 || this.wallGrip) ? "Reverse" : "";
 
@@ -73,7 +85,6 @@ function(eventBus, heroEngine, config, keyListener, initHeroInput){
             if (this.currentAnim != animationName)
                 this.changeAnimation(animationName);
         }
-
 
         game.gravityEngine.addElement(game.hero);
         game.cameraRender.add(game.hero);

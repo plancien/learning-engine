@@ -1,4 +1,5 @@
-define(['event_bus', 'game_types/frogAdventure/config'], function(eventBus, config){
+define(['event_bus', 'game_types/frogAdventure/config', 'game_types/frogAdventure/soundList'
+], function(eventBus, config, soundList){
 	var init = function(game){
 	    eventBus.on("keys still pressed " + config.heroInput.right, function(){
 	        game.hero.speedX += game.hero.acceleration;
@@ -12,6 +13,11 @@ define(['event_bus', 'game_types/frogAdventure/config'], function(eventBus, conf
 
 	    eventBus.on("keys still pressed " + config.heroInput.up, function(){
 	        if (game.hero.canJump && game.hero.currentJumpFrame > 0){
+
+	        	if (game.hero.currentJumpFrame === config.hero.nbFrameJump){
+	        		soundList.jump.play();
+	        	}
+
 	            game.hero.currentJumpFrame--;
 	            game.hero.speedY -= game.hero.pxJump;
 	            game.hero.y -= 0.1;

@@ -7,8 +7,9 @@ define(['event_bus',
         'game_types/frogAdventure/loadLevel',
         'game_types/frogAdventure/hero',
         'game_types/frogAdventure/config',
+        'game_types/frogAdventure/soundList',
         ],
-function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, loadLevel, initHero, config){
+function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, loadLevel, initHero, config, soundList){
     var init = function(game){
 
         game.frame = 0;
@@ -34,6 +35,9 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
 
         initHero(game);
         loadLevel(game);
+
+        soundList.music.play();
+        soundList.step.play();
 }
 
     return init;

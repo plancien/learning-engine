@@ -1,9 +1,11 @@
-define(['event_bus', 'game_types/frogAdventure/config'], 
-function(eventBus, config){
+define(['event_bus', 'game_types/frogAdventure/config', 'game_types/frogAdventure/soundList'
+], 
+function(eventBus, config, soundList){
 
 	var BonusManageur = function(game){
 		this.bonusImageName = [];
 		this.malusImageName = [];
+
 		for (var i = game.params.bonus.length - 1; i >= 0; i--) { //On ajoute les images bonus et malus dans le moteur de rendue
 			var imageName = "bonus"+i;
 			var imageUrl = game.params.bonus[i];
@@ -62,9 +64,11 @@ function(eventBus, config){
 	BonusManageur.prototype.jump = function(target){
 		target.speedY = -35; 
 		target.y -= 5;
+		soundList.bonus.play();
 	}
 	BonusManageur.prototype.reject = function(target){
 		target.speedX = -10;
+		soundList.malus.play();
 	}
 
 

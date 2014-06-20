@@ -8,12 +8,16 @@ define([], function(){
 		startX : 1000,
 		startY : 1000,
 		doorHeight : 120,
-		containerWallSize : 300
+		containerWallSize : 300,
 	}
 
 	gravity = {	
 		acceleration : 1,
 		maxSpeed : 30
+	};
+
+	load = {
+		nbLevel : 10
 	};
 
 	hero = {
