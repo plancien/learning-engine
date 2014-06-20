@@ -1,20 +1,69 @@
 {
    "wall" : [
+		{ "x" : 150, "y" : 600,	"width" : 800, "height" : 50, "color" : "invertBoxColor"},
+		{ "x" : 0, "y" : 750,	"width" : 100, "height" : 50, "color" : "invertBoxColor"},
+		{ "x" : 1000, "y" : 750,	"width" : 100, "height" : 50, "color" : "invertBoxColor"},
+
+		{ "x" : 150, "y" : 2000,	"width" : 800, "height" : 50, "color" : "invertBoxColor"},
+		{ "x" : 0, "y" : 2150,	"width" : 100, "height" : 50, "color" : "invertBoxColor"},
+		{ "x" : 1000, "y" : 2150,	"width" : 100, "height" : 50, "color" : "invertBoxColor"}
+
     ],
 
     "bonusGroup" : [
     	{ 
-    		"bonus" : 1, "malus" : 1, "bonusCallback" : "jump", "malusCallback" : "reject", 
+    		"bonus" : 2, "malus" : 3, "bonusCallback" : "bigJump", "malusCallback" : "bottomEject", 
     		"position" :
 				[ 	
-					{"x" : 50, "y" : 450}, 
-					{"x" : 90, "y" : 450} 
+					{"x" : 100, "y" : 2700}, 
+					{"x" : 300, "y" : 2700}, 
+					{"x" : 500, "y" : 2700},
+					{"x" : 700, "y" : 2700}, 
+					{"x" : 900, "y" : 2700} 
+				]
+		},
+    	{ 
+    		"bonus" : 2, "malus" : 3, "bonusCallback" : "bigJump", "malusCallback" : "bottomEject", 
+    		"position" :
+				[ 	
+					{"x" : 100, "y" : 1700}, 
+					{"x" : 300, "y" : 1700}, 
+					{"x" : 500, "y" : 1700},
+					{"x" : 700, "y" : 1700}, 
+					{"x" : 900, "y" : 1700} 
+				]
+		},
+		{
+    		"bonus" : 1, "malus" : 4, "bonusCallback" : "bigJump", "malusCallback" : "bottomEject", 
+    		"position" :
+				[ 	
+					{"x" : 600, "y" : 500}, 
+					{"x" : 700, "y" : 500}, 
+					{"x" : 300, "y" : 500},
+					{"x" : 400, "y" : 500},
+					{"x" : 500, "y" : 500}
+				]
+		},
+		{
+    		"bonus" : 2, "malus" : 3, "bonusCallback" : "bigJump", "malusCallback" : "bottomEject", 
+    		"position" :
+				[ 	
+					{"x" : 200, "y" : 1200}, 
+					{"x" : 400, "y" : 1200}, 
+					{"x" : 600, "y" : 1200},
+					{"x" : 800, "y" : 1200},
+					{"x" : 1000, "y" : 1200}
 				]
 		}
 	],
 
-	"width" : 1000,
-	"height" : 1000,
-	"endY" : 900,
-	"startY" : 120
+	"fly" : {
+		"x" : 0,
+		"y" : 0
+	},
+
+	"width" : 1100,
+	"height" : 3000,
+	"endY" : 60,
+	"startY" : 2940
 }

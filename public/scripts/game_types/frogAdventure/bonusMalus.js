@@ -66,6 +66,11 @@ function(eventBus, config, soundList, shuffle){
 		target.y -= 5;
 		soundList.bonus.play();
 	}
+	BonusManageur.prototype.bigJump = function(target){
+		target.speedY = -40; 
+		target.y -= 5;
+		soundList.bonus.play();
+	}
 	BonusManageur.prototype.littleJump = function(target){
 		target.speedY = -30; 
 		target.y -= 5;

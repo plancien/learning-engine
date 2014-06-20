@@ -10,8 +10,8 @@ define([], function(){
 	};
 
 	level = {
-		startX : 1000,
-		startY : 1000,
+		startX : 10000,
+		startY : 10000,
 		doorHeight : 120,
 		containerWallSize : 300,
 	}
@@ -22,7 +22,7 @@ define([], function(){
 	};
 
 	load = {
-		nbLevel : 2
+		nbLevel : 3
 	};
 
 	hero = {
@@ -63,10 +63,10 @@ define([], function(){
         jumpRight : 		{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 256,	 "scaleX" : -1,	 "scaleY" : 1},	
         jumpLeftReverse : 	{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 256,	 "scaleX" : 1,	 "scaleY" : -1},	
         jumpRightReverse : 	{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 256,	 "rotation" : Math.PI},	
-        waitingLeft : 		{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 3,	 "offsetY" : 0,	 "offsetX" : 288,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}},	
-        waitingRight : 		{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 3,	 "offsetY" : 0,	 "offsetX" : 288,	 "scaleX" : -1,	 "scaleY" : 1,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}},	
-        waitingLeftReverse :{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 3,	 "offsetY" : 0,	 "offsetX" : 288,	 "scaleX" : 1,	 "scaleY" : -1,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}},	
-        waitingRightReverse:{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 3,	 "offsetY" : 0,	 "offsetX" : 288,	 "rotation" : Math.PI,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}}
+        waitingLeft : 		{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 10,	 "offsetY" : 0,	 "offsetX" : 288,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}},	
+        waitingRight : 		{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 10,	 "offsetY" : 0,	 "offsetX" : 288,	 "scaleX" : -1,	 "scaleY" : 1,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}},	
+        waitingLeftReverse :{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 10,	 "offsetY" : 0,	 "offsetX" : 288,	 "scaleX" : 1,	 "scaleY" : -1,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}},	
+        waitingRightReverse:{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 10,	 "offsetY" : 0,	 "offsetX" : 288,	 "rotation" : Math.PI,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}}
     };
 
 

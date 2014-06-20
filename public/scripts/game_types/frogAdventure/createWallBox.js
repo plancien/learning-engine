@@ -29,14 +29,6 @@ function(){
 	                level.width, 
 	                box.containerWallSize,
 	                "boxColor");
-	};
-	createWallBox.init = function(box, level, wall){
-	    //Creer le mur de gauche haut
-	    wall.create(box.startX - box.containerWallSize,
-	                box.startY - box.containerWallSize,
-	                box.containerWallSize, 
-	                level.startY - (box.doorHeight/2) + box.containerWallSize,
-	                "boxColor");
 
 	    //Cree le mur de gauche bas
 	    wall.create(box.startX - box.containerWallSize,
@@ -44,13 +36,22 @@ function(){
 	                box.containerWallSize, 
 	                level.height - (level.startY + (box.doorHeight/2)) + box.containerWallSize,
 	                "boxColor");
+	    
+	    //Creer le mur de gauche haut
+	    wall.create(box.startX - box.containerWallSize,
+	                box.startY - box.containerWallSize,
+	                box.containerWallSize, 
+	                level.startY - (box.doorHeight/2) + box.containerWallSize,
+	                "boxColor");
+
+	};
+	createWallBox.init = function(box, level, wall){
 	    //Creer le mur bloqueur de depart
 	    wall.create(box.startX - box.containerWallSize,
 	                box.startY + level.startY - (box.doorHeight/2),
 	                box.containerWallSize/4, 
 	                box.doorHeight,
 	                "boxColor");
-
 	}
 	return createWallBox;
 });    	

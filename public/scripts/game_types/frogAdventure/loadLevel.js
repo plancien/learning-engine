@@ -7,9 +7,10 @@ define([ 'event_bus',
          'game_types/frogAdventure/config',
          'game_types/frogAdventure/createWallBox',
          'game_types/frogAdventure/flyManageur',
-         'game_types/frogAdventure/ending'
+         'game_types/frogAdventure/ending',
+          'game_types/frogAdventure/shuffle'
 ], 
-function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, config, createWallBox, flyManageur, ending){
+function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, config, createWallBox, flyManageur, ending, shuffle){
     var loadLevel = function(game){
         var gradient = getGradientList(game.canvas.context);
         var bonusMalus = new BonusMalus(game);
@@ -31,12 +32,18 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
             bonus.collisionCallback.hero = collisionCallback;
         });
 
+
+        var randomLevel = [];
         for (var i = 1; i <= load.nbLevel; i++) {
-            var randomLevel = (Math.random() * 4)|0 + 1;
-            var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+1+".json");
+            randomLevel.push(i);
+        };
+        shuffle(randomLevel);
+            
+        for (var i = 0; i < load.nbLevel; i++) {
+            var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+randomLevel[i]+".json");
 
 
-            if (i === 1){
+            if (i === 0){
                 game.hero.x = box.startX - box.containerWallSize + box.containerWallSize/4;
                 game.hero.y = box.startY + level.startY - (box.doorHeight/2);
                 createWallBox.init(box, level, wall);
@@ -71,11 +78,11 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
 
             flyManageur.create(level.fly.x + box.startX, level.fly.y + box.startY);
 
-            box.startX += level.width + box.containerWallSize -1; //Le -1 permet d'assurer graphiquement la jointure
+            box.startX += level.width + (box.containerWallSize)*2 -1; //Le -1 permet d'assurer graphiquement la jointure
             var memoryEndY = level.endY;
         };
 
-        ending.init(box.startX, (box.startY + level.endY) - box.doorHeight/2);
+        ending.init(box.startX - box.containerWallSize, (box.startY + level.endY) - box.doorHeight/2);
     }
 
 

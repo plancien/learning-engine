@@ -12,6 +12,8 @@ define(['event_bus',
         game.hero.changeAnimation("idleRight");
         game.collisionEngine.addElement(game.hero, "hero");
 
+        game.hero.frameForWaitingAnimation = 180;
+
         game.hero.collisionCallback.wall = function(wall){
             var leftIn = game.hero.x + game.hero.width - wall.x;    //on calcule de combien l'element se trouve a l'intertieur pour chaque cote
             var rightIn = wall.x + wall.width - game.hero.x;
