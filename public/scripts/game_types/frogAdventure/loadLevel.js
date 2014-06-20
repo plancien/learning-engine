@@ -33,9 +33,11 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
             var randomLevel = (Math.random() * 4)|0 + 1;
             var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+1+".json");
 
+
             if (i === 1){
-                game.hero.x = box.startX - game.hero.width;
+                game.hero.x = box.startX - box.containerWallSize + box.containerWallSize/4;
                 game.hero.y = box.startY + level.startY - (box.doorHeight/2);
+                createWallBox.init(box, level, wall);
             }
             else{
                 box.startY -= level.startY - memoryEndY;
@@ -65,7 +67,7 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
                                          box.startY)
             };
 
-            box.startX += level.width + box.containerWallSize*2;
+            box.startX += level.width + box.containerWallSize -1; //Le -1 permet d'assurer graphiquement la jointure
             var memoryEndY = level.endY;
         };
     }
