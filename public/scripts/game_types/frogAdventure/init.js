@@ -32,8 +32,8 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
         game.collisionEngine.addGroup("bonus", ["hero"], false, false);
         game.collisionEngine.addGroup("hero", ["wall"], false, false);
 
-        loadLevel(game);
         initHero(game);
+        loadLevel(game);
 }
 
     return init;

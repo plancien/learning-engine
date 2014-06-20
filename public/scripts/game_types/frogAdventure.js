@@ -13,7 +13,7 @@ function(eventBus, init) {
             game.gravityEngine.calcul();
             game.collisionEngine.calcul();
             game.cameraRender.render();
-            game.cameraRender.showQuadTree();
+            // game.cameraRender.showQuadTree();
             eventBus.emit("new frame");     //Permet d'appeler les inputs
             game.hero.run();
         };

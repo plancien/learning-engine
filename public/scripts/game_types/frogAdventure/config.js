@@ -1,54 +1,72 @@
 define([], function(){
-	var config = {};
 
-	config.bonus = {}
-	config.bonus.size = 50;
+	bonus = {
+		size : 50
+	};
 
-	config.gravity = {};
-	config.gravity.acceleration = 1;
-	config.gravity.maxSpeed = 30;
+	level = {
+		startX : 1000,
+		startY : 1000,
+		doorHeight : 120,
+		containerWallSize : 300
+	}
 
-	config.hero = {};
-	config.hero.x = 1200;
-	config.hero.y = 1100;
-	config.hero.speedX = 0;
-	config.hero.speedY = 0;
-	config.hero.friction = 0.9;
-	config.hero.acceleration = 2.4;
-	config.hero.color = "rgba(0,200,255,1)";
-	config.hero.width = 39;
-	config.hero.height = 41;
-	config.hero.canJump = false;
-	config.hero.nbFrameJump = 10;
-	config.hero.currentJumpFrame = 10;
-	config.hero.pxJump = 3;
-	config.hero.currentFrameWaiting = 0;
-	config.hero.sens = "Right"
+	gravity = {	
+		acceleration : 1,
+		maxSpeed : 30
+	};
 
-	config.heroInput = {};
-	config.heroInput.left = "left";
-	config.heroInput.right = "right";
-	config.heroInput.up = "up";
-	config.heroInput.down = "down";
+	hero = {
+		x : 1200,
+		y : 200,
+		speedX : 0,
+		speedY : 0,
+		friction : 0.9,
+		acceleration : 2.4,
+		color : "rgba(0,200,255,1)",
+		width : 39,
+		height : 41,
+		canJump : false,
+		nbFrameJump : 10,
+		currentJumpFrame : 10,
+		pxJump : 3,
+		currentFrameWaiting : 0,
+		sens : "Right"
+	};
 
-    config.heroSprite = {};
-    config.heroSprite.idleLeft = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 288};
-    config.heroSprite.idleRight = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 288, "scaleX" : -1, "scaleY" : 1};
-    config.heroSprite.idleLeftReverse = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 288, "scaleX" : 1, "scaleY" : -1};
-    config.heroSprite.idleRightReverse = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 288, "rotation" : Math.PI};
-    config.heroSprite.runLeft = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0};
-    config.heroSprite.runRight = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "scaleX" : -1, "scaleY" : 1};
-    config.heroSprite.runLeftReverse = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "scaleX" : 1, "scaleY" : -1};
-    config.heroSprite.runRightReverse = {"width" : 32, "height" :32, "nbAnim" : 8, "loop" : -1, "fps" : 5, "offsetY" : 0, "rotation" : Math.PI};
-    config.heroSprite.jumpLeft = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 256};
-    config.heroSprite.jumpRight = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 256, "scaleX" : -1, "scaleY" : 1};
-    config.heroSprite.jumpLeftReverse = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 256, "scaleX" : 1, "scaleY" : -1};
-    config.heroSprite.jumpRightReverse = {"width" : 32, "height" :32, "nbAnim" : 1, "loop" : -1, "fps" : 5, "offsetY" : 0, "offsetX" : 256, "rotation" : Math.PI};
-    config.heroSprite.waitingLeft = {"width" : 32, "height" :32, "nbAnim" : 5, "loop" : 1, "fps" : 3, "offsetY" : 0, "offsetX" : 288, "loopCallback" : function (target){target.currentFrameWaiting = 0}};
-    config.heroSprite.waitingRight = {"width" : 32, "height" :32, "nbAnim" : 5, "loop" : 1, "fps" : 3, "offsetY" : 0, "offsetX" : 288, "scaleX" : -1, "scaleY" : 1, "loopCallback" : function (target){target.currentFrameWaiting = 0}};
-    config.heroSprite.waitingLeftReverse = {"width" : 32, "height" :32, "nbAnim" : 5, "loop" : 1, "fps" : 3, "offsetY" : 0, "offsetX" : 288, "scaleX" : 1, "scaleY" : -1, "loopCallback" : function (target){target.currentFrameWaiting = 0}};
-    config.heroSprite.waitingRightReverse = {"width" : 32, "height" :32, "nbAnim" : 5, "loop" : 1, "fps" : 3, "offsetY" : 0, "offsetX" : 288, "rotation" : Math.PI, "loopCallback" : function (target){target.currentFrameWaiting = 0}};
+	heroInput = {
+		left : "left",
+		right : "right",
+		up : "up",
+		down : "down"
+	};
+
+    heroSprite = {	
+    	idleLeft : 			{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 288},	
+        idleRight : 		{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 288,	 "scaleX" : -1,	 "scaleY" : 1},	
+        idleLeftReverse : 	{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 288,	 "scaleX" : 1,	 "scaleY" : -1},	
+        idleRightReverse : 	{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 288,	 "rotation" : Math.PI},	
+        runLeft : 			{"width" : 32,	 "height" :32,	 "nbAnim" : 8,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0},	
+        runRight : 			{"width" : 32,	 "height" :32,	 "nbAnim" : 8,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "scaleX" : -1,	 "scaleY" : 1},	
+        runLeftReverse : 	{"width" : 32,	 "height" :32,	 "nbAnim" : 8,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "scaleX" : 1,	 "scaleY" : -1},	
+        runRightReverse : 	{"width" : 32,	 "height" :32,	 "nbAnim" : 8,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "rotation" : Math.PI},	
+        jumpLeft : 			{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 256},	
+        jumpRight : 		{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 256,	 "scaleX" : -1,	 "scaleY" : 1},	
+        jumpLeftReverse : 	{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 256,	 "scaleX" : 1,	 "scaleY" : -1},	
+        jumpRightReverse : 	{"width" : 32,	 "height" :32,	 "nbAnim" : 1,	 "loop" : -1,	 "fps" : 5,	 "offsetY" : 0,	 "offsetX" : 256,	 "rotation" : Math.PI},	
+        waitingLeft : 		{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 3,	 "offsetY" : 0,	 "offsetX" : 288,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}},	
+        waitingRight : 		{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 3,	 "offsetY" : 0,	 "offsetX" : 288,	 "scaleX" : -1,	 "scaleY" : 1,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}},	
+        waitingLeftReverse :{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 3,	 "offsetY" : 0,	 "offsetX" : 288,	 "scaleX" : 1,	 "scaleY" : -1,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}},	
+        waitingRightReverse:{"width" : 32,	 "height" :32,	 "nbAnim" : 5,	 "loop" : 1,	 "fps" : 3,	 "offsetY" : 0,	 "offsetX" : 288,	 "rotation" : Math.PI,	 "loopCallback" : function (target){target.currentFrameWaiting = 0}}
+    };
 
 
-	return config;
+	return {	
+		"bonus" 	: bonus,
+		"gravity" 	: gravity,
+		"hero" 		: hero,
+		"heroInput" : heroInput,
+		"heroSprite": heroSprite,
+		"level" 	: level
+	}
 });    	

@@ -1,0 +1,20 @@
+{
+   "wall" : [
+    ],
+
+    "bonusGroup" : [
+    	{ 
+    		"bonus" : 1, "malus" : 1, "bonusCallback" : "jump", "malusCallback" : "reject", 
+    		"position" :
+				[ 	
+					{"x" : 50, "y" : 450}, 
+					{"x" : 90, "y" : 450} 
+				]
+		}
+	],
+
+	"width" : 1000,
+	"height" : 1000,
+	"endY" : 900,
+	"startY" : 120
+}

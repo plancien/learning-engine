@@ -1,0 +1,22 @@
+{
+   "wall" : [
+		{ "x" : 0, "y" : 0,	"width" : 200, "height" : 100, "color" : "invertRainbow"},
+		{ "x" : 100, "y" : 120,	"width" : 300, "height" : 50, "color" : "invertRainbow"}
+    ],
+
+    "bonusGroup" : [
+    	{ 
+    		"bonus" : 1, "malus" : 1, "bonusCallback" : "jump", "malusCallback" : "reject", 
+    		"position" :
+				[ 	
+					{"x" : 50, "y" : 450}, 
+					{"x" : 90, "y" : 450} 
+				]
+		}
+	],
+
+	"width" : 500,
+	"height" : 500,
+	"endY" : 300,
+	"startY" : 200
+}
