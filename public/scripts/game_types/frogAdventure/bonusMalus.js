@@ -66,8 +66,17 @@ function(eventBus, config, soundList){
 		target.y -= 5;
 		soundList.bonus.play();
 	}
+	BonusManageur.prototype.littleJump = function(target){
+		target.speedY = -30; 
+		target.y -= 5;
+		soundList.bonus.play();
+	}
 	BonusManageur.prototype.reject = function(target){
 		target.speedX = -10;
+		soundList.malus.play();
+	}
+	BonusManageur.prototype.strongReject = function(target){
+		target.speedX = -30;
 		soundList.malus.play();
 	}
 

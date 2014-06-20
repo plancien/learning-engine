@@ -31,7 +31,7 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
 
         for (var i = 1; i <= load.nbLevel; i++) {
             var randomLevel = (Math.random() * 4)|0 + 1;
-            var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+randomLevel+".json");
+            var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+1+".json");
 
             if (i === 1){
                 game.hero.x = box.startX - game.hero.width;
