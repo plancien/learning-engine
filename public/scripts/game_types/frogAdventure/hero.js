@@ -63,6 +63,7 @@ define(['event_bus',
                 else{
                     this.wallGrip = false;
                     this.noGravity = false;
+                    this.speedY -= 1; //Permet les transition sur deux plafond colle
                 }
             }
 

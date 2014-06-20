@@ -81,6 +81,11 @@ define(['event_bus'], function(eventBus) {
                 else{
                     this.canvas.context.fillStyle = tabQueu[i].color || this.noColorElement;
                     this.canvas.context.fillRect(tabQueu[i].x-this.x, tabQueu[i].y-this.y, tabQueu[i].width, tabQueu[i].height);    
+                    if (tabQueu[i].strokeColor){
+                        this.canvas.context.strokeStyle = tabQueu[i].strokeColor;
+                        this.canvas.context.lineWidth = tabQueu[i].lineWidth || 5;
+                        this.canvas.context.strokeRect(tabQueu[i].x-this.x, tabQueu[i].y-this.y, tabQueu[i].width, tabQueu[i].height);    
+                    }
                 }
             }
             // var imageData = this.buffer.context.getImageData(0,0,this.buffer.width, this.buffer.height);

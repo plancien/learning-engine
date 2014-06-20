@@ -5,14 +5,20 @@ define([ 'event_bus',
          'game_types/frogAdventure/bonusMalus',
          'game_types/frogAdventure/gradientList',
          'game_types/frogAdventure/config',
-         'game_types/frogAdventure/createWallBox'
+         'game_types/frogAdventure/createWallBox',
+         'game_types/frogAdventure/flyManageur',
+         'game_types/frogAdventure/ending'
 ], 
-function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, config, createWallBox){
+function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, config, createWallBox, flyManageur, ending){
     var loadLevel = function(game){
-
+        var gradient = getGradientList(game.canvas.context);
         var bonusMalus = new BonusMalus(game);
+        var box = config.level;
 
         eventBus.on("wall create", function(wall){
+            wall.color = gradient[wall.color] || wall.color; 
+            wall.strokeColor = wall.strokeColor || gradient.rainbow;
+            wall.lineWidth = wall.lineWidth || 4;
             game.cameraRender.add(wall);
             game.collisionEngine.addElement(wall, "wall");
         });
@@ -25,17 +31,15 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
             bonus.collisionCallback.hero = collisionCallback;
         });
 
-
-        var gradient = getGradientList(game.canvas.context);
-        var box = config.level;
-
         for (var i = 1; i <= load.nbLevel; i++) {
             var randomLevel = (Math.random() * 4)|0 + 1;
-            var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+randomLevel+".json");
+            var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+1+".json");
+
 
             if (i === 1){
-                game.hero.x = box.startX - game.hero.width;
+                game.hero.x = box.startX - box.containerWallSize + box.containerWallSize/4;
                 game.hero.y = box.startY + level.startY - (box.doorHeight/2);
+                createWallBox.init(box, level, wall);
             }
             else{
                 box.startY -= level.startY - memoryEndY;
@@ -52,7 +56,7 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
                             currentWall.y + box.startY, 
                             currentWall.width, 
                             currentWall.height, 
-                            gradient[currentWall.color]);
+                            currentWall.color);
             };
             for (var j = level.bonusGroup.length - 1; j >= 0; j--) {
                 var currentGroup = level.bonusGroup[j];
@@ -65,9 +69,13 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
                                          box.startY)
             };
 
-            box.startX += level.width + box.containerWallSize*2;
+            flyManageur.create(level.fly.x + box.startX, level.fly.y + box.startY);
+
+            box.startX += level.width + box.containerWallSize -1; //Le -1 permet d'assurer graphiquement la jointure
             var memoryEndY = level.endY;
         };
+
+        ending.init(box.startX, (box.startY + level.endY) - box.doorHeight/2);
     }
 
 
