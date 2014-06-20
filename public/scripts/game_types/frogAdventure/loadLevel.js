@@ -6,9 +6,10 @@ define([ 'event_bus',
          'game_types/frogAdventure/gradientList',
          'game_types/frogAdventure/config',
          'game_types/frogAdventure/createWallBox',
-         'game_types/frogAdventure/flyManageur'
+         'game_types/frogAdventure/flyManageur',
+         'game_types/frogAdventure/ending'
 ], 
-function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, config, createWallBox, flyManageur){
+function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, config, createWallBox, flyManageur, ending){
     var loadLevel = function(game){
         var gradient = getGradientList(game.canvas.context);
         var bonusMalus = new BonusMalus(game);
@@ -73,6 +74,8 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
             box.startX += level.width + box.containerWallSize -1; //Le -1 permet d'assurer graphiquement la jointure
             var memoryEndY = level.endY;
         };
+
+        ending.init(box.startX, (box.startY + level.endY) - box.doorHeight/2);
     }
 
 

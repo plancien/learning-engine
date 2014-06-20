@@ -13,6 +13,7 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
     var init = function(game){
 
         game.frame = 0;
+        game.finish = false,
 
         game.gravityEngine = gravityEngine;
         game.gravityEngine.acceleration = config.gravity.acceleration;
@@ -28,18 +29,24 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
         game.cameraRender.init(game.canvas, true);
         game.cameraRender.addSprite("hero", "./images/sprites/green_guy_sprites.png", config.heroSprite);
         game.cameraRender.addImage("fly", "./images/sprites/fly.png");
+        game.cameraRender.addImage("ending", "./images/sprites/frogAdventureEnding.gif");
 
         game.collisionEngine = collisionEngine;
         game.collisionEngine.addGroup("wall", false, false, false);
         game.collisionEngine.addGroup("bonus", ["hero"], false, false);
         game.collisionEngine.addGroup("hero", ["wall"], false, false);
         game.collisionEngine.addGroup("fly", ["hero"], false, false);
+        game.collisionEngine.addGroup("ending", ["hero"], false, false);
 
         initHero(game);
         loadLevel(game);
 
         soundList.music.play();
         soundList.step.play();
+
+        eventBus.on("ending", function(){
+            game.finish = true;            
+        })
 }
 
     return init;

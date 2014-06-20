@@ -4,6 +4,11 @@ define([], function(){
 		size : 50
 	};
 
+	hud = {
+		imageSize : 40,
+		animateFlySpeed : 20
+	};
+
 	level = {
 		startX : 1000,
 		startY : 1000,
@@ -17,7 +22,7 @@ define([], function(){
 	};
 
 	load = {
-		nbLevel : 10
+		nbLevel : 2
 	};
 
 	hero = {
@@ -71,6 +76,7 @@ define([], function(){
 		"hero" 		: hero,
 		"heroInput" : heroInput,
 		"heroSprite": heroSprite,
-		"level" 	: level
+		"level" 	: level,
+		"hud"		: hud
 	}
 });    	

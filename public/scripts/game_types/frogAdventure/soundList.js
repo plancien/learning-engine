@@ -24,7 +24,12 @@ define(['ext_libs/howler.min'], function(howler){
         music : new Howl({
             urls: ['sounds/frogAdventure/POL-toy-ships-short.wav'],
             loop : true
+        }),
+
+        pickupFly : new Howl({
+            urls: ['sounds/frogAdventure/pickupFly.wav']
         })
+
     };
 
     return soundList;

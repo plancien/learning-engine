@@ -14,12 +14,12 @@
 				]
 		},
     	{ 
-			"bonus" : 1, "malus" : 2, "bonusCallback" : "littleJump", "malusCallback" : "strongReject", 
+			"bonus" : 1, "malus" : 2, "bonusCallback" : "littleJump", "malusCallback" : "bottomEject", 
     		"position" :
 				[ 	
-					{"x" : 600, "y" : 680}, 
-					{"x" : 500, "y" : 630},
-					{"x" : 400, "y" : 580}
+					{"x" : 600, "y" : 600}, 
+					{"x" : 500, "y" : 600},
+					{"x" : 400, "y" : 600}
 				]
 		}
 	],

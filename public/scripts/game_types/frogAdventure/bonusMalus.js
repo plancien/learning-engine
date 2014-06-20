@@ -1,6 +1,6 @@
-define(['event_bus', 'game_types/frogAdventure/config', 'game_types/frogAdventure/soundList'
+define(['event_bus', 'game_types/frogAdventure/config', 'game_types/frogAdventure/soundList', 'game_types/frogAdventure/shuffle'
 ], 
-function(eventBus, config, soundList){
+function(eventBus, config, soundList, shuffle){
 
 	var BonusManageur = function(game){
 		this.bonusImageName = [];
@@ -75,37 +75,9 @@ function(eventBus, config, soundList){
 		target.speedX = -10;
 		soundList.malus.play();
 	}
-	BonusManageur.prototype.strongReject = function(target){
-		target.speedX = -30;
+	BonusManageur.prototype.bottomEject = function(target){
+		target.speedY += 20;
 		soundList.malus.play();
-	}
-
-
-
-
-
-
-
-	function shuffle(array) {
-	  var currentIndex = array.length
-	    , temporaryValue
-	    , randomIndex
-	    ;
-
-	  // While there remain elements to shuffle...
-	  while (0 !== currentIndex) {
-
-	    // Pick a remaining element...
-	    randomIndex = Math.floor(Math.random() * currentIndex);
-	    currentIndex -= 1;
-
-	    // And swap it with the current element.
-	    temporaryValue = array[currentIndex];
-	    array[currentIndex] = array[randomIndex];
-	    array[randomIndex] = temporaryValue;
-	  }
-
-	  return array;
 	}
 
 	return BonusManageur;
