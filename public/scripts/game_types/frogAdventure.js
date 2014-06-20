@@ -1,5 +1,5 @@
-define(['event_bus', 'game_types/frogAdventure/init'], 
-function(eventBus, init) { 
+define(['event_bus', 'game_types/frogAdventure/init', 'game_types/frogAdventure/flyManageur'], 
+function(eventBus, init, flyManageur) { 
 
     return function(params){
         var game = {};
@@ -13,9 +13,9 @@ function(eventBus, init) {
             game.gravityEngine.calcul();
             game.collisionEngine.calcul();
             game.cameraRender.render();
-            // game.cameraRender.showQuadTree();
             eventBus.emit("new frame");     //Permet d'appeler les inputs
             game.hero.run();
+            flyManageur.displayHud(game.canvas.context);
         };
         run(game);
     }

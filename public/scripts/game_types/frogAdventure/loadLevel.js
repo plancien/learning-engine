@@ -5,14 +5,19 @@ define([ 'event_bus',
          'game_types/frogAdventure/bonusMalus',
          'game_types/frogAdventure/gradientList',
          'game_types/frogAdventure/config',
-         'game_types/frogAdventure/createWallBox'
+         'game_types/frogAdventure/createWallBox',
+         'game_types/frogAdventure/flyManageur'
 ], 
-function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, config, createWallBox){
+function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, config, createWallBox, flyManageur){
     var loadLevel = function(game){
-
+        var gradient = getGradientList(game.canvas.context);
         var bonusMalus = new BonusMalus(game);
+        var box = config.level;
 
         eventBus.on("wall create", function(wall){
+            wall.color = gradient[wall.color] || wall.color; 
+            wall.strokeColor = wall.strokeColor || gradient.rainbow;
+            wall.lineWidth = wall.lineWidth || 4;
             game.cameraRender.add(wall);
             game.collisionEngine.addElement(wall, "wall");
         });
@@ -24,10 +29,6 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
             game.collisionEngine.addElement(bonus, "bonus");
             bonus.collisionCallback.hero = collisionCallback;
         });
-
-
-        var gradient = getGradientList(game.canvas.context);
-        var box = config.level;
 
         for (var i = 1; i <= load.nbLevel; i++) {
             var randomLevel = (Math.random() * 4)|0 + 1;
@@ -54,7 +55,7 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
                             currentWall.y + box.startY, 
                             currentWall.width, 
                             currentWall.height, 
-                            gradient[currentWall.color]);
+                            currentWall.color);
             };
             for (var j = level.bonusGroup.length - 1; j >= 0; j--) {
                 var currentGroup = level.bonusGroup[j];
@@ -66,6 +67,8 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
                                          box.startX,
                                          box.startY)
             };
+
+            flyManageur.create(level.fly.x + box.startX, level.fly.y + box.startY);
 
             box.startX += level.width + box.containerWallSize -1; //Le -1 permet d'assurer graphiquement la jointure
             var memoryEndY = level.endY;

@@ -27,11 +27,13 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
         game.cameraRender.backgroundParralax("./images/sprites/pikachuParallax.png", 1, 0.5);
         game.cameraRender.init(game.canvas, true);
         game.cameraRender.addSprite("hero", "./images/sprites/green_guy_sprites.png", config.heroSprite);
+        game.cameraRender.addImage("fly", "./images/sprites/fly.png");
 
         game.collisionEngine = collisionEngine;
         game.collisionEngine.addGroup("wall", false, false, false);
         game.collisionEngine.addGroup("bonus", ["hero"], false, false);
         game.collisionEngine.addGroup("hero", ["wall"], false, false);
+        game.collisionEngine.addGroup("fly", ["hero"], false, false);
 
         initHero(game);
         loadLevel(game);

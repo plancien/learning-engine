@@ -135,5 +135,6 @@ define(['event_bus'], function(eventBus) {
             aRealY < bRealY + bHitbox.height)
             return true
     }
-    return new CollisionEngine();
+    var collisionEngine = new CollisionEngine();
+    return collisionEngine;
 });
