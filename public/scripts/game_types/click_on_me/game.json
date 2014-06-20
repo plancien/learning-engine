@@ -1,0 +1,6 @@
+{
+    "name": "Click on me",
+    "version": "0.8",
+    "description": "Simple game. Click on the bonus to win points, you loose points if you click on the malus.",
+    "url": "game_types/click_on_me/click_on_me"
+}

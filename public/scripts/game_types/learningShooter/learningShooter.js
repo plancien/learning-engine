@@ -250,6 +250,7 @@ define([
                     var distance = tools.vectors.getDistance(gameContainer.arrayAnswer[i], mousePos);
                     if (distance < 30 && mousePos.isClicking.left) {
                         gameContainer.arrayAnswer[i].click();
+                        return
                     }
                 }
             }

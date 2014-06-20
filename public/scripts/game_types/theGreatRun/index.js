@@ -5,7 +5,7 @@
 @endName
 
 @description
-    move with arrows, collect as many bonuses as possible, avoid maluses and go as far as you can
+    
 @endDescription
 
 */

@@ -1,188 +1,61 @@
-﻿require(['connector'], function(socket) {
+﻿require(['connector',"systeme/ui","systeme/launch"], function(socket,ui,launch) {
+
+    socket.on('images names', ui.createImageChooser);
+    socket.on('inject css', ui.injectCSS);
+    socket.on('inject template', ui.replaceOptionTemplate);
+    socket.on("games info", ui.createGameSelection);
+    socket.on("games info", launch.registerGames);
+    $("#gameCreation").on("submit",launch.createGame)
+
+
+        if(localStorage.length > 0){
+            $("#socialBar").css('display', 'none');
+            $("#mainMenu").fadeIn('normal');
+            $("#blocUser").html("Welcome my friend, "+localStorage.cookie+"");
+            $('</br><button id="logout" class="button">Deconnexion</button>').appendTo("#blocUser");
+            $("#logout").click(function(e) {
+                localStorage.clear();
+                $("#mainMenu").css('display', 'none');
+                $("#socialBar").fadeIn('normal');
+            });
+        }
+        else{
+            /* User name verification */
+            $("#user button").click(function(e) {
+                var myRegex = /\W/; // Match every non character
+                var userName = $("#userName").val();
+
+                if (userName.match(myRegex) === null) {
+                    localStorage.setItem("cookie",userName);
+                    localStorage.setItem("userName",userName);
+                    //localStorage.userName = userName;
+                    
+                    $(this).parent().css('display', 'none');
+                    $("#mainMenu").fadeIn('normal');
+                    $("#blocUser").html("Welcome my friend, "+userName+"");
+                    $('</br><button id="logout" class="button">Deconnexion</button>').appendTo("#blocUser");
+                    $("#logout").click(function(e) {
+                        localStorage.clear();
+                        $("#mainMenu").css('display', 'none');
+                        $("#socialBar").fadeIn('normal');
+                    });
+    
+                } else {
+                    $("#userAlert").html("Ce champ n'accepte pas de chiffre et de lettre sans espace!");
+                }
+            });
+        }
 
     $(function() {
-        socket.emit("ask gamesInfos");
-        socket.emit("ask images names");
-		
-		socket.on('send images names', function(data) {//populate selects with all images in the image folder
-
-            var $bonusImg = $("#bonusImg")
-			$bonusImg.html('');
-            var $malusImg = $("#malusImg").html('');
-			$malusImg.html('');
-            
-			var display = "";
-            var selectBonus = "";
-            var selectMalus = "";
-			var imageTypes = [".jpeg",".jpg",".png",".gif"];
-			for(var i=data.length-1; i>=0; i--){
-    			display += '<option value="' + data[i].url + '" data-img-src="' + data[i].url + '">' + data[i].name + '</option>';
-			}
-
-			$bonusImg.html(display+selectMalus);
-			$malusImg.html(display+selectBonus);
-
-            $bonusImg.imagepicker();
-            $malusImg.imagepicker();
-        });
-
-        socket.on('inject css', function(data) {
-            $("head").append("<link rel='stylesheet' type='text/css' href='" + data + "'>");
-        });
-
-        socket.on('inject template', function(data) {
-            $("#modelParams").empty();
-            $("#modelParams").append(data);
-        });
-
-        socket.on("send gamesInfos", function(infos) {
-            $("body").keydown(function(e) {
-                var code = (e.keyCode ? e.keyCode : e.which);
-                if(code == 37 || code == 38 || code == 39 || code == 40) {
-                    e.preventDefault();
-                }
-            });
-
-            var uploadFormulaire = 'Utilisez vos images:\
-                                    <form action="/upload" method="post" enctype="multipart/form-data">\
-                                        <input type="file" name="uploadedImage"/>\
-                                        <input type="submit"/>\
-                                    </form>'
-            $("#imageUploader").html(uploadFormulaire);
-            
-            for (var i = 0; i < infos.games.names.length; i++) {
-                var $game = $(document.createElement('option'));
-                $game.attr("id", infos.games.names[i]);
-                $game.html(infos.games.names[i]);
-                $game.data("description", infos.games.descriptions[i]);
-                $game.data("fileName", infos.games.fileNames[i]);
-                $("#gameList").append($game);
-            }
-
-            for (var j = 0; j < infos.models.names.length; j++) {
-                var $model = $(document.createElement('option'));
-                $model.attr("id", infos.models.names[j]);
-                $model.html(infos.models.names[j]);
-                $model.data("description", infos.models.descriptions[j]);
-                $model.data("fileName", infos.models.fileNames[j]);
-                $("#modelList").append($model);
-            }
-
-            $("#gameDescription").html(infos.games.descriptions[0]);
-            $("#modelDescription").html(infos.models.descriptions[0]);
-            socket.emit("ask template", infos.models.fileNames[0]);
-
-            $("#gameList").change(function(e) {
-                var description = $("#gameList option:selected").data("description");
-                $("#gameDescription").html(description);
-            });
-
-            $("#modelList").change(function(e) {
-                var description = $("#modelList option:selected").data("description");
-                $("#modelDescription").html(description);
-
-                socket.emit("ask template", $("#modelList option:selected").data("fileName"));
-            });
-            /* Cookie verification */
-            if(localStorage.length > 0){
-                $("#socialBar").css('display', 'none');
-                $("#mainMenu").fadeIn('normal');
-                $("#blocUser").html("Welcome my friend, "+localStorage.cookie+"");
-                $('</br><button id="logout" class="button">Deconnexion</button>').appendTo("#blocUser");
-                $("#logout").click(function(e) {
-                    localStorage.clear();
-                    $("#mainMenu").css('display', 'none');
-                    $("#socialBar").fadeIn('normal');
-                });
-            }
-            else{
-                /* User name verification */
-                $("#user button").click(function(e) {
-                    var myRegex = /\W/; // Match every non character
-                    var userName = $("#userName").val();
-
-                    if (userName.match(myRegex) === null) {
-                        localStorage.setItem("cookie",userName);
-                        localStorage.setItem("userName",userName);
-                        //localStorage.userName = userName;
-                        
-                        $(this).parent().css('display', 'none');
-                        $("#mainMenu").fadeIn('normal');
-                        $("#blocUser").html("Welcome my friend, "+userName+"");
-                        $('</br><button id="logout" class="button">Deconnexion</button>').appendTo("#blocUser");
-                        $("#logout").click(function(e) {
-                            localStorage.clear();
-                            $("#mainMenu").css('display', 'none');
-                            $("#socialBar").fadeIn('normal');
-                        });
-                        var socket = io.connect();
-                        socket.emit('nouveau_client', userName); // Create the server side tabs with users data 
-                    } else {
-                        $("#userAlert").html("Ce champ n'accepte pas de chiffre et de lettre sans espace!");
-                    }
-                });
-            }
-            $("#gameSelect button").click(function(e) {
-                $("#mainMenu").hide();
-
-                var gameSelectedName = $("#gameList option:selected").data("fileName");
-                var gameSelectedPath = "games/" + gameSelectedName;
-
-                socket.emit('ask css', gameSelectedName);
-
-
-                require(['game', gameSelectedPath], function(game) {
-                    game.init();
-                });
-            });
-
-            $(".btnThemes").click(function(e){
-                if($(this)[0].id == "rouge"){
-                    $( "header" ).css( "background-color", "#E41D1D" );
-                    $( "footer" ).css( "background-color", "#E41D1D" );
-                }
-                if($(this)[0].id == "jaune"){
-                    $( "header" ).css( "background-color", "#E9F046" );
-                    $( "footer" ).css( "background-color", "#E9F046" );
-                }
-                if($(this)[0].id == "violet"){
-                    $( "header" ).css( "background-color", "#E946F0" );
-                    $( "footer" ).css( "background-color", "#E946F0" );
-                }
-                if($(this)[0].id == "bleu"){
-                    $( "header" ).css( "background-color", "#73C8E9" );
-                    $( "footer" ).css( "background-color", "#73C8E9" );
-                }
-            });
-
-            $("#gameCreation").submit(function(e) {
+        $("body").keydown(function(e) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            if(code == 37 || code == 38 || code == 39 || code == 40) {
                 e.preventDefault();
-
-                $("#mainMenu").hide();
-
-                var modelSelectedName = $("#modelList option:selected").data("fileName");
-                var modelSelectedPath = "game_types/" + modelSelectedName;
-
-                socket.emit('ask css', modelSelectedName);
-                socket.on('inject css', function(data) {
-                    $("head").append("<link rel='stylesheet' type='text/css' href='" + data + "'>");
-                });
-
-                var question = $("#question")[0].value;
-                var params = {
-                    bonusUrl: $("#bonusImg").val()[0],
-                    malusUrl: $("#malusImg").val()[0],
-                    bonus: $("#bonusImg").val(),
-                    malus: $("#malusImg").val()
-                };
-
-                require(['game', modelSelectedPath], function(game, setGame) {
-                    setGame(params);
-                    game.init(question);
-                });
-            });
-
+            }
         });
+
+        socket.emit("want games info");
+        socket.emit("want images names");
 
     });
 

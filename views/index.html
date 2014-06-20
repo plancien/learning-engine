@@ -24,33 +24,35 @@
     <div id="mainMenu">
       <div id="blocLeft">
         <div id="blocUser"></div>
-        <div id="imageUploader"></div>
+        <div id="imageUploader">
+          <p>Utilisez vos images:</p>
+          <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="uploadedImage"/>
+            <input type="submit"/>
+          </form>
+        </div>
+        <!--
         <div id="gameSelect" class="gameOptions">
           <h1>Play an existant game !</h1>
           <select id="gameList"></select>
           <button class="button">Play !</button>
           <div id="gameDescription">Game description.</div>
         </div>
+        -->
       </div>
       <form id="gameCreation" class="gameOptions">
-        <h1>Create a custom game !</h1>Question : 
-        <input id="question"><br>Bonus image : 
+        <h1>Create a custom game !</h1>
+        Question : 
+        <input id="question"><br>
+        Bonus image : 
         <select id="bonusImg" multiple="multiple">
-          <option value="images/burns.png">Burns</option>
-          <option value="images/dalek.png">Dalek</option>
-          <option value="images/doctor.png">Doctor</option>
-          <option value="images/homer.png">Homer</option>
-          <option value="images/flag_french.png">French flag</option>
-          <option value="images/flag_romanian.png">Romanian flag</option>
-        </select><br>Malus image : 
+          
+        </select><br>
+        Malus image : 
         <select id="malusImg"  multiple="multiple">
-          <option value="images/homer.png">Homer</option>
-          <option value="images/doctor.png">Doctor</option>
-          <option value="images/burns.png">Burns</option>
-          <option value="images/dalek.png">Dalek</option>
-          <option value="images/flag_french.png">French flag</option>
-          <option value="images/flag_romanian.png">Romanian flag</option>
-        </select><br>Game Model : 
+          
+        </select><br>
+        Game Model : 
         <select id="modelList"></select>
         <div id="modelDescription">Model description.</div>
         <div id="modelParams"></div>
