@@ -191,7 +191,7 @@ define([
         }
 
         function FallingAnswer(type,x,y) {
-            this.x = x || (Math.random()*650+100);
+            this.x = x || (Math.random()*600+50);
             this.y = y || (-Math.random()*200);
             this.rotation = Math.random() * 4;
             this.radius = 40;
@@ -244,7 +244,7 @@ define([
          * Bonus/malus falling from the "sky"
          ***************************************************************************************/
 
-        function testClickOnAnswe() {
+        function testClickOnAnswer() {
             for (var i = 0; i < gameContainer.arrayAnswer.length; i++) {
                 if (gameContainer.arrayAnswer[i] != undefined) {
                     var distance = tools.vectors.getDistance(gameContainer.arrayAnswer[i], mousePos);
