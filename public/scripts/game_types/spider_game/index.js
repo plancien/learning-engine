@@ -23,7 +23,8 @@ define([
     "game_types/spider_game/player",
     "game_types/spider_game/level",
     "game_types/spider_game/config",
-    "modules/score"
+    "game_types/spider_game/soundList",
+    "modules/score",
 
 ], function(
             eventBus,
@@ -38,10 +39,11 @@ define([
             Player,
             Level,
             config,
+            soundList,
             score
     ) {
 
-
+    soundList.music.play();
     return function(params) {
         var canvas = canvasFactory.create({"width" : config.canvasWidth, "height" : config.canvasHeight});
         var bonusImgName = loadBonus(params.bonus);
@@ -64,6 +66,7 @@ define([
                 player.update(dt,config.gravity);
                 updateScrolling();
                 if (player.isOutsideOfScreen(scrolling)) {
+                    soundList.crashDown.play();
                     resetLevel();
                 }
                 draw(canvas.context,scrolling,imgs,player,level.anchors)

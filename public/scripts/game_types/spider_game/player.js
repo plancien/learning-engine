@@ -1,4 +1,4 @@
-define(["game_types/spider_game/config"], function(config){
+define(["game_types/spider_game/config", "game_types/spider_game/soundList"], function(config, soundList){
     "use strict";
     
     function Player(x,y) {
@@ -53,11 +53,13 @@ define(["game_types/spider_game/config"], function(config){
         };
         var length = Math.sqrt(dis.x*dis.x+dis.y*dis.y);
         if (length < config.maxRopeDistance+10 && anchor.good) {
+            soundList.link.play();
             this.linkTo = anchor;
             this.linkTo.ropeRadius = length * 0.4;
             return;
         } else {
             this.linkTo = null;
+            soundList.miss.play();
         }
     };
 
