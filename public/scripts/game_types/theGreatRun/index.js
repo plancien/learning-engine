@@ -22,7 +22,8 @@ define([
     'game_types/theGreatRun/bonusManageur',
     'game_types/theGreatRun/generateStrips',
     'game_types/theGreatRun/strips',
-    'game_types/theGreatRun/player'
+    'game_types/theGreatRun/player',
+    'modules/muteHowler'
 ], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, bonusManageur, generateStrips, Strip, Player) {
     return function(globalParams) {
         var die = new Howl({

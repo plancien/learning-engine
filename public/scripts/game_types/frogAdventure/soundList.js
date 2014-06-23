@@ -1,4 +1,4 @@
-define(['ext_libs/howler.min'], function(howler){
+define(['ext_libs/howler.min', "modules/muteHowler"], function(howler, mute){
 
     var soundList = {
         malus : new Howl({
