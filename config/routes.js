@@ -10,6 +10,13 @@ module.exports = function(app) {
     app.get('/', function(req, res) {
         res.render('index.html');
     });
+    app.get('/inscription', function(req, res) {
+        res.render('inscription.html');
+    });
+    app.get('/acceptInscription', function(req, res) {
+        res.render('acceptInscription.js');
+    });
+
 
     app.post("/upload",function(req,res) {
         var fs = require('fs');
