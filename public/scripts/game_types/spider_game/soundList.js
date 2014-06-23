@@ -11,7 +11,7 @@ define(['ext_libs/howler.min', "modules/muteHowler"], function(howler, mute){
         }),
         music : new Howl({
             urls: ['sounds/spiderGame/POL-blue-bros-short.wav'],
-            lopp : true
+            loop : true
         })
     }
 

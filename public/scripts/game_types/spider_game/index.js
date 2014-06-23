@@ -67,6 +67,8 @@ define([
                 updateScrolling();
                 if (player.isOutsideOfScreen(scrolling)) {
                     soundList.crashDown.play();
+                        
+                    eventBus.emit("update score", score);
                     resetLevel();
                 }
                 draw(canvas.context,scrolling,imgs,player,level.anchors)
