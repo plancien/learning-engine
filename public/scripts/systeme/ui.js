@@ -58,24 +58,3 @@ define([], function(){
         createSessionsButtons: createSessionsButtons
     }
 });
-
-/*        
-$(".btnThemes").click(function(e){
-            if($(this)[0].id == "rouge"){
-                $( "header" ).css( "background-color", "#E41D1D" );
-                $( "footer" ).css( "background-color", "#E41D1D" );
-            }
-            if($(this)[0].id == "jaune"){
-                $( "header" ).css( "background-color", "#E9F046" );
-                $( "footer" ).css( "background-color", "#E9F046" );
-            }
-            if($(this)[0].id == "violet"){
-                $( "header" ).css( "background-color", "#E946F0" );
-                $( "footer" ).css( "background-color", "#E946F0" );
-            }
-            if($(this)[0].id == "bleu"){
-                $( "header" ).css( "background-color", "#73C8E9" );
-                $( "footer" ).css( "background-color", "#73C8E9" );
-            }
-        });
-        */
