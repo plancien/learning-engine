@@ -1,4 +1,4 @@
-define(['event_bus'], function(eventBus) {
+define(['event_bus', 'connector'], function(eventBus, socket) {
 
     var score = 0;
     var scoreContainer;
@@ -16,6 +16,10 @@ define(['event_bus'], function(eventBus) {
     eventBus.on("set score", function(points) {
         score = points;
         scoreContainer.html(score);
+    });
+
+    eventBus.on("update score", function(points){
+        socket.emit("update score", points);
     });
 
 });

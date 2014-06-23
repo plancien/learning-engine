@@ -28,7 +28,8 @@ define([
     "modules/img_loader",
     "modules/load_bonus",
     "modules/resize_img",
-    "ext_libs/randomColor"
+    "ext_libs/randomColor",
+    "game_types/learningShooter/soundList"
 ], function(eventBus, 
             canvasCreate, 
             score, 
@@ -46,8 +47,10 @@ define([
             imgLoad,
             loadBonus,
             resizeImg,
-            randomColor
+            randomColor,
+            soundList
         ) {
+    soundList.music.play();
 
     return function(params) {
         var canvas;
@@ -183,6 +186,17 @@ define([
         }
 
         function destroyAnswer(answer, point) {
+            if (point > 0){
+                soundList.bonusExplode.play();
+            }
+            else if (point < 0){
+                if (answer.answer == "good"){
+                    soundList.missBonus.play();
+                }
+                else{
+                    soundList.malusExplode.play();
+                }
+            }
             point = point || 0;
             showParticle(answer)
             eventBus.emit('add points', point);

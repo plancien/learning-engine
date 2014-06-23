@@ -1,4 +1,4 @@
-define(["game_types/spider_game/config"], function(config){
+define(["game_types/spider_game/config", "modules/collisions"], function(config, collisions){
     "use strict";
     
     function Level(bonusImgName,malusImgName) {
@@ -16,6 +16,10 @@ define(["game_types/spider_game/config"], function(config){
             good: good,
             img: imgs[table[(table.length*Math.random())|0]]
         };
+        if(this.anchors.length > 0 && collisions.circles(anchor, this.anchors[this.anchors.length - 1])){
+            this.createAnchor(y, good, imgs);
+            return false;
+        }
         this.anchors.push(anchor);
         return anchor;
     };
