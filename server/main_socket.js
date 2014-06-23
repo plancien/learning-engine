@@ -2,7 +2,7 @@ var games = require(__dirname+"/game");
 var fs = require("fs");
 var img = require(__dirname+"/img");
 
-module.exports.register = function register (socket) {
+module.exports.register = function register (socket,io) {
     socket.on("want games info", function() {
         socket.emit('games info',games.getGamesList());
     });
@@ -25,11 +25,14 @@ module.exports.register = function register (socket) {
 
     socket.on("want images names", function() {
         var names = fs.readdirSync("./public/images");
-        console.log(names);
         img.getGamesImages(function(err,imgs) {
             console.log(imgs, "<-- that")
             socket.emit('images names',imgs );
         })
+    });
+
+    socket.on("update score",function(point) {
+        socket.broadcast.emit("update score",socket.name,point)
     });
 
 }

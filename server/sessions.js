@@ -55,7 +55,6 @@ function register(socket,io) {
     });
 
     socket.on("want session info", function(name) {
-        console.log("hey")
         if (sessions[name]) {
             socket.emit("session info", sessions[name]);
         };

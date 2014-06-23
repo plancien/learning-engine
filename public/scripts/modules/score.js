@@ -11,14 +11,12 @@ define(['event_bus', 'connector'], function(eventBus, socket) {
     eventBus.on('add points', function(points) {
         score += points;
         scoreContainer.html(score);
+        socket.emit("update score", points);
     });
 
     eventBus.on("set score", function(points) {
         score = points;
         scoreContainer.html(score);
-    });
-
-    eventBus.on("update score", function(points){
         socket.emit("update score", points);
     });
 

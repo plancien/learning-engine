@@ -58,12 +58,10 @@ define([], function(){
         var $players = $("#educatorView ul.players")
         var that = this;
         $.each(game.players,function(i,name) {
-            console.log(i,name);
             var $li = $("<li>"+name+"</li>");
             $players.append($li);
-            console.log($players, $li);
             if (that) {
-                that.on("score update", function(scorerName,score) {
+                that.on("update score", function(scorerName,score) {
                     if (name===scorerName) {
                         $li.text(name+" : "+score+"pts.");
                     }
