@@ -1,7 +1,7 @@
 {
    "wall" : [
-		{ "x" : 230, "y" : 600,	"width" : 100, "height" : 400, "color" : "invertBoxColor"},
-		{ "x" : 0, "y" : 250,	"width" : 400, "height" : 100, "color" : "invertBoxColor"}
+		{ "x" : 230, "y" : 550,	"width" : 100, "height" : 450, "color" : "invertBoxColor"},
+		{ "x" : 0, "y" : 200,	"width" : 400, "height" : 100, "color" : "invertBoxColor"}
     ],
 
     "bonusGroup" : [
@@ -17,9 +17,9 @@
 			"bonus" : 1, "malus" : 2, "bonusCallback" : "littleJump", "malusCallback" : "bottomEject", 
     		"position" :
 				[ 	
-					{"x" : 600, "y" : 600}, 
-					{"x" : 500, "y" : 600},
-					{"x" : 400, "y" : 600}
+					{"x" : 600, "y" : 550}, 
+					{"x" : 500, "y" : 550},
+					{"x" : 400, "y" : 550}
 				]
 		}
 	],

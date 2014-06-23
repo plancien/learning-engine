@@ -22,7 +22,7 @@ define([], function(){
     };
 
     load = {
-        nbLevel : 3
+        nbLevel : 4
     };
 
     hero = {

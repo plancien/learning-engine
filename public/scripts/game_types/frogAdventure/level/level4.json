@@ -1,0 +1,99 @@
+{
+   "wall" : [
+		{"y" : 180,
+		"x" : 0,
+		"height" : 245,
+		"width" : 150,
+		"color" : "invertBoxColor"},
+
+		{"y" : 0,
+		"x" : 600,
+		"height" : 50,
+		"width" : 200,
+		"color" : "blue"},
+
+		{"y" : 0,
+		"x" : 900,
+		"height" : 50,
+		"width" : 300,
+		"color" : "orange"},
+
+		{"y" : 0,
+		"x" : 2100,
+		"height" : 50,
+		"width" : 900,
+		"color" : "yellow"},
+
+		{"y" : 70,
+		"x" : 400,
+		"height" : 300,
+		"width" : 50,
+		"color" : "invertBoxColor"},
+
+		{"y" : 425,
+		"x" : 0,
+		"height" : 375,
+		"width" : 250,
+		"color" : "invertBoxColor"},
+
+		{"y" : 700,
+		"x" : 250,
+		"height" : 100,
+		"width" : 1350,
+		"color" : "invertBoxColor"},
+
+		{"y" : 120,
+		"x" : 1600,
+		"height" : 680,
+		"width" : 248,
+		"color" : "invertBoxColor"}
+    ],
+
+    "bonusGroup" : [
+	    {
+    		"bonus" : 1, "malus" : 1, "bonusCallback" : "stayOn", "malusCallback" : "bottomEject", 
+    		"position" :
+				[ 	
+					{"x" : 450, "y" : 275},
+					{"x" : 550, "y" : 275}
+				]
+	    },
+	    {
+			"bonus" : 1, "malus" : 1, "bonusCallback" : "stayOn", "malusCallback" : "bottomEject", 
+    		"position" :
+				[ 	
+					{"x" : 750, "y" : 275},
+					{"x" : 850, "y" : 275}
+				]
+	    },
+	    {
+    		"bonus" : 1, "malus" : 1, "bonusCallback" : "stayOn", "malusCallback" : "bottomEject", 
+    		"position" :
+				[ 	
+					{"x" : 1150, "y" : 275},
+					{"x" : 1250, "y" : 275}
+				]
+	    },
+	    {
+    		"bonus" : 1, "malus" : 2, "bonusCallback" : "stayOn", "malusCallback" : "bottomEject", 
+    		"position" :
+				[ 	
+					{"x" : 2100, "y" : 290},
+					{"x" : 2000, "y" : 290},
+					{"x" : 1900, "y" : 290}
+				]
+	    }
+	],
+
+	"fly" : {
+		"x" : 2950,
+		"y" : 50
+	},
+
+
+	"width" : 3000,
+	"height" : 800,
+	"endY" : 740,
+	"startY" : 120
+}
+
