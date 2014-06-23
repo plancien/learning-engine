@@ -1,5 +1,6 @@
 var express = require('express');
 var http = require('http');
+var passport = require('passport');
 var rootPath = require('path').join(__dirname, '../');
 
 var registerRoutes = require('./routes');
@@ -7,6 +8,10 @@ var registerSockets = require('./sockets');
 
 module.exports = function(app) {
 
+    app.use(express.cookieParser());
+    app.use(express.session({ secret: 'klyiltdtomerqtsdylyz' }));
+    app.use(passport.initialize());
+    app.use(passport.session());
     // HTTP & ExpressJS Setup
     // app.use(express.logger());
     app.use(express.static(rootPath + '/public'));

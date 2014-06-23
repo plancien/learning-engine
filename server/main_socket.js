@@ -26,7 +26,7 @@ module.exports.register = function register (socket,io) {
     socket.on("want images names", function() {
         var names = fs.readdirSync("./public/images");
         img.getGamesImages(function(err,imgs) {
-            console.log(imgs, "<-- that")
+            
             socket.emit('images names',imgs );
         })
     });

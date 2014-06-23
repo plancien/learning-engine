@@ -1,5 +1,6 @@
 var img = require(__dirname+"/../server/img.js");
-
+var passport = require('passport');
+var users = require(__dirname+"/../server/users.js");
 
 module.exports = function(app) {
 
@@ -7,16 +8,15 @@ module.exports = function(app) {
         res.send('Server is ok !');
     });
 
-    app.get('/', function(req, res) {
-        res.render('index.html');
+    app.get('/', /*passport.authenticate('local',{failureRedirect: '/login'}),*/ function(req, res) {
+        if (req.user) {
+            res.render('index.html');
+        } else {
+            res.redirect('/login');
+        }
+        
     });
-    app.get('/inscription', function(req, res) {
-        res.render('inscription.html');
-    });
-    app.get('/acceptInscription', function(req, res) {
-        res.render('acceptInscription.js');
-    });
-
+    users.registerUserRoute(app);
 
     app.post("/upload",function(req,res) {
         var fs = require('fs');
