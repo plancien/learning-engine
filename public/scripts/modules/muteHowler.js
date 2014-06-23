@@ -1,6 +1,4 @@
 define(['ext_libs/howler.min'], function(howler){
-	window.get = howler;
-
 	var muteButton = document.createElement("button");
 	muteButton.setAttribute("style", "float : left");
 	muteButton.innerHTML = "Couper le son";
