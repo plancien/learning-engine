@@ -37,7 +37,7 @@ define(['event_bus',
                 }
                 else{
                     game.hero.y += vecY - 1;
-                    if (!game.hero.wallGrip){
+                    if (!game.hero.wallGrip && game.hero.speedY <= 0){
                         game.hero.wallGrip = wall;
                         game.hero.noGravity = true;
                         soundList.ceilingGrip.play();

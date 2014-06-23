@@ -84,6 +84,14 @@ function(eventBus, config, soundList, shuffle){
 		target.speedY += 20;
 		soundList.malus.play();
 	}
+	BonusManageur.prototype.stayOn = function(target){
+		target.y = this.super.y - target.height;
+		target.canJump = true;
+        target.currentJumpFrame = target.nbFrameJump;
+        target.speedY = 0;
+	}
+
+
 
 	return BonusManageur;
 });    	

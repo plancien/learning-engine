@@ -29,6 +29,7 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
                 
             game.cameraRender.add(bonus);
             game.collisionEngine.addElement(bonus, "bonus");
+            bonus.collisionCallback.super = bonus;
             bonus.collisionCallback.hero = collisionCallback;
         });
 
@@ -41,6 +42,7 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
             
         for (var i = 0; i < load.nbLevel; i++) {
             var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+randomLevel[i]+".json");
+            // var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+4+".json");
 
 
             if (i === 0){
