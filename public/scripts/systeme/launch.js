@@ -1,31 +1,39 @@
-define([], function(e){
+define(["connector"], function(socket){
     "use strict";
 
     var games = []
 
     function createGame(e) {
         e && e.preventDefault && e.preventDefault();
-
-        console.log("hey");
         var selected = $("#modelList").val();
         if (!games[selected]) {
             return false;
         }
-        
-        require(['game', games[selected].url], function(game, setGame) {
-            $("#mainMenu").hide();
-            setGame(getGameOption());
-            game.init($("#question").val());
+        socket.emit("create game",getGameOption());
+        socket.on("redirect game",function(gameInfo) {
+            window.location.href = "/?session="+gameInfo.name;
         });
+        //joinGame(getGameOption());
     }
     
+    function joinGame(gameInfo) {
+        console.log("yeahaaaaa");
+        require(['game', games[gameInfo.game].url], function(game, setGame) {
+            $("#mainMenu").hide();
+            setGame(gameInfo);
+            game.init(gameInfo.question);
+        });
+    }
+
+
     function getGameOption() {
         return {
             bonusUrl: $("#bonusImg").val()[0],
             malusUrl: $("#malusImg").val()[0],
             bonus: $("#bonusImg").val(),
             malus: $("#malusImg").val(),
-            question: $("#question").val()
+            question: $("#question").val(),
+            game: $("#modelList").val()
         };
     }
 
@@ -37,7 +45,8 @@ define([], function(e){
 
     return {
         createGame: createGame,
-        registerGames: registerGames
+        registerGames: registerGames,
+        joinGame: joinGame
     }
 
 });

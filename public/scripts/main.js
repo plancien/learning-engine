@@ -1,9 +1,9 @@
-﻿require(['connector',"systeme/ui","systeme/launch"], function(socket,ui,launch) {
+﻿require(['connector',"systeme/ui","systeme/launch","systeme/query"], function(socket,ui,launch,query) {
 
     socket.on('images names', ui.createImageChooser);
     socket.on('inject css', ui.injectCSS);
     socket.on('inject template', ui.replaceOptionTemplate);
-    socket.on("games info", ui.createGameSelection);
+    socket.on('live sessions', ui.createSessionsButtons);
     socket.on("games info", launch.registerGames);
     $("#gameCreation").on("submit",launch.createGame)
 
@@ -54,8 +54,21 @@
             }
         });
 
-        socket.emit("want games info");
-        socket.emit("want images names");
+        if(query["session"]) {
+            socket.on("games info", function() {
+                console.log("yeah");
+                socket.emit("connect to game",query["session"]);
+                socket.on("join game", launch.joinGame);
+            });
+            socket.emit("want games info");
+        } else {
+            socket.on("games info", ui.createGameSelection);
+            socket.emit("want games info");
+            socket.emit("want images names");
+            socket.emit("want all sessions");
+        }
+
+        
 
     });
 

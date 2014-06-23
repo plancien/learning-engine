@@ -43,10 +43,19 @@ define([], function(){
         $("#modelDescription").html(game.gameDescription);
     }
 
+    function createSessionsButtons(sessions) {
+        var display = "";
+        $.each(sessions,function(name,value) {
+            display += '<li><a href="/?session=' + name + '" >' + value.game + ' : '+ value.question +'</a></li>';
+        });
+        $("#gameSessions ul").html(display);
+    }
+
     return {
         createImageChooser: createImageChooser,
         injectCSS: injectCSS,
-        createGameSelection: createGameSelection
+        createGameSelection: createGameSelection,
+        createSessionsButtons: createSessionsButtons
     }
 });
 

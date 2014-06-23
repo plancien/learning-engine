@@ -5,10 +5,6 @@ var img = require(__dirname+"/img");
 module.exports.register = function register (socket) {
     socket.on("want games info", function() {
         socket.emit('games info',games.getGamesList());
-        //socket.emit('games info', {
-        //    games: games.getGamesList(),
-        //    models: games.getGamesList(__dirname +"/../public/scripts/games/")
-        //});
     });
 
     socket.on("want css", function(data) {
@@ -35,4 +31,5 @@ module.exports.register = function register (socket) {
             socket.emit('images names',imgs );
         })
     });
+
 }
