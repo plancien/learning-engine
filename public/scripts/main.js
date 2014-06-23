@@ -5,10 +5,11 @@
     socket.on('inject template', ui.replaceOptionTemplate);
     socket.on('live sessions', ui.createSessionsButtons);
     socket.on("games info", launch.registerGames);
+
+
     $("#gameCreation").on("submit",launch.createGame)
-
-
         if(localStorage.length > 0){
+            socket.emit("name",localStorage.cookie);
             $("#socialBar").css('display', 'none');
             $("#mainMenu").fadeIn('normal');
             $("#blocUser").html("Welcome my friend, "+localStorage.cookie+"");
@@ -29,7 +30,7 @@
                     localStorage.setItem("cookie",userName);
                     localStorage.setItem("userName",userName);
                     //localStorage.userName = userName;
-                    
+                    socket.emit("name",userName);
                     $(this).parent().css('display', 'none');
                     $("#mainMenu").fadeIn('normal');
                     $("#blocUser").html("Welcome my friend, "+userName+"");
@@ -53,15 +54,24 @@
                 e.preventDefault();
             }
         });
-
+        $("#educatorView").hide();
         if(query["session"]) {
+            $("#mainMenu").hide();
             socket.on("games info", function() {
-                console.log("yeah");
                 socket.emit("connect to game",query["session"]);
                 socket.on("join game", launch.joinGame);
             });
             socket.emit("want games info");
-        } else {
+        } else if(query["info"]) {
+            $("#mainMenu").hide();
+            $("#educatorView").show();
+            socket.on("games info", function() {
+                socket.emit("want session info",query["info"]);
+            });
+            socket.on("session info",ui.showEducatorMenu);
+            socket.emit("want games info");
+            socket.emit("want images names");
+        } else  {
             socket.on("games info", ui.createGameSelection);
             socket.emit("want games info");
             socket.emit("want images names");

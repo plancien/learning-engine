@@ -22,7 +22,6 @@ function getGameImagesList(callback) {
     }).then(function(img) {
         callback(null,img);
     },function(err) {
-        console.log("testaaa");
         callback(err);
     });
 }
@@ -38,7 +37,6 @@ function appendPath(pathName) {
 }
 
 function createDataFromPath(pathName) {
-    console.log(pathName)
     return {
         url: pathName,
         fileName: path.basename(pathName),

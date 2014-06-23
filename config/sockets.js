@@ -14,6 +14,8 @@ module.exports = function(io) {
 
     io.sockets.on('connection', function(socket) {
         
+        socket.on("name", function(name){socket.name=name;});
+
         amountOfConnections++;
 
         moduleBroadcast(io,socket);

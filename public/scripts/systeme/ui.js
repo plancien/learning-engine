@@ -51,10 +51,35 @@ define([], function(){
         $("#gameSessions ul").html(display);
     }
 
+    function showEducatorMenu(game) {
+        $("#educatorView h2").text(game.name+" : "+game.game);
+        $("#educatorView h3").text(game.question);
+        $("#educatorView a").attr("href","/?session="+game.name);
+        var $players = $("#educatorView ul.players")
+        var that = this;
+        $.each(game.players,function(i,name) {
+            console.log(i,name);
+            var $li = $("<li>"+name+"</li>");
+            $players.append($li);
+            console.log($players, $li);
+            if (that) {
+                that.on("score update", function(scorerName,score) {
+                    if (name===scorerName) {
+                        $li.text(name+" : "+score+"pts.");
+                    }
+                });
+            }
+        });
+        $("#educatorView button.delete").on("click",function() {
+            that.emit("delete session",game.name);
+        })
+    }
+
     return {
         createImageChooser: createImageChooser,
         injectCSS: injectCSS,
         createGameSelection: createGameSelection,
-        createSessionsButtons: createSessionsButtons
+        createSessionsButtons: createSessionsButtons,
+        showEducatorMenu: showEducatorMenu
     }
 });

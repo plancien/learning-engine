@@ -11,7 +11,7 @@ define(["connector"], function(socket){
         }
         socket.emit("create game",getGameOption());
         socket.on("redirect game",function(gameInfo) {
-            window.location.href = "/?session="+gameInfo.name;
+            window.location.href = "/?info="+gameInfo.name;
         });
         //joinGame(getGameOption());
     }
@@ -25,6 +25,9 @@ define(["connector"], function(socket){
         });
     }
 
+    function deleteGame(name) {
+        socket.emit()
+    }
 
     function getGameOption() {
         return {
