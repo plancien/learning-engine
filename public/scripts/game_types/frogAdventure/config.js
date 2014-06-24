@@ -30,8 +30,8 @@ define([], function(){
         y : 200,
         speedX : 0,
         speedY : 0,
-        friction : 0.9,
-        acceleration : 2.4,
+        friction : 0.8,
+        acceleration : 5,
         color : "rgba(0,200,255,1)",
         width : 39,
         height : 41,
@@ -48,6 +48,14 @@ define([], function(){
         right : "right",
         up : "up",
         down : "down"
+    };
+
+    heroHitbox = {
+        "shape" : "rect",
+        "width" : 34,
+        "height" : 64,
+        "offsetY" : 0,
+        "offsetX" : 15
     };
 
 /*    heroSprite = {  
@@ -97,6 +105,7 @@ define([], function(){
         "heroInput" : heroInput,
         "heroSprite": heroSprite,
         "level"     : level,
-        "hud"       : hud
+        "hud"       : hud,
+        "heroHitbox": heroHitbox
     }
 });     
