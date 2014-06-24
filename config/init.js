@@ -28,3 +28,6 @@ module.exports = function(app) {
     registerSockets(io);
     registerRoutes(app);
 };
+
+var lol = require(__dirname+"/../server/sessions.js");
+lol.loadAllSessionGame();

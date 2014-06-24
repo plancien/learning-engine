@@ -4,7 +4,6 @@ var mime = require("mime");
 var path = require("path");
 var acceptedType = ["image/png","image/jpeg","image/gif","image/bmp"]
 
-//function getGameImagesList(userImgs,callback) {
 function getGameImagesList(userImgs,callback) {
     var readDir = Promise.denodeify(fs.readdir);
     var defaultImgPromise = readDir(__dirname+"/../public/images/games_images/");

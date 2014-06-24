@@ -70,6 +70,15 @@ function addImage(imageName, userName){
         fs.writeFile(pathUser, JSON.stringify(file, null, 4), function(){});
     });
 }
+function addSessionGame(gameName, userName){
+    var pathUser = __dirname+"/../bdd/user/"+userName+".json";
+    fs.readFile(pathUser, 'utf8', function (err, data) {
+        var file = JSON.parse(data);
+        file.game.push(gameName);
+        fs.writeFile(pathUser, JSON.stringify(file, null, 4), function(){});
+    });
+
+}
 
 var file = __dirname + '/test.json';
 

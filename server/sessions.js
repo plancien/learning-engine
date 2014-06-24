@@ -17,14 +17,43 @@ c> on("join game"), launch the game
 \*****************************************/
 
 var sessions = {};
+var fs = require('fs');
+var mime = require("mime");
 
-function createSession (params) {
+var acceptedType = ["application/json"];
+
+function loadAllSessionGame() {
+    var gameFolder = __dirname+"/../bdd/session_game/";
+    fs.readdir(gameFolder, function(err, files){
+        if (err) {
+            throw err;
+        }
+        for (var i = files.length - 1 ; i >= 0 ; i--){
+            if (acceptedType.indexOf(mime.lookup(files[i])) >= 0){
+                fs.readFile(gameFolder+files[i], function (err, data) {
+                    if (err) throw err;
+                    var params = JSON.parse(data);
+                    loadSession(params);
+                });
+            }
+        }
+    });
+}
+
+function createSession (params, userName) {
     var name = generateUrl();
     params.name = name;
+    loadSession(params);
+
+    var gameFile = JSON.stringify(sessions[name]);
+    var pathGameSession = __dirname+"/../bdd/session_game/"+name+".json"
+    fs.writeFile(pathGameSession,gameFile, function(){});
+    return name;
+}
+function loadSession(params){
+    var name = params.name;
     params.players = [];
     sessions[name] = params;
-    sessions[name] = params;
-    return name;
 }
 
 function generateUrl() {
@@ -70,3 +99,4 @@ function register(socket,io) {
 module.exports.createSession = createSession;
 module.exports.deleteSession = deleteSession;
 module.exports.register = register;
+module.exports.loadAllSessionGame = loadAllSessionGame;
