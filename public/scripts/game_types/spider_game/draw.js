@@ -77,9 +77,16 @@ define(["game_types/spider_game/config"], function(config){
     function drawAnchor(ctx,scrolling,imgs,player,anchors) {
         for (var i = 0; i < anchors.length; i++) {
             ctx.drawImage(anchors[i].img,
-                          anchors[i].x-anchors[i].radius,
-                          anchors[i].y-anchors[i].radius-scrolling
+                              anchors[i].x-anchors[i].radius,
+                              anchors[i].y-anchors[i].radius-scrolling
             );
+
+            ctx.beginPath();
+            // ctx.arc(anchors[i].x, anchors[i].y, anchors[i].radius, 0, 2 * Math.PI, false);
+            ctx.arc(anchors[i].x, anchors[i].y-scrolling, anchors[i].radius, 0, 2 * Math.PI, false);
+            ctx.strokeStyle = "black";
+            ctx.lineWidth = 2;
+            ctx.stroke();
         };
     }
 
