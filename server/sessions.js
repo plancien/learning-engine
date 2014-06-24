@@ -70,6 +70,8 @@ function generateUrl() {
 
 function deleteSession(name) {
     delete sessions[name];
+    var pathGameSession = __dirname+"/../bdd/session_game/"+name+".json"
+    fs.unlink(pathGameSession,function(err) {});
 }
 
 function register(socket,io) {
