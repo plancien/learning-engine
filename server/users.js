@@ -52,7 +52,15 @@ function saveUser(name,password,callback) {
             return callback(new Error("username allready exist"));
         } else {
             data[name] = password;
-            fs.writeFile(file,JSON.stringify(data,null,4),callback);
+            fs.writeFile(file,JSON.stringify(data,null,4),function(){});
+
+            var userFile = {
+                "img" : [],
+                "game" : []
+            };
+
+            pathUser = __dirname+"/../bdd/user/"+name+".json";
+            fs.writeFile(pathUser, JSON.stringify(userFile, null, 4), callback);
         }
     }); 
 }
