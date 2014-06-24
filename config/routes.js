@@ -21,6 +21,8 @@ module.exports = function(app) {
     app.post("/upload",function(req,res) {
         var fs = require('fs');
         img.save(req.files.uploadedImage,function(err,data) {
+            //Ici on rajoute dans le fchier .json du client l'url de la nouvelle image
+            users.addImage(data.url, req.user);
             res.redirect("/");
         });
         /*

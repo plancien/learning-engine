@@ -3,17 +3,8 @@ var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
 
 
-//Ici on recoie les inout du formulaire d'inscrption
-	//si les deux mot de passe correspondet
-		//on ajoute dans le json
-			//On lance une seession du user
-
-//ici on s'occupe des connections
-	//si le user existe
-		//si le mot de passe correspond avec celui du user
-			//on lance une session du user
-
 var fs = require('fs');
+
 
 function findUser(name, callback){
 	var file = __dirname+"/../bdd/userList.json";
@@ -52,17 +43,26 @@ function saveUser(name,password,callback) {
             return callback(new Error("username allready exist"));
         } else {
             data[name] = password;
-            fs.writeFile(file,JSON.stringify(data,null,4),function(){});
+            fs.writeFile(file,JSON.stringify(data,null,4),function(){
+                var userFile = {
+                    "img" : [],
+                    "game" : []
+                };
 
-            var userFile = {
-                "img" : [],
-                "game" : []
-            };
-
-            pathUser = __dirname+"/../bdd/user/"+name+".json";
-            fs.writeFile(pathUser, JSON.stringify(userFile, null, 4), callback);
+                pathUser = __dirname+"/../bdd/user/"+name+".json";
+                fs.writeFile(pathUser, JSON.stringify(userFile, null, 4), callback);
+            });
         }
     }); 
+}
+
+function addImage(imageName, userName){
+    var pathUser = __dirname+"/../bdd/user/"+userName+".json";
+    fs.readFile(pathUser, 'utf8', function (err, data) {
+        var file = JSON.parse(data);
+        file.img.push(imageName);
+        fs.writeFile(pathUser, JSON.stringify(file, null, 4), function(){});
+    });
 }
 
 var file = __dirname + '/test.json';
@@ -115,3 +115,4 @@ function registerUserRoute(app) {
 }
 
 module.exports.registerUserRoute = registerUserRoute;
+module.exports.addImage = addImage;
