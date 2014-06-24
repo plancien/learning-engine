@@ -2,11 +2,18 @@ define([], function(){
     "use strict";
     
 
-    return function resizeImage(img,width,height,ratio) {
+    return function resizeImage(img,width,height,ratio, circle) {
         var canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
         var ctx = canvas.getContext("2d");
+        if (circle){
+            ctx.beginPath();
+            ctx.arc(canvas.width/2, canvas.height/2, canvas.width/2, 0, 2 * Math.PI, false);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+            ctx.globalCompositeOperation = "source-in";
+        }
         if(ratio==="crop" || ratio === "fit") {
             var scaleX = width/img.width;
             var scaleY = height/img.height;

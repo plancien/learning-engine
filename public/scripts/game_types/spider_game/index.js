@@ -55,11 +55,11 @@ define([
 
         var imgs = imgLoad({cube:"/images/sprites/cube.png",cloud:"/images/sprites/cloud1.png"},function() {
             for (var i = bonusImgName.length - 1; i >= 0; i--) {
-                imgs[bonusImgName[i]] = resizeImg(imgs[bonusImgName[i]],config.size_img,config.size_img,"fit");
+                imgs[bonusImgName[i]] = resizeImg(imgs[bonusImgName[i]],config.size_img,config.size_img,"fit", true);
             };
 
             for (var i = malusImgName.length - 1; i >= 0; i--) {
-                imgs[malusImgName[i]] = resizeImg(imgs[malusImgName[i]],config.size_img,config.size_img,"fit");
+                imgs[malusImgName[i]] = resizeImg(imgs[malusImgName[i]],config.size_img,config.size_img,"fit", true);
             };
 
             eventBus.on("new frame", function (dt) {

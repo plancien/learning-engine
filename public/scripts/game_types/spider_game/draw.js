@@ -53,7 +53,8 @@ define(["game_types/spider_game/config"], function(config){
         ctx.fillStyle = "red";
         if (player.linkTo) {
             ctx.beginPath();
-            ctx.strokeStyle = "#FF0000";
+            ctx.strokeStyle = config.draw.ropeStroke;
+            ctx.lineWidth = config.draw.ropeWidth;
             ctx.moveTo(player.x, player.y - scrolling);
             ctx.lineTo(player.linkTo.x, player.linkTo.y - scrolling);
             ctx.stroke();
@@ -75,11 +76,17 @@ define(["game_types/spider_game/config"], function(config){
     }
 
     function drawAnchor(ctx,scrolling,imgs,player,anchors) {
+        ctx.strokeStyle = config.draw.anchorsStroke;
+        ctx.lineWidth = config.draw.anchorsWidth;
         for (var i = 0; i < anchors.length; i++) {
             ctx.drawImage(anchors[i].img,
-                          anchors[i].x-anchors[i].radius,
-                          anchors[i].y-anchors[i].radius-scrolling
+                              anchors[i].x-anchors[i].radius,
+                              anchors[i].y-anchors[i].radius-scrolling
             );
+
+            ctx.beginPath();
+            ctx.arc(anchors[i].x, anchors[i].y-scrolling, anchors[i].radius, 0, 2 * Math.PI, false);
+            ctx.stroke();
         };
     }
 

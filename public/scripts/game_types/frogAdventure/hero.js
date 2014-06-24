@@ -11,39 +11,49 @@ define(['event_bus',
         game.cameraRender.putSpriteOn(game.hero, "hero", "idleRight");
         game.hero.changeAnimation("idleRight");
         game.collisionEngine.addElement(game.hero, "hero");
+        game.hero.hitbox[0] = config.heroHitbox;
+
+            
 
         game.hero.frameForWaitingAnimation = 180;
 
         game.hero.collisionCallback.wall = function(wall){
-            var leftIn = game.hero.x + game.hero.width - wall.x;    //on calcule de combien l'element se trouve a l'intertieur pour chaque cote
-            var rightIn = wall.x + wall.width - game.hero.x;
+            var hero = game.hero;
+            var hitbox = hero.hitbox[0];
+
+            var realX = hero.x + hitbox.offsetX;
+            var realY = hero.y + hitbox.offsetY;
+            // console.log(hitbox);
+                
+            var leftIn = realX + hitbox.width - wall.x;    //on calcule de combien l'element se trouve a l'intertieur pour chaque cote
+            var rightIn = wall.x + wall.width - realX;
             var vecX = (leftIn < rightIn) ? leftIn : rightIn;       //On prend a chaque fois la valeur la plsu faible
 
-            var topIn =  game.hero.y + game.hero.height - wall.y;
-            var bottomIn = wall.y + wall.height - game.hero.y;
+            var topIn =  realY + hitbox.height - wall.y;
+            var bottomIn = wall.y + wall.height - realY;
             var vecY = (topIn < bottomIn) ? topIn : bottomIn;
 
             if (vecX < vecY){                               //Si on doit expulser en x
                 if (leftIn < rightIn )
-                    game.hero.x -= vecX; 
+                    hero.x -= vecX; 
                 else
-                    game.hero.x += vecX;
+                    hero.x += vecX;
             }
             else{                                           //Sinon on expulse en y
                 if (topIn < bottomIn){
-                    game.hero.y -= vecY;
-                    game.hero.canJump = true;
-                    game.hero.currentJumpFrame = game.hero.nbFrameJump;
+                    hero.y -= vecY;
+                    hero.canJump = true;
+                    hero.currentJumpFrame = hero.nbFrameJump;
                 }
                 else{
-                    game.hero.y += vecY - 1;
-                    if (!game.hero.wallGrip && game.hero.speedY <= 0){
-                        game.hero.wallGrip = wall;
-                        game.hero.noGravity = true;
+                    hero.y += vecY - 1;
+                    if (!hero.wallGrip && hero.speedY <= 0){
+                        hero.wallGrip = wall;
+                        hero.noGravity = true;
                         soundList.ceilingGrip.play();
                     }
                 }
-                game.hero.speedY = 0;
+                hero.speedY = 0;
             }
         };
 

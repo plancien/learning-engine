@@ -11,7 +11,7 @@ function(cameraRender, collisionEngine, config, soundList){
 		this.animateFly = false;
 
 		this.image = new Image();
-		this.image.src = "./images/sprites/fly.png";
+		this.image.src = "./images/frogAdventure/fly.png";
 
 		window.content = this.content;
 	}

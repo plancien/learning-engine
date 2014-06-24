@@ -25,11 +25,11 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
         game.canvas.context.fillStyle = "rgba(30,30,30,0.8)";
 
         game.cameraRender = cameraRender;
-        game.cameraRender.backgroundParralax("./images/sprites/pikachuParallax.png", 1, 0.5);
+        game.cameraRender.backgroundParralax("./images/frogAdventure/pikachuParallax.png", 1, 0.5);
         game.cameraRender.init(game.canvas, true);
-        game.cameraRender.addSprite("hero", "./images/sprites/green_guy_large.png", config.heroSprite);
-        game.cameraRender.addImage("fly", "./images/sprites/fly.png");
-        game.cameraRender.addImage("ending", "./images/sprites/frogAdventureEnding.gif");
+        game.cameraRender.addSprite("hero", "./images/frogAdventure/green_guy_large.png", config.heroSprite);
+        game.cameraRender.addImage("fly", "./images/frogAdventure/fly.png");
+        game.cameraRender.addImage("ending", "./images/frogAdventure/frogAdventureEnding.gif");
 
         game.collisionEngine = collisionEngine;
         game.collisionEngine.addGroup("wall", false, false, false);

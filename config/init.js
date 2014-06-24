@@ -27,5 +27,4 @@ module.exports = function(app) {
 
     registerSockets(io);
     registerRoutes(app);
-
 };
