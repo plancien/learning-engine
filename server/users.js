@@ -9,15 +9,12 @@ var fs = require('fs');
 function findUser(name, callback){
 	var file = __dirname+"/../bdd/userList.json";
 	fs.readFile(file, 'utf8', function (err, data) {
-        console.log("ejeje");
 		if (err) {
 			console.log('Error: ' + err);
 			return;
 		}
 	 
 		data = JSON.parse(data);
-		console.dir(data, name);
-
 		if (data[name]){
 			return callback(data[name]);
 		}
@@ -43,7 +40,6 @@ function saveUser(name,password,callback) {
         }
      
         data = JSON.parse(data);
-        console.dir(data, name);
 
         if (data[name]){
             return callback(new Error("username allready exist"));
@@ -97,15 +93,13 @@ var file = __dirname + '/test.json';
 passport.use(new LocalStrategy(
   function(username, password, done) {
     findUser(username , function(mdp) {
-        console.log("hey");
-        console.log(mdp,password)
+        
       if (!mdp) {
         return done(null, false, { message: 'Pseudo incorrect.' } );
       }
       if (mdp !== password) {
         return done(null, false, { message: 'Mot de passe inccorect.' });
       }
-      console.log("----------------")
       return done(null, username);
     });
   }

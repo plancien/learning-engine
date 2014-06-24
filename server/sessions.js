@@ -34,7 +34,7 @@ function loadAllSessionGame() {
                 fs.readFile(gameFolder+files[i], function (err, data) {
                     if (err) throw err;
                     var params = JSON.parse(data);
-                    loadSession(params);
+                    launchSession(params);
                 });
             }
         }
@@ -46,14 +46,20 @@ function createSession (params, userName) {
     params.name = name;
 
     user.addSessionGame(userName, name);
-    loadSession(params);
+    launchSession(params);
 
-    var gameFile = JSON.stringify(sessions[name]);
-    var pathGameSession = __dirname+"/../bdd/session_game/"+name+".json"
+    saveSessionToFile(sessions[name])
+    return name;
+}
+
+function saveSessionToFile(session) {
+    var gameFile = JSON.stringify(session);
+    var pathGameSession = __dirname+"/../bdd/session_game/"+session.name+".json"
     fs.writeFile(pathGameSession,gameFile, function(){});
     return name;
 }
-function loadSession(params){
+
+function launchSession(params){
     var name = params.name;
     params.players = [];
     sessions[name] = params;
@@ -67,6 +73,8 @@ function generateUrl() {
 
 function deleteSession(name) {
     delete sessions[name];
+    var pathGameSession = __dirname+"/../bdd/session_game/"+name+".json"
+    fs.unlink(pathGameSession,function(err) {});
 }
 
 function register(socket,io) {

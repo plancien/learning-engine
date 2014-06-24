@@ -26,7 +26,6 @@ module.exports.register = function register (socket,io) {
     });
 
     socket.on("want images names", function() {
-        console.log("------------",socket.name);
         img.getGamesImages(user.getUserImageSync(socket.name), function(err,imgs) {
             socket.emit('images names',imgs );
         })

@@ -69,6 +69,7 @@ define([], function(){
             }
         });
         $("#educatorView button.delete").on("click",function() {
+            console.log("ok")
             that.emit("delete session",game.name);
         })
     }
