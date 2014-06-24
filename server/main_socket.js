@@ -1,6 +1,7 @@
 var games = require(__dirname+"/game");
 var fs = require("fs");
 var img = require(__dirname+"/img");
+var user = require(__dirname+"/users");
 
 module.exports.register = function register (socket,io) {
 
@@ -25,7 +26,8 @@ module.exports.register = function register (socket,io) {
     });
 
     socket.on("want images names", function() {
-        img.getGamesImages(socket.name, function(err,imgs) {
+        console.log("------------",socket.name);
+        img.getGamesImages(user.getUserImageSync(socket.name), function(err,imgs) {
             socket.emit('images names',imgs );
         })
     });
