@@ -12,14 +12,6 @@
   <body>
     <div id="user">
       <header><img src="images/sprites/header.png"></header>
-      <div id="socialBar">
-        <h1 id="bienvenu">Bienvenue !</h1>Nom d'utilisateur :  
-        <input id="userName" type="text" placeholder="Nom d'utilisateur">
-        <button class="button">Validez !</button>
-        <div class="alert">
-          <p id="userAlert"></p>
-        </div>
-      </div>
     </div>
     <div id="mainMenu">
       <div id="blocLeft">
@@ -80,5 +72,8 @@
         <button id="bleu" class="btnThemes">Bleu !</button>
       </div>
     </footer>
+    <script>
+      window.userName = "<%- userName %>";
+    </script>
   </body>
 </html>

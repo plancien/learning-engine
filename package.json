@@ -17,7 +17,7 @@
     "mime": "^1.2.11",
     "mongoose": "*",
     "promise": "*",
-    "socket.io": "0.9.14",
+    "socket.io": "1.0.*",
     "passport": "^0.2.0",
     "passport-local": "^1.0.0"
   }

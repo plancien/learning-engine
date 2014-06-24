@@ -10,7 +10,7 @@ module.exports = function(app) {
 
     app.get('/', /*passport.authenticate('local',{failureRedirect: '/login'}),*/ function(req, res) {
         if (req.user) {
-            res.render('index.html');
+            res.render('index.html',{userName: req.user});
         } else {
             res.redirect('/login');
         }

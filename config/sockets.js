@@ -14,7 +14,7 @@ module.exports = function(io) {
 
     io.sockets.on('connection', function(socket) {
         
-        socket.on("name", function(name){socket.name=name;});
+        socket.on("name", function(name){socket.name=name;socket.emit("autentificated")});
 
         amountOfConnections++;
 

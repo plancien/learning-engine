@@ -8,7 +8,6 @@ var fs = require('fs');
 
 function findUser(name, callback){
 	var file = __dirname+"/../bdd/userList.json";
-    console.log("aaaaa");
 	fs.readFile(file, 'utf8', function (err, data) {
         console.log("ejeje");
 		if (err) {
@@ -26,6 +25,13 @@ function findUser(name, callback){
 			return callback(false);
 		}
 	});		
+}
+
+function getUserImageSync(name) {
+    var file = __dirname+"/../bdd/user/"+name+".json";
+    var data = fs.readFileSync(file);
+    var user = JSON.parse(data);
+    return user.img;
 }
 
 function saveUser(name,password,callback) {
@@ -116,3 +122,4 @@ function registerUserRoute(app) {
 
 module.exports.registerUserRoute = registerUserRoute;
 module.exports.addImage = addImage;
+module.exports.getUserImageSync = getUserImageSync;
