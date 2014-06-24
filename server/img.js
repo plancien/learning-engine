@@ -31,7 +31,6 @@ function getGameImagesList(userImgs,callback) {
 
 function belongToUser(userImgs) {
     return function(img) {
-        console.log(userImgs,img)
         return userImgs.indexOf(img)>=0;
     }
 }
