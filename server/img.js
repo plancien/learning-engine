@@ -4,7 +4,7 @@ var mime = require("mime");
 var path = require("path");
 var acceptedType = ["image/png","image/jpeg","image/gif","image/bmp"]
 
-function getGameImagesList(callback) {
+function getGameImagesList(userImgs,callback) {
     var readDir = Promise.denodeify(fs.readdir);
     var defaultImgPromise = readDir(__dirname+"/../public/images/games_images/");
     var uploadedImgPromise = readDir(__dirname+"/../public/images/uploaded_images/");
@@ -13,7 +13,10 @@ function getGameImagesList(callback) {
         var defaultImg = result[0];
         var uploadedImg = result[1];
         return defaultImg.map(appendPath("/images/games_images/"))
-            .concat(uploadedImg.map(appendPath("/images/uploaded_images/")))
+            .concat(
+                uploadedImg.map(appendPath("/images/uploaded_images/"))
+                .filter(belongToUser(userImgs))
+            )
             .filter(isImage);
     }).then(function(img) {
         return img.map(createDataFromPath);
@@ -24,6 +27,12 @@ function getGameImagesList(callback) {
     },function(err) {
         callback(err);
     });
+}
+
+function belongToUser(userImgs) {
+    return function(img) {
+        return userImgs.indexOf(img)>=0;
+    }
 }
 
 function isImage(fileName) {
@@ -43,6 +52,7 @@ function createDataFromPath(pathName) {
         name: path.basename(pathName,path.extname(pathName))
     }
 }
+
 
 function saveImage(file,callback) {
     if (isImage(file.path)) {
