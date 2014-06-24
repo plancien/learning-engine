@@ -19,6 +19,7 @@ c> on("join game"), launch the game
 var sessions = {};
 var fs = require('fs');
 var mime = require("mime");
+var user = require(__dirname+"/../server/users.js");
 
 var acceptedType = ["application/json"];
 
@@ -43,6 +44,8 @@ function loadAllSessionGame() {
 function createSession (params, userName) {
     var name = generateUrl();
     params.name = name;
+
+    user.addSessionGame(userName, name);
     loadSession(params);
 
     var gameFile = JSON.stringify(sessions[name]);
@@ -68,7 +71,7 @@ function deleteSession(name) {
 
 function register(socket,io) {
     socket.on("create game",function(gameInfo) {
-        var session = createSession(gameInfo);
+        createSession(gameInfo, socket.name);
         socket.emit("redirect game", gameInfo)
     });
 
@@ -90,7 +93,15 @@ function register(socket,io) {
     });
 
     socket.on("want all sessions", function() {
-        socket.emit("live sessions", sessions);
+        user.getSessionGame(socket.name, function(tabSessionName){
+            console.log("le tableau des nom de sessions : " + tabSessionName);
+                
+            var refWantedSession = {};
+            for (var i = tabSessionName.length - 1 ; i >= 0 ; i--){
+                refWantedSession[tabSessionName[i]] = sessions[tabSessionName[i]];
+            }
+            socket.emit("live sessions", refWantedSession);
+        });
     });
 
     socket.on("delete session", deleteSession);
