@@ -27,7 +27,7 @@ function(
 			(function(){
 				var excludeName = imageName;
 				image.onload = function(){
-					var imageConfigured = resize_img(this, config.bonus.size, config.bonus.size, "fit", false, randomColor(colorOption));
+					var imageConfigured = resize_img(this, config.bonus.size, config.bonus.size, "crop", false, randomColor(colorOption));
 					game.cameraRender.images[excludeName] = imageConfigured;
 				}
 			})();
@@ -46,7 +46,7 @@ function(
 			(function(){
 				var excludeName = imageName;
 				image.onload = function(){
-					var imageConfigured = resize_img(this, config.bonus.size, config.bonus.size, "fit", false, randomColor(colorOption));
+					var imageConfigured = resize_img(this, config.bonus.size, config.bonus.size, "crop", false, randomColor(colorOption));
 					game.cameraRender.images[excludeName] = imageConfigured;
 				}
 			})();

@@ -24,25 +24,37 @@ var user = require(__dirname+"/../server/users.js");
 var acceptedType = ["application/json"];
 
 function loadAllSessionGame() {
-    var gameFolder = __dirname+"/../bdd/session_game/";
-    fs.readdir(gameFolder, function(err, files){
-        if (err) {
-            throw err;
-        }
-        for (var i = files.length - 1 ; i >= 0 ; i--){
-            if (acceptedType.indexOf(mime.lookup(files[i])) >= 0){
-                fs.readFile(gameFolder+files[i], function (err, data) {
-                    if (err) throw err;
-                    try {
-                        var params = JSON.parse(data);
-                        launchSession(params);
-                    } catch (err) {
-                        
-                    }
-                });
+    var folder = [__dirname+"/../bdd/session_game/", __dirname+"/../bdd/default_game/"];
+    for (var i = folder.length -1 ; i >= 0 ; i--){
+        fs.readdir(folder[i], function(err, files){
+            if (err) {
+                throw err;
             }
-        }
-    });
+            for (var i = files.length - 1 ; i >= 0 ; i--){
+                if (acceptedType.indexOf(mime.lookup(files[i])) >= 0){
+                    fs.readFile(folder[i]+files[i], function (err, data) {
+                        if (err) throw err;
+                        try {
+                            var params = JSON.parse(data);
+                            launchSession(params);
+                        } catch (err) {
+                            
+                        }
+                    });
+                }
+            }
+        });
+    }
+    // fs.readdir(gameFolder, function(err, files){
+    //     if (err) {
+    //         throw err;
+    //     }
+    //     for (var i = files.length - 1 ; i >= 0 ; i--){
+    //         if (acceptedType.indexOf(mime.lookup(files[i])) >= 0){
+    //             fs.readFile(gameFolder+files[i], function (err, data) {
+
+    //     }
+    // });
 }
 
 function createSession (params, userName) {
