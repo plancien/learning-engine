@@ -12,16 +12,49 @@ define([ 'event_bus',
 ], 
 function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, config, createWallBox, flyManageur, ending, shuffle){
     var loadLevel = function(game){
-        var gradient = getGradientList(game.canvas.context);
+
+        var wallList = [];
+        var gradient = getGradientList(game.canvas.context, function(name, pattern){    //Quand le pattern de fond a finis d'etre charge, on l'applique au mur
+            gradient[name] = pattern;
+            if (name == "wallPattern"){
+                for (var i = wallList.length - 1; i >= 0; i--) {
+                    wallList[i].color = pattern;
+                };
+            }
+            else if (name == "topWall"){
+                for (var i = wallList.length - 1; i >= 0; i--) {
+                    var topPattern = {
+                        "width" : wallList[i].width,
+                        "height" : 5,
+                        "x" : wallList[i].x,
+                        "y" : wallList[i].y - 5,
+                        "color" : pattern
+                    };
+                    game.cameraRender.add(topPattern, 10);
+                };
+            }
+            else if (name == "botWall"){
+                for (var i = wallList.length - 1; i >= 0; i--) {
+                    var botPattern = {
+                        "width" : wallList[i].width,
+                        "height" : 5,
+                        "x" : wallList[i].x,
+                        "y" : wallList[i].y + wallList[i].height,
+                        "color" : pattern
+                    };
+                    game.cameraRender.add(botPattern, 10);
+                };
+            }
+        });
+
         var bonusMalus = new BonusMalus(game);
         var box = config.level;
 
         eventBus.on("wall create", function(wall){
-            wall.color = gradient[wall.color] || wall.color; 
-            wall.strokeColor = wall.strokeColor || gradient.rainbow;
-            wall.lineWidth = wall.lineWidth || 4;
-            game.cameraRender.add(wall);
+            wall.color = gradient.wallPattern; 
+            game.cameraRender.add(wall, 11);
             game.collisionEngine.addElement(wall, "wall");
+            wallList.push(wall);
         });
 
         eventBus.on("bonus create", function(bonus, collisionCallback){
