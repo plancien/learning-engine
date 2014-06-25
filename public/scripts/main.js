@@ -19,7 +19,7 @@
             });
             $("#educatorView").hide();
             if(query["session"]) {
-                $("#gameCreation").on("submit",launch.createGame)
+                
                 $("#mainMenu").hide();
                 socket.on("games info", function() {
                     socket.emit("connect to game",query["session"]);
@@ -43,6 +43,7 @@
                 socket.emit("want images names");
 
             } else  {
+                $("#gameCreation").on("submit",launch.createGame)
                 socket.on("games info", ui.createGameSelection);
                 socket.emit("want games info");
                 socket.emit("want images names");

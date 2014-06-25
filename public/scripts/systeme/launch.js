@@ -4,6 +4,8 @@ define(["connector"], function(socket){
     var games = []
 
     function createGame(e) {
+        console.log(e)
+        debugger;
         e && e.preventDefault && e.preventDefault();
         var selected = $(".modelList").val();
         console.log("hehehe")
