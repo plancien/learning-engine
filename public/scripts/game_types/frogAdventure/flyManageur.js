@@ -31,7 +31,7 @@ function(cameraRender, collisionEngine, config, soundList){
 
 		var that = this;
 		element.collisionCallback.hero = function(hero){
-			var angle = Math.atan2(-element.y, -element.x);
+			var angle = Math.atan2(-(element.y - cameraRender.y), -(element.x - cameraRender.x));
 
 			that.animateFly = {};
 			that.animateFly.vecX = Math.cos(angle) * hudConfig.animateFlySpeed;
