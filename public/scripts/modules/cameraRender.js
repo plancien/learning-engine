@@ -13,8 +13,10 @@ define(['event_bus'], function(eventBus) {
         this.buffer.width = canvas.width;
         this.buffer.height = canvas.height;
         this.buffer.context = this.buffer.getContext("2d");
+        this.backgroundColor = "blue";
+        this.background = [];
         // this.buffer.style.display = "hidden";
-        this.noColorElement = color || "rgba(255,0,0,1)";
+        this.noColorElement = color || "rgba(0,0,0,1)";
         if (quad){
             this.quadTree = [];
             this.quadTreeWidth = canvas.width/2;
@@ -61,16 +63,20 @@ define(['event_bus'], function(eventBus) {
                     }
                 }
             }
-            // this.buffer.context.clearRect(0,0,this.buffer.width, this.buffer.height);
-            if (this.parralax){
-                this.canvas.context.globalAlpha = this.parralax.remanance;
-                var x = -(this.x/this.parralax.diviseur % this.parralax.image.width);
-                this.canvas.context.drawImage(this.parralax.image, x, 0, this.parralax.image.width, this.parralax.image.height);
-                if (x + this.parralax.image.width < this.canvas.width)
-                    this.canvas.context.drawImage(this.parralax.image, x + this.parralax.image.width, 0, this.parralax.image.width, this.parralax.image.height);
-
-                this.canvas.context.globalAlpha = 1;
+            this.canvas.context.fillStyle = this.backgroundColor;
+            this.canvas.context.fillRect(0,0,this.canvas.width, this.canvas.height);
+            if (this.background.length > 0){
+                for (var i = 0 ; i < this.background.length ; i++){
+                    
+                    this.canvas.context.globalAlpha = this.background[i].remanance;
+                    var x = -(this.x/this.background[i].diviseur % this.background[i].image.width);
+                    this.drawBackground(x, this.background[i]);               
+                    if (this.background[i].spec != "unique" && x + this.background[i].image.width < this.canvas.width)
+                            this.drawBackground(x + this.background[i].image.width, this.background[i])
+                    this.canvas.context.globalAlpha = 1;
+                }
             }
+
             for (var i = 0, max = tabQueu.length ; i < max ; i++){
                 if (tabQueu[i].sprite){
                     this.animSprite(tabQueu[i]);
@@ -252,12 +258,31 @@ define(['event_bus'], function(eventBus) {
 
         this.canvas.context.restore();
     }
-    CameraRender.prototype.backgroundParralax = function(src, diviseur, remanance){
-        this.parralax = {};
-        this.parralax.image = new Image();
-        this.parralax.image.src = src;
-        this.parralax.diviseur = diviseur || 10;
-        this.parralax.remanance = remanance || 1;
+    CameraRender.prototype.backgroundParralax = function(src, diviseur, remanance, spec){
+        var background = {};
+        background.image = new Image();
+        background.image.src = src;
+        background.diviseur = diviseur || 10;
+        background.remanance = remanance || 1;
+        background.spec = spec || "basic";
+        this.background.push(background);
+    }
+    CameraRender.prototype.drawBackground = function(x, background){
+        if (background.spec == "full")
+            this.canvas.context.drawImage(background.image, x, 0, background.image.width, this.canvas.height);
+        else if (background.spec == "botAlign"){
+            y = this.canvas.height - background.image.height;
+            this.canvas.context.drawImage(background.image, x, y, background.image.width, this.canvas.height);
+        }
+        else if (background.spec == "unique"){
+            var y = (this.canvas.height + background.image.height) - (this.y / background.diviseur) % (this.canvas.height + background.image.height);
+            var x2 = (this.canvas.width + background.image.width) - (this.x / background.diviseur) % (this.canvas.width + background.image.width);
+            y -= background.image.height;
+            x2 -= background.image.width
+            this.canvas.context.drawImage(background.image, x2, y, background.image.width, background.image.height);
+        }
+        else
+            this.canvas.context.drawImage(background.image, x, 0, background.image.width, background.image.height);
     }
 
     var cameraRender = new CameraRender();

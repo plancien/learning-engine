@@ -69,7 +69,7 @@ define(['event_bus',
 
             if (this.wallGrip){             //Si le hero est acroche a un plafond
                 if (game.collisionEngine.rectCollision(this, this.hitbox[0], this.wallGrip, this.wallGrip.hitbox[0])){
-                    this.y = this.wallGrip.y + this.wallGrip.height - 1; //On rajoute un - 1 pour creer une collision sur la prochaine frame
+                    this.y = this.wallGrip.y - this.hitbox[0].offsetY + this.wallGrip.height - 0.01; //On rajoute un - 1 pour creer une collision sur la prochaine frame
                     this.speedY = 0;
                 }
                 else{

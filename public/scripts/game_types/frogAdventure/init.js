@@ -25,9 +25,15 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
         game.canvas.context.fillStyle = "rgba(30,30,30,0.8)";
 
         game.cameraRender = cameraRender;
-        game.cameraRender.backgroundParralax("./images/frogAdventure/pikachuParallax.png", 1, 0.5);
         game.cameraRender.init(game.canvas, true);
-        game.cameraRender.addSprite("hero", "./images/frogAdventure/green_guy_large.png", config.heroSprite);
+        game.cameraRender.backgroundParralax("./images/frogAdventure/background.png", 20, 1, "botAlign");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 14, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 16, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 8, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 4, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 10, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 12, 0.5, "unique");
+        game.cameraRender.addSprite("hero", "./images/frogAdventure/cube_platform.png", config.heroSprite);
         game.cameraRender.addImage("fly", "./images/frogAdventure/fly.png");
         game.cameraRender.addImage("ending", "./images/frogAdventure/frogAdventureEnding.gif");
 
