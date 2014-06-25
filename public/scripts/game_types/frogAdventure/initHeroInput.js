@@ -15,6 +15,7 @@ define(['event_bus', 'game_types/frogAdventure/config', 'game_types/frogAdventur
 	        if (game.hero.canJump && game.hero.currentJumpFrame > 0){
 
 	        	if (game.hero.currentJumpFrame === config.hero.nbFrameJump){
+	        		game.hero.changeAnimation("jump");
 	        		soundList.jump.play();
 	        	}
 

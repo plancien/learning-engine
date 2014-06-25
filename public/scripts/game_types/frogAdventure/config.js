@@ -18,7 +18,7 @@ define([], function(){
 
     gravity = { 
         acceleration : 1,
-        maxSpeed : 30
+        maxSpeed : 15
     };
 
     load = {
@@ -31,7 +31,7 @@ define([], function(){
         speedX : 0,
         speedY : 0,
         friction : 0.8,
-        acceleration : 5,
+        acceleration : 4,
         color : "rgba(0,200,255,1)",
         width : 39,
         height : 41,
@@ -52,10 +52,10 @@ define([], function(){
 
     heroHitbox = {
         "shape" : "rect",
-        "width" : 18,
+        "width" : 24,
         "height" : 32,
         "offsetY" : 0,
-        "offsetX" : 7
+        "offsetX" : 4
     };
 
     heroSprite = {  
@@ -65,16 +65,12 @@ define([], function(){
         idleRightReverse :  {"width" : 32,   "height" :32,   "nbAnim" : 1,   "loop" : -1,    "fps" : 5,  "offsetY" : 0,  "offsetX" : 0,    "rotation" : Math.PI}, 
         runLeft :           {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 1,  "offsetY" : 32},    
         runRight :          {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 1,  "offsetY" : 64}, 
-        runLeftReverse :    {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 5,  "offsetY" : 64,  "scaleX" : 1,   "scaleY" : -1},    
-        runRightReverse :   {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 5,  "offsetY" : 32,  "rotation" : Math.PI}, 
-        jumpLeft :          {"width" : 32,   "height" :32,   "nbAnim" : 1,   "loop" : -1,    "fps" : 5,  "offsetY" : 0,  "offsetX" : 0},  
-        jumpRight :         {"width" : 32,   "height" :32,   "nbAnim" : 1,   "loop" : -1,    "fps" : 5,  "offsetY" : 0,  "offsetX" : 0,    "scaleX" : -1,  "scaleY" : 1}, 
-        jumpLeftReverse :   {"width" : 32,   "height" :32,   "nbAnim" : 1,   "loop" : -1,    "fps" : 5,  "offsetY" : 0,  "offsetX" : 0,    "scaleX" : 1,   "scaleY" : -1},    
-        jumpRightReverse :  {"width" : 32,   "height" :32,   "nbAnim" : 1,   "loop" : -1,    "fps" : 5,  "offsetY" : 0,  "offsetX" : 0,    "rotation" : Math.PI}, 
-        waitingLeft :       {"width" : 32,   "height" :32,   "nbAnim" : 5,   "loop" : 1,     "fps" : 10,     "offsetY" : 0,  "offsetX" : 0,    "loopCallback" : function (target){target.currentFrameWaiting = 0}},   
-        waitingRight :      {"width" : 32,   "height" :32,   "nbAnim" : 5,   "loop" : 1,     "fps" : 10,     "offsetY" : 0,  "offsetX" : 0,    "scaleX" : -1,  "scaleY" : 1,   "loopCallback" : function (target){target.currentFrameWaiting = 0}},   
-        waitingLeftReverse :{"width" : 32,   "height" :32,   "nbAnim" : 5,   "loop" : 1,     "fps" : 10,     "offsetY" : 0,  "offsetX" : 0,    "scaleX" : 1,   "scaleY" : -1,  "loopCallback" : function (target){target.currentFrameWaiting = 0}},   
-        waitingRightReverse:{"width" : 32,   "height" :32,   "nbAnim" : 5,   "loop" : 1,     "fps" : 10,     "offsetY" : 0,  "offsetX" : 0,    "rotation" : Math.PI,   "loopCallback" : function (target){target.currentFrameWaiting = 0}}
+        runRightReverse :   {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 1,  "offsetY" : 64,  "scaleX" : 1,   "scaleY" : -1},    
+        runLeftReverse :    {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 1,  "offsetY" : 64,  "rotation" : Math.PI}, 
+        jump :              {"width" : 32,   "height" :32,   "nbAnim" : 4,   "loop" : 1,     "fps" : 2,     "offsetY" : 0,  "offsetX" : 32,    "loopCallback" : function (target){target.currentAnim = "idleLeft"}},   
+        inAirRightReverse :   {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 5,  "offsetY" : 32},    
+        inAirLeftReverse :    {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 5,  "offsetY" : 64}, 
+
     };
     hero.width = 39;
     hero.height = 41;
