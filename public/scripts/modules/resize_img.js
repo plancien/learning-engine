@@ -2,7 +2,7 @@ define([], function(){
     "use strict";
     
 
-    return function resizeImage(img,width,height,ratio, circle) {
+    return function resizeImage(img,width,height,ratio, circle, addStroke) {
         var canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
@@ -29,7 +29,12 @@ define([], function(){
         } else {
             ctx.drawImage(img,0,0,width,height);
         }
-      return canvas
+        if (addStroke){
+            ctx.strokeStyle = addStroke || "black";
+            ctx.lineWidth = 5;
+            ctx.strokeRect(0,0,width,height);
+        }
+      return canvas;
     }
 
 });
