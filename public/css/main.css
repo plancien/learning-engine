@@ -69,7 +69,7 @@ height: 15px;
 	width: 800px;
 }
 
-#gameCreation{
+.gameCreation {
 	width: 400px;
 	float: right;
 }
@@ -79,7 +79,7 @@ height: 15px;
 	float: left;
 }
 
-#gameSelect, #blocUser, #gameCreation, #imageUploader{
+#gameSelect, #blocUser, .gameCreation, #imageUploader{
 	text-align: center;
 	border: 1px solid #ddd;
 	-mox-border-radius: 6px;

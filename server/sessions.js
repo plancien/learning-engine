@@ -22,40 +22,36 @@ var mime = require("mime");
 var user = require(__dirname+"/../server/users.js");
 
 var acceptedType = ["application/json"];
+var refDefaultGame = [];
 
 function loadAllSessionGame() {
-    var folder = [__dirname+"/../bdd/session_game/", __dirname+"/../bdd/default_game/"];
-    for (var i = folder.length -1 ; i >= 0 ; i--){
-        fs.readdir(folder[i], function(err, files){
-            if (err) {
-                throw err;
-            }
-            for (var i = files.length - 1 ; i >= 0 ; i--){
-                if (acceptedType.indexOf(mime.lookup(files[i])) >= 0){
-                    fs.readFile(folder[i]+files[i], function (err, data) {
-                        if (err) throw err;
-                        try {
-                            var params = JSON.parse(data);
-                            launchSession(params);
-                        } catch (err) {
-                            
-                        }
-                    });
+    var folder = [__dirname+"/../bdd/default_game/", __dirname+"/../bdd/session_game/"];
+    for (j = folder.length -1 ; j >= 0 ; j--){
+        (function(){    //Create a private scope
+            var currentFolder = folder[j]; // <-- for this 
+            var isDefaultGame = (j == 0) ? true : false;
+            fs.readdir(currentFolder, function(err, files){
+                if (err) {
+                    throw err;
                 }
-            }
-        });
+                for (var i = files.length - 1 ; i >= 0 ; i--){
+                    if (acceptedType.indexOf(mime.lookup(files[i])) >= 0){
+                        fs.readFile(currentFolder+files[i], function (err, data) {
+                            if (err) throw err;
+                            try {
+                                var params = JSON.parse(data);
+                                launchSession(params, isDefaultGame);
+                            } catch (err) {
+                                
+                            }
+                        });
+                    }
+                }
+            });
+        })();
     }
-    // fs.readdir(gameFolder, function(err, files){
-    //     if (err) {
-    //         throw err;
-    //     }
-    //     for (var i = files.length - 1 ; i >= 0 ; i--){
-    //         if (acceptedType.indexOf(mime.lookup(files[i])) >= 0){
-    //             fs.readFile(gameFolder+files[i], function (err, data) {
-
-    //     }
-    // });
 }
+
 
 function createSession (params, userName) {
     var name = generateUrl();
@@ -68,6 +64,20 @@ function createSession (params, userName) {
     // return name;
 }
 
+function mergeSession(old,newObject) {
+    old.question = newObject.question || old.question;
+    old.bonusUrl = newObject.bonusUrl || old.bonusUrl;
+    old.malusUrl = newObject.malusUrl || old.malusUrl;
+    old.bonus = newObject.bonus && newObject.bonus.length > 0 ? newObject.bonus : old.bonus;
+    old.malus = newObject.malus && newObject.malus.length > 0 ? newObject.malus : old.malus;
+}
+
+function updateSession(session) {
+    console.log(session)
+    mergeSession(sessions[session.name],session)
+    saveSessionToFile(sessions[session.name]);
+}
+
 function saveSessionToFile(session) {
     var gameFile = JSON.stringify(session);
     var pathGameSession = __dirname+"/../bdd/session_game/"+session.name+".json"
@@ -75,10 +85,12 @@ function saveSessionToFile(session) {
     // return name;
 }
 
-function launchSession(params){
+function launchSession(params, addToDefaultGame){
     var name = params.name;
     params.players = [];
     sessions[name] = params;
+    if (addToDefaultGame)
+        refDefaultGame.push(name)
 }
 
 function generateUrl() {
@@ -123,8 +135,16 @@ function register(socket,io) {
             for (var i = tabSessionName.length - 1 ; i >= 0 ; i--){
                 refWantedSession[tabSessionName[i]] = sessions[tabSessionName[i]];
             }
+            for (var i = refDefaultGame.length - 1 ; i >= 0 ; i--){
+                refWantedSession[refDefaultGame[i]] = sessions[refDefaultGame[i]];   
+            }
             socket.emit("live sessions", refWantedSession);
         });
+    });
+
+    socket.on("update game", function(game) {
+        updateSession(game);
+        socket.emit("redirect game",game)
     });
 
     socket.on("delete session", deleteSession);
