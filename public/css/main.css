@@ -145,7 +145,18 @@ ul.thumbnails.image_picker_selector > li {
 	height: 100px;
 }
 
-ul.thumbnails.image_picker_selector img {
+ul.thumbnails.image_picker_selector img, 
+#educatorView div.images img  {
 	max-width: 100px;
 	max-height: 100px;
+}
+#educatorView div.images img { 
+	padding: 3px;
+	margin: 3px;
+}
+#educatorView .good-image {
+	border: 1px solid green;
+}
+#educatorView .wrong-image {
+	border: 1px solid red;
 }

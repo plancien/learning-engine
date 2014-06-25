@@ -33,9 +33,12 @@ function loadAllSessionGame() {
             if (acceptedType.indexOf(mime.lookup(files[i])) >= 0){
                 fs.readFile(gameFolder+files[i], function (err, data) {
                     if (err) throw err;
-                    var params = JSON.parse(data);
+                    try {
+                        var params = JSON.parse(data);
+                        launchSession(params);
+                    } catch (err) {
                         
-                    launchSession(params);
+                    }
                 });
             }
         }
