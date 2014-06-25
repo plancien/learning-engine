@@ -67,11 +67,15 @@ define([], function(){
         runRight :          {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 1,  "offsetY" : 64}, 
         runRightReverse :   {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 1,  "offsetY" : 64,  "scaleX" : 1,   "scaleY" : -1},    
         runLeftReverse :    {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 1,  "offsetY" : 64,  "rotation" : Math.PI}, 
-        jump :              {"width" : 32,   "height" :32,   "nbAnim" : 4,   "loop" : 1,     "fps" : 2,     "offsetY" : 0,  "offsetX" : 32,    "loopCallback" : function (target){target.currentAnim = "idleLeft"}},   
-        inAirRightReverse :   {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 5,  "offsetY" : 32},    
-        inAirLeftReverse :    {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 5,  "offsetY" : 64}, 
+        jump :              {"width" : 32,   "height" :32,   "nbAnim" : 4,   "loop" : 1,     "fps" : 3,     "offsetY" : 0,  "offsetX" : 0,    "loopCallback" : function (target){target.currentAnim = "idleLeft"}},   
+        inAirRight :        {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 5,  "offsetY" : 32},    
+        inAirLeft :         {"width" : 32,   "height" :32,   "nbAnim" : 9,   "loop" : -1,    "fps" : 5,  "offsetY" : 64}, 
 
     };
+    collectibleSprite = {
+        idle : {"width" : 32,   "height" :32,   "nbAnim" : 8,   "loop" : -1,    "fps" : 5,  "offsetY" : 0,  "offsetX" : 0},  
+    }
+
     hero.width = 39;
     hero.height = 41;
 
@@ -83,6 +87,7 @@ define([], function(){
         "heroSprite": heroSprite,
         "level"     : level,
         "hud"       : hud,
-        "heroHitbox": heroHitbox
+        "heroHitbox": heroHitbox,
+        "collectibleSprite" : collectibleSprite
     }
 });     

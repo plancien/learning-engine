@@ -91,13 +91,16 @@ define(['event_bus',
             }
             var third = (this.speedY < 0 || this.wallGrip) ? "Reverse" : "";
 
-            if (third === "Reverse" && !this.wallGrip)
-                first = "inAir"
+            if (!this.wallGrip && !this.canJump && (this.speedY < 0 || this.speedX == 0)){
+                first = "inAir";
+                third = "";
+            }
 
             var animationName = first + this.sens + third;
 
-            if (this.currentAnim != animationName && this.currentAnim != "jump")
+            if (this.currentAnim != animationName && this.currentAnim != "jump"){
                 this.changeAnimation(animationName);
+            }
         }
 
         game.gravityEngine.addElement(game.hero);

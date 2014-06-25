@@ -16,7 +16,7 @@ function(
 	var BonusManageur = function(game){
 		this.bonusImageName = [];
 		this.malusImageName = [];
-		var colorOption = {"luminosity" : 100}
+		var colorOption = {"luminosity" : "dark"}
 
 		for (var i = game.params.bonus.length - 1; i >= 0; i--) { //On ajoute les images bonus et malus dans le moteur de rendue
 			var imageName = "bonus"+i;

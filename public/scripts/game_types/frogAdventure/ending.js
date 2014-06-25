@@ -6,21 +6,22 @@ function(eventBus, cameraRender, collisionEngine, config, flyManageur){
 		this.incrementGlobalAlpha = 0.02;
 	};
 	Ending.prototype.init = function(x, y){
-		var ending = {
+		for (var i = 1; i >= 0; i--) {
+			var ending = {
 			"x" : x,
-			"y" : y,
+			"y" : y + 5 +(config.level.doorHeight/2 * i),
 			"width" : config.level.doorHeight,
-			"height" : config.level.doorHeight
-		};
-		ending.x -= ending.width;
-		ending.image = "ending";
+			"height" : config.level.doorHeight/2 - 10
+			};
+			ending.x -= ending.width;
+			ending.image = "ending"+i;
 
 
-		cameraRender.add(ending);
-		collisionEngine.addElement(ending, "ending");
-
-		ending.collisionCallback.hero = function(){
-			eventBus.emit("ending");
+			cameraRender.add(ending, 30);
+			collisionEngine.addElement(ending, "ending");
+			ending.collisionCallback.hero = function(){
+				eventBus.emit("ending");
+			};
 		};
 	};
 	Ending.prototype.loop = function(context){
