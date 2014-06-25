@@ -66,7 +66,9 @@ function addImage(imageName, userName){
         fs.writeFile(pathUser, JSON.stringify(file, null, 4), function(){});
     });
 }
-function addSessionGame(gameName, userName){
+function addSessionGame(userName, gameName){
+    console.log("Nom du jeu : " + gameName);
+        
     var pathUser = __dirname+"/../bdd/user/"+userName+".json";
     fs.readFile(pathUser, 'utf8', function (err, data) {
         var file = JSON.parse(data);
@@ -74,6 +76,15 @@ function addSessionGame(gameName, userName){
         fs.writeFile(pathUser, JSON.stringify(file, null, 4), function(){});
     });
 
+}
+function getSessionGame(userName, callback){
+    var pathUser = __dirname+"/../bdd/user/"+userName+".json";
+    fs.readFile(pathUser, 'utf8', function (err, data) {
+        var file = JSON.parse(data);
+        console.log("donnee file.game de user : " + data);
+            
+        callback(file.game);
+    });    
 }
 
 var file = __dirname + '/test.json';
@@ -126,3 +137,5 @@ function registerUserRoute(app) {
 module.exports.registerUserRoute = registerUserRoute;
 module.exports.addImage = addImage;
 module.exports.getUserImageSync = getUserImageSync;
+module.exports.getSessionGame = getSessionGame;
+module.exports.addSessionGame = addSessionGame;
