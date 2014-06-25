@@ -18,6 +18,11 @@ module.exports = function(app) {
     });
     users.registerUserRoute(app);
 
+    app.get('/logout', function(req, res){
+      req.logout();
+      res.redirect('/');
+    });
+
     app.post("/upload",function(req,res) {
         var fs = require('fs');
         img.save(req.files.uploadedImage,function(err,data) {
