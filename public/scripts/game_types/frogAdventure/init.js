@@ -34,8 +34,14 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
         game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 10, 0.5, "unique");
         game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 12, 0.5, "unique");
         game.cameraRender.addSprite("hero", "./images/frogAdventure/cube_platform.png", config.heroSprite);
+        game.cameraRender.addSprite("collectible", "./images/frogAdventure/star.png", config.collectibleSprite);
         game.cameraRender.addImage("fly", "./images/frogAdventure/fly.png");
-        game.cameraRender.addImage("ending", "./images/frogAdventure/frogAdventureEnding.gif");
+        game.cameraRender.addImage("ending1", "./images/frogAdventure/portal_end0.png");
+        game.cameraRender.addImage("ending0", "./images/frogAdventure/portal_end1.png");
+
+        console.log(config.collectibleSprite);
+            
+
 
         game.collisionEngine = collisionEngine;
         game.collisionEngine.addGroup("wall", false, false, false);

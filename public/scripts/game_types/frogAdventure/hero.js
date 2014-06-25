@@ -81,26 +81,30 @@ define(['event_bus',
 
 
             if (this.speedX == 0){
-                this.currentFrameWaiting++;     //Quand il est a l'arret on attend pour lui faire jouer uen petite animation
-                var first = (this.currentFrameWaiting >= this.frameForWaitingAnimation) ? "waiting" : "idle";
+                var first = "idle";
                 soundList.step.mute();
             }
             else {
-                this.currentFrameWaiting = 0;
                 var first = "run";
                 if (this.speedY == 0)
                     soundList.step.unmute();
             }
             var third = (this.speedY < 0 || this.wallGrip) ? "Reverse" : "";
 
+            if (!this.wallGrip && !this.canJump && (this.speedY < 0 || this.speedX == 0)){
+                first = "inAir";
+                third = "";
+            }
+
             var animationName = first + this.sens + third;
 
-            if (this.currentAnim != animationName)
+            if (this.currentAnim != animationName && this.currentAnim != "jump"){
                 this.changeAnimation(animationName);
+            }
         }
 
         game.gravityEngine.addElement(game.hero);
-        game.cameraRender.add(game.hero);
+        game.cameraRender.add(game.hero, 12);
         game.cameraRender.fixedCameraOn(game.hero);
     };
 

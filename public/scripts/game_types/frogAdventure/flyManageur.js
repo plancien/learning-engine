@@ -11,7 +11,7 @@ function(cameraRender, collisionEngine, config, soundList){
 		this.animateFly = false;
 
 		this.image = new Image();
-		this.image.src = "./images/frogAdventure/fly.png";
+		this.image.src = "./images/frogAdventure/star_icon.png";
 
 		window.content = this.content;
 	}
@@ -22,15 +22,16 @@ function(cameraRender, collisionEngine, config, soundList){
 				"y" : y,
 				"width" : 50,
 				"height" : 50,
-				"image" : "fly"
+				"sprite" : "collectible"
 		};
-
+		cameraRender.putSpriteOn(element, "collectible", "idle");
+		element.changeAnimation("idle")
 		cameraRender.add(element);
 		collisionEngine.addElement(element, "fly");
 
 		var that = this;
 		element.collisionCallback.hero = function(hero){
-			var angle = Math.atan2(-element.y, -element.x);
+			var angle = Math.atan2(-(element.y - cameraRender.y), -(element.x - cameraRender.x));
 
 			that.animateFly = {};
 			that.animateFly.vecX = Math.cos(angle) * hudConfig.animateFlySpeed;

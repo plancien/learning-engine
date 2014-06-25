@@ -1,20 +1,56 @@
-define(['event_bus', 'game_types/frogAdventure/config', 'game_types/frogAdventure/soundList', 'game_types/frogAdventure/shuffle'
-], 
-function(eventBus, config, soundList, shuffle){
+define(['event_bus',
+ 'game_types/frogAdventure/config',
+ 'game_types/frogAdventure/soundList',
+ 'game_types/frogAdventure/shuffle',
+ 'modules/resize_img',
+ 'ext_libs/randomColor'
+],
+function(
+ eventBus,
+ config,
+ soundList,
+ shuffle,
+ resize_img,
+ randomColor){
 
 	var BonusManageur = function(game){
 		this.bonusImageName = [];
 		this.malusImageName = [];
+		var colorOption = {"luminosity" : "dark"}
 
 		for (var i = game.params.bonus.length - 1; i >= 0; i--) { //On ajoute les images bonus et malus dans le moteur de rendue
 			var imageName = "bonus"+i;
 			var imageUrl = game.params.bonus[i];
+
+			var image = new Image();
+			image.src = game.params.bonus[i];
+			(function(){
+				var excludeName = imageName;
+				image.onload = function(){
+					var imageConfigured = resize_img(this, config.bonus.size, config.bonus.size, "fit", false, randomColor(colorOption));
+					game.cameraRender.images[excludeName] = imageConfigured;
+				}
+			})();
+
+
+			game.cameraRender.images[imageName] = image;
 			game.cameraRender.addImage(imageName, imageUrl);
 			this.bonusImageName.push(imageName);
 		};
 		for (var i = game.params.malus.length - 1; i >= 0; i--) {
 			var imageName = "malus"+i;
 			var imageUrl = game.params.malus[i];
+
+			var image = new Image();
+			image.src = game.params.malus[i];
+			(function(){
+				var excludeName = imageName;
+				image.onload = function(){
+					var imageConfigured = resize_img(this, config.bonus.size, config.bonus.size, "fit", false, randomColor(colorOption));
+					game.cameraRender.images[excludeName] = imageConfigured;
+				}
+			})();
+
 			game.cameraRender.addImage(imageName, imageUrl);
 			this.malusImageName.push(imageName);
 		};
