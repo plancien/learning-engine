@@ -101,7 +101,7 @@ define(['event_bus',
         }
 
         game.gravityEngine.addElement(game.hero);
-        game.cameraRender.add(game.hero);
+        game.cameraRender.add(game.hero, 12);
         game.cameraRender.fixedCameraOn(game.hero);
     };
 

@@ -1,7 +1,7 @@
 define([], function(){
 
     bonus = {
-        size : 50
+        size : 65
     };
 
     hud = {
