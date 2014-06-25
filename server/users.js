@@ -10,7 +10,6 @@ function findUser(name, callback){
 	var file = __dirname+"/../bdd/userList.json";
 	fs.readFile(file, 'utf8', function (err, data) {
 		if (err) {
-			console.log('Error: ' + err);
 			return;
 		}
 	 
@@ -35,7 +34,6 @@ function saveUser(name,password,callback) {
     var file = __dirname+"/../bdd/userList.json";
     fs.readFile(file, 'utf8', function (err, data) {
         if (err) {
-            console.log('Error: ' + err);
             return;
         }
      
@@ -67,7 +65,6 @@ function addImage(imageName, userName){
     });
 }
 function addSessionGame(userName, gameName){
-    console.log("Nom du jeu : " + gameName);
         
     var pathUser = __dirname+"/../bdd/user/"+userName+".json";
     fs.readFile(pathUser, 'utf8', function (err, data) {
@@ -81,7 +78,6 @@ function getSessionGame(userName, callback){
     var pathUser = __dirname+"/../bdd/user/"+userName+".json";
     fs.readFile(pathUser, 'utf8', function (err, data) {
         var file = JSON.parse(data);
-        console.log("donnee file.game de user : " + data);
             
         callback(file.game);
     });    

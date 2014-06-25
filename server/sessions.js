@@ -34,6 +34,7 @@ function loadAllSessionGame() {
                 fs.readFile(gameFolder+files[i], function (err, data) {
                     if (err) throw err;
                     var params = JSON.parse(data);
+                        
                     launchSession(params);
                 });
             }
@@ -44,19 +45,19 @@ function loadAllSessionGame() {
 function createSession (params, userName) {
     var name = generateUrl();
     params.name = name;
-
+        
     user.addSessionGame(userName, name);
     launchSession(params);
 
     saveSessionToFile(sessions[name])
-    return name;
+    // return name;
 }
 
 function saveSessionToFile(session) {
     var gameFile = JSON.stringify(session);
     var pathGameSession = __dirname+"/../bdd/session_game/"+session.name+".json"
     fs.writeFile(pathGameSession,gameFile, function(){});
-    return name;
+    // return name;
 }
 
 function launchSession(params){
@@ -102,7 +103,6 @@ function register(socket,io) {
 
     socket.on("want all sessions", function() {
         user.getSessionGame(socket.name, function(tabSessionName){
-            console.log("le tableau des nom de sessions : " + tabSessionName);
                 
             var refWantedSession = {};
             for (var i = tabSessionName.length - 1 ; i >= 0 ; i--){

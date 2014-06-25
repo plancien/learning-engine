@@ -26,13 +26,13 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
 
         game.cameraRender = cameraRender;
         game.cameraRender.init(game.canvas, true);
-        game.cameraRender.backgroundParralax("./images/frogAdventure/background.png", 20, 0.5, "full");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 1, 1, "unique");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 2, 1, "unique");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 8, 1, "unique");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 4, 1, "unique");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 10, 1, "unique");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 12, 1, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/background.png", 20, 1, "botAlign");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 14, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 16, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 8, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 4, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 10, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 12, 0.5, "unique");
         game.cameraRender.addSprite("hero", "./images/frogAdventure/cube_platform.png", config.heroSprite);
         game.cameraRender.addImage("fly", "./images/frogAdventure/fly.png");
         game.cameraRender.addImage("ending", "./images/frogAdventure/frogAdventureEnding.gif");

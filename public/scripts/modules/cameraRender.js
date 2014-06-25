@@ -13,6 +13,7 @@ define(['event_bus'], function(eventBus) {
         this.buffer.width = canvas.width;
         this.buffer.height = canvas.height;
         this.buffer.context = this.buffer.getContext("2d");
+        this.backgroundColor = "blue";
         this.background = [];
         // this.buffer.style.display = "hidden";
         this.noColorElement = color || "rgba(0,0,0,1)";
@@ -62,7 +63,8 @@ define(['event_bus'], function(eventBus) {
                     }
                 }
             }
-            this.canvas.context.clearRect(0,0,this.canvas.width, this.canvas.height);
+            this.canvas.context.fillStyle = this.backgroundColor;
+            this.canvas.context.fillRect(0,0,this.canvas.width, this.canvas.height);
             if (this.background.length > 0){
                 for (var i = 0 ; i < this.background.length ; i++){
                     
@@ -268,6 +270,10 @@ define(['event_bus'], function(eventBus) {
     CameraRender.prototype.drawBackground = function(x, background){
         if (background.spec == "full")
             this.canvas.context.drawImage(background.image, x, 0, background.image.width, this.canvas.height);
+        else if (background.spec == "botAlign"){
+            y = this.canvas.height - background.image.height;
+            this.canvas.context.drawImage(background.image, x, y, background.image.width, this.canvas.height);
+        }
         else if (background.spec == "unique"){
             var y = (this.canvas.height + background.image.height) - (this.y / background.diviseur) % (this.canvas.height + background.image.height);
             var x2 = (this.canvas.width + background.image.width) - (this.x / background.diviseur) % (this.canvas.width + background.image.width);

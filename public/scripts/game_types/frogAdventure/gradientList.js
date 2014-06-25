@@ -26,6 +26,14 @@ define([], function(){
         list.invertBoxColor.addColorStop(0,  '#000'); 
         list.invertBoxColor.addColorStop(1,'#FFF'); 
 
+        list.backgroundGradient = context.createLinearGradient(0,0,0,600);
+        list.backgroundGradient.addColorStop(1,  '#F2FEFF'); 
+        list.backgroundGradient.addColorStop(0,'#BFE5F4'); 
+        // list.backgroundGradient.addColorStop(0,  '#000'); 
+        // list.backgroundGradient.addColorStop(1,'#FFF'); 
+
+
+
         list.wallPattern = "green";
 
         var wallTile = new Image();

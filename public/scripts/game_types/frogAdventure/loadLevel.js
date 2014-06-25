@@ -46,6 +46,7 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
                 };
             }
         });
+        game.cameraRender.backgroundColor = gradient.backgroundGradient;
 
         var bonusMalus = new BonusMalus(game);
         var box = config.level;
