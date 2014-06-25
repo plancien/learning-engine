@@ -71,7 +71,20 @@ define([], function(){
         $("#educatorView button.delete").on("click",function() {
             console.log("ok")
             that.emit("delete session",game.name);
-        })
+        });
+
+        var $images = $("#educatorView div.images");
+        console.log(game.bonus,$images);
+        for (var i = game.bonus.length - 1; i >= 0; i--) {
+            console.log($img,"fff");
+            var $img = $("<img src='"+game.bonus[i]+"' class='selected-image good-image'>");
+            console.log($img);
+            $images.append($img)
+
+        };
+        for (var i = game.malus.length - 1; i >= 0; i--) {
+            $images.append("<img src='"+game.malus[i]+"' class='selected-image wrong-image'>")
+        };
     }
 
     return {

@@ -33,6 +33,7 @@
         
       </div>
       <a href="inscription">S'inscrire</a>
+
       <form id="gameCreation" class="gameOptions">
         <h1>Create a custom game !</h1>
         Question : 
@@ -42,28 +43,33 @@
           
         </select><br>
         Malus image : 
-        <select id="malusImg"  multiple="multiple">
-          
-        </select><br>
+        <select id="malusImg"  multiple="multiple"></select><br>
+
         Game Model : 
         <select id="modelList"></select>
+
         <div id="modelDescription">Model description.</div>
         <div id="modelParams"></div>
         <input type="submit" value="Create !">
       </form>
     </div>
+
+
     <div id="educatorView">
       <h2></h2>
       <h3></h3>
+      <div class="images"></div>
       <a href="info">play !</a>
-      <ul class="players">
-        
-      </ul>
+      <ul class="players"></ul>
       <button class="delete">Delete !</button>
+      
     </div>
+
     <div id="container">
       <div id="containerGameover"></div>
     </div>
+
+
     <footer>Copyright 2014-2015 - Learning Engine
       <div id="changeColor">Change Color Theme -
         <button id="rouge" class="btnThemes">Rouge !</button>
@@ -72,6 +78,8 @@
         <button id="bleu" class="btnThemes">Bleu !</button>
       </div>
     </footer>
+
+
     <script>
       window.userName = "<%- userName %>";
     </script>
