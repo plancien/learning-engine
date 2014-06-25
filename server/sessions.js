@@ -56,6 +56,20 @@ function createSession (params, userName) {
     // return name;
 }
 
+function mergeSession(old,newObject) {
+    old.question = newObject.question || old.question;
+    old.bonusUrl = newObject.bonusUrl || old.bonusUrl;
+    old.malusUrl = newObject.malusUrl || old.malusUrl;
+    old.bonus = newObject.bonus && newObject.bonus.length > 0 ? newObject.bonus : old.bonus;
+    old.malus = newObject.malus && newObject.malus.length > 0 ? newObject.malus : old.malus;
+}
+
+function updateSession(session) {
+    console.log(session)
+    mergeSession(sessions[session.name],session)
+    saveSessionToFile(sessions[session.name]);
+}
+
 function saveSessionToFile(session) {
     var gameFile = JSON.stringify(session);
     var pathGameSession = __dirname+"/../bdd/session_game/"+session.name+".json"
@@ -113,6 +127,11 @@ function register(socket,io) {
             }
             socket.emit("live sessions", refWantedSession);
         });
+    });
+
+    socket.on("update game", function(game) {
+        updateSession(game);
+        socket.emit("redirect game",game)
     });
 
     socket.on("delete session", deleteSession);

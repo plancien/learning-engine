@@ -7,8 +7,8 @@ define([], function(){
             display += '<option value="' + data[i].url + '" data-img-src="' + data[i].url + '">' + data[i].name + '</option>';
         }
 
-        $("#bonusImg").html(display).imagepicker();
-        $("#malusImg").html(display).imagepicker();
+        $(".bonusImg").html(display).imagepicker();
+        $(".malusImg").html(display).imagepicker();
     }
 
     function injectCSS(url) {
@@ -17,14 +17,14 @@ define([], function(){
 
     //TODO: Refactor
     function replaceOptionTemplate(html) {
-        $("#modelParams").empty();
-        $("#modelParams").append(html);
+        $(".modelParams").empty();
+        $(".modelParams").append(html);
     }
 
 
     function createGameSelection(infos) {
         console.log(infos)
-        var $gamelist = $("#modelList");
+        var $gamelist = $(".modelList");
         $gamelist.empty();
         for (var i = 0; i < infos.length; i++) {(function(i) {
             console.log($gamelist)
@@ -40,7 +40,7 @@ define([], function(){
     }
 
     function showGameInfo(game) {
-        $("#modelDescription").html(game.gameDescription);
+        $(".modelDescription").html(game.gameDescription);
     }
 
     function createSessionsButtons(sessions) {

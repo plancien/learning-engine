@@ -5,15 +5,27 @@ define(["connector"], function(socket){
 
     function createGame(e) {
         e && e.preventDefault && e.preventDefault();
-        var selected = $("#modelList").val();
+        var selected = $(".modelList").val();
+        console.log("hehehe")
         if (!games[selected]) {
             return false;
         }
+        
         socket.emit("create game",getGameOption());
         socket.on("redirect game",function(gameInfo) {
             window.location.href = "/?info="+gameInfo.name;
         });
         //joinGame(getGameOption());
+    }
+
+    function updateGame(game) {
+        var options = getGameOption("#gameUpdate");
+        options.name = game.name;
+        socket.emit("update game",options);
+        console.log("yeah")
+        socket.on("redirect game",function(gameInfo) {
+            window.location.href = "/?info="+gameInfo.name;
+        });
     }
     
     function joinGame(gameInfo) {
@@ -29,16 +41,16 @@ define(["connector"], function(socket){
         socket.emit()
     }
 
-    function getGameOption() {
+    function getGameOption(div) {
+        var div = div || "#gameCreation";
         return {
-            bonusUrl: $("#bonusImg").val()[0],
-            malusUrl: $("#malusImg").val()[0],
-            bonus: $("#bonusImg").val(),
-            malus: $("#malusImg").val(),
-            question: $("#question").val(),
-            game: $("#modelList").val()
+            bonus: $(div+" .bonusImg").val(),
+            malus: $(div+" .malusImg").val(),
+            question: $(div+" .question").val(),
+            game: $(div+" .modelList").val()
         };
     }
+
 
     function registerGames(infos) {
         for (var i = infos.length - 1; i >= 0; i--) {
@@ -49,7 +61,9 @@ define(["connector"], function(socket){
     return {
         createGame: createGame,
         registerGames: registerGames,
-        joinGame: joinGame
+        joinGame: joinGame,
+        gameUpdate: gameUpdate,
+        updateGame: updateGame
     }
 
 });

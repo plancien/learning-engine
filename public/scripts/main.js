@@ -7,7 +7,7 @@
         socket.on('inject template', ui.replaceOptionTemplate);
         socket.on('live sessions', ui.createSessionsButtons);
         socket.on("games info", launch.registerGames);
-        $("#gameCreation").on("submit",launch.createGame)
+        
         $("#mainMenu").fadeIn('normal');
 
         $(function() {
@@ -19,6 +19,7 @@
             });
             $("#educatorView").hide();
             if(query["session"]) {
+                $("#gameCreation").on("submit",launch.createGame)
                 $("#mainMenu").hide();
                 socket.on("games info", function() {
                     socket.emit("connect to game",query["session"]);
@@ -31,9 +32,16 @@
                 socket.on("games info", function() {
                     socket.emit("want session info",query["info"]);
                 });
-                socket.on("session info",ui.showEducatorMenu);
+                socket.on("session info", ui.showEducatorMenu);
+                socket.on("session info", function(game) {
+                    $("#gameUpdate").on("submit",function(e) {
+                        e && e.preventDefault && e.preventDefault();
+                        launch.updateGame(game)
+                    });
+                })
                 socket.emit("want games info");
                 socket.emit("want images names");
+
             } else  {
                 socket.on("games info", ui.createGameSelection);
                 socket.emit("want games info");
