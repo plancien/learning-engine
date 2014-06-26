@@ -18,13 +18,31 @@ define([
     'modules/frames',
     'modules/key_listener',
     'modules/score',
+    'modules/resize_img',
 
     'game_types/theGreatRun/bonusManageur',
     'game_types/theGreatRun/generateStrips',
     'game_types/theGreatRun/strips',
+    'game_types/theGreatRun/config',
     'game_types/theGreatRun/player',
+
+    'ext_libs/randomColor',
+
     'modules/muteHowler'
-], function(eventBus, canvasModule, render, imageLoader, frames, keyListner, scoreModule, bonusManageur, generateStrips, Strip, Player) {
+], function(eventBus,
+    canvasModule,
+    render,
+    imageLoader,
+    frames,
+    keyListner,
+    scoreModule,
+    resize_image,
+    bonusManageur,
+    generateStrips,
+    Strip,
+    config,
+    Player,
+    randomColor) {
     return function(globalParams) {
         var die = new Howl({
             urls: ['sounds/TGR_die.wav']
@@ -52,13 +70,25 @@ define([
             for (var i = 0; i < globalParams.bonus.length; i++) {
                 bonusImage.push(new Image());
                 bonusImage[i].src = globalParams.bonus[i];
-                bonusImage[i].onload = thenBonusLoaded;
+                (function(){
+                    var privateI = i;
+                    bonusImage[i].onload = function(){
+                        bonusImage[privateI] = resize_image(this, config.bonus.size, config.bonus.size, "crop", false, randomColor());
+                        thenBonusLoaded();
+                    }
+                })();
             };
 
             for (var i = 0; i < globalParams.malus.length; i++) {
                 malusImage.push(new Image());
                 malusImage[i].src = globalParams.malus[i];
-                malusImage[i].onload = thenBonusLoaded;
+                (function(){
+                    var privateI = i;
+                    malusImage[i].onload = function(){
+                        malusImage[privateI] = resize_image(this, config.bonus.size, config.bonus.size, "crop", false, randomColor());
+                        thenBonusLoaded();
+                    }
+                })();
             };
 
             function thenBonusLoaded(){

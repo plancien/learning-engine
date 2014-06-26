@@ -14,7 +14,7 @@ define([], function(){
     config.bonus.bonusParticleColor = "blue";
     config.bonus.malusParticleColor = "red";
     config.bonus.percentOfBonus = 0.5;
-    config.bonus.nbFrameGrow = 15;
+    config.bonus.nbFrameGrow = 20;
     config.bonus.pxGrowPerFrame = 3;
 
     config.player = {};
