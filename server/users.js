@@ -115,7 +115,7 @@ function registerUserRoute(app) {
     });
     app.post('/login',
         passport.authenticate('local', { 
-            successRedirect: '/',
+            successRedirect: '/redirect',
             failureRedirect: '/login'
         })
     );

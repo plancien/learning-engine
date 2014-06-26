@@ -9,7 +9,7 @@ module.exports = function(app) {
     });
 
     app.get('/', function(req, res) {
-        req.originalUrl
+        req.session.origin = req.originalUrl
         if (req.user) {
             res.render('index.html',{userName: req.user});
         } 
@@ -25,8 +25,17 @@ module.exports = function(app) {
         else {
             res.redirect('/login');
         }
-        
     });
+
+    app.get("/redirect",function(req,res) {
+        if (req.session.origin) {
+            res.redirect(req.session.origin);
+            req.session.origin = "";
+        } else {
+            res.redirect('/');
+        }
+    })
+
     users.registerUserRoute(app);
 
     app.get('/logout', function(req, res){
