@@ -29,5 +29,4 @@ module.exports = function(app) {
     registerRoutes(app);
 };
 
-var lol = require(__dirname+"/../server/sessions.js");
-lol.loadAllSessionGame();
+require(__dirname+"/../server/sessions.js").loadAllSessionGame();
