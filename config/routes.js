@@ -12,7 +12,17 @@ module.exports = function(app) {
         req.originalUrl
         if (req.user) {
             res.render('index.html',{userName: req.user});
-        } else {
+        } 
+        else if (req.param("session")){
+            if (req.param("pseudo")){
+                var userName = req.param("pseudo");
+            }
+            else{
+                var userName = "invite";
+            }
+            res.render('index.html',{userName: userName});
+        }
+        else {
             res.redirect('/login');
         }
         
