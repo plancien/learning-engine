@@ -8,7 +8,8 @@ module.exports = function(app) {
         res.send('Server is ok !');
     });
 
-    app.get('/', /*passport.authenticate('local',{failureRedirect: '/login'}),*/ function(req, res) {
+    app.get('/', function(req, res) {
+        req.originalUrl
         if (req.user) {
             res.render('index.html',{userName: req.user});
         } else {
