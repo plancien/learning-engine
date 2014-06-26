@@ -90,16 +90,16 @@ define([
             imgs = imgLoad({},function() {
 
                 for (var i = bonusNames.length - 1; i >= 0; i--) {
-                    imgs[bonusNames[i]] = resizeImg(imgs[bonusNames[i]],96,96,"fit");
+                    imgs[bonusNames[i]] = resizeImg(imgs[bonusNames[i]],96,96,"crop", false, randomColor());
                 };
 
                 for (var i = malusNames.length - 1; i >= 0; i--) {
-                    imgs[malusNames[i]] = resizeImg(imgs[malusNames[i]],96,96,"fit");
+                    imgs[malusNames[i]] = resizeImg(imgs[malusNames[i]],96,96,"crop", false, randomColor());
                 };
 
                 particles();
                 canvas = canvasCreate.create(paramsCanvas);
-                canvas.canvas.style.backgroundImage = "url(images/sprites/pikachuParallax.png)"
+                canvas.canvas.style.backgroundImage = "url(images/sprites/pikachuParallax.png)";
                 
                 initGauge();
                 
