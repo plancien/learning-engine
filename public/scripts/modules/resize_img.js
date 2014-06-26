@@ -32,7 +32,12 @@ define([], function(){
         if (addStroke){
             ctx.strokeStyle = addStroke || "black";
             ctx.lineWidth = 5;
-            ctx.strokeRect(0,0,width,height);
+            if (circle)
+                ctx.arc(width/2, height/2, width/2, 0, 2*Math.PI);
+            else
+                ctx.rect(0,0,width,height);
+            
+            ctx.stroke();
         }
       return canvas;
     }

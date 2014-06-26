@@ -19,6 +19,7 @@ define([
     "modules/resize_img",
     "modules/img_loader",
     "modules/load_bonus",
+    "ext_libs/randomColor",
     "game_types/spider_game/draw",
     "game_types/spider_game/player",
     "game_types/spider_game/level",
@@ -35,6 +36,7 @@ define([
             resizeImg,
             imgLoad,
             loadBonus,
+            randomColor,
             draw,
             Player,
             Level,
@@ -54,12 +56,13 @@ define([
         var scrolling = 0;
 
         var imgs = imgLoad({cube:"/images/sprites/cube.png",cloud:"/images/sprites/cloud1.png"},function() {
+            var randomColorOption = {};
             for (var i = bonusImgName.length - 1; i >= 0; i--) {
-                imgs[bonusImgName[i]] = resizeImg(imgs[bonusImgName[i]],config.size_img,config.size_img,"fit", true);
+                imgs[bonusImgName[i]] = resizeImg(imgs[bonusImgName[i]],config.size_img,config.size_img,"crop", true, randomColor(randomColorOption));
             };
 
             for (var i = malusImgName.length - 1; i >= 0; i--) {
-                imgs[malusImgName[i]] = resizeImg(imgs[malusImgName[i]],config.size_img,config.size_img,"fit", true);
+                imgs[malusImgName[i]] = resizeImg(imgs[malusImgName[i]],config.size_img,config.size_img,"crop", true, randomColor(randomColorOption));
             };
 
             eventBus.on("new frame", function (dt) {
