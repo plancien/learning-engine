@@ -11,20 +11,13 @@ module.exports = function(app) {
     app.get('/', /*passport.authenticate('local',{failureRedirect: '/login'}),*/ function(req, res) {
         if (req.user) {
             res.render('index.html',{userName: req.user});
-        } 
-        else if (req.param("session")){
-            if (req.param("pseudo")){
-                var userName = req.param("pseudo");
-            }
-            else{
-                var userName = "invite";
-            }
-            res.render('index.html',{userName: userName});
+        }    
+        if (req.param("pseudo")){
+            var userName = req.param("pseudo");
         }
-        else {
-            res.redirect('/login');
+        else{
+            var userName = "invite";
         }
-        
     });
     users.registerUserRoute(app);
 
