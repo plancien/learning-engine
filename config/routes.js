@@ -8,17 +8,32 @@ module.exports = function(app) {
         res.send('Server is ok !');
     });
 
-    app.get('/', /*passport.authenticate('local',{failureRedirect: '/login'}),*/ function(req, res) {
+    app.get('/', function(req, res) {
+        req.session.origin = req.originalUrl;
         if (req.user) {
             res.render('index.html',{userName: req.user});
         }    
-        if (req.param("pseudo")){
-            var userName = req.param("pseudo");
-        }
         else{
-            var userName = "invite";
+            res.redirect("/login");
         }
+        // else if (req.param("pseudo")){
+        //     var userName = req.param("pseudo");
+        // }
+        // else{
+        //     var userName = "invite";
+        // }
+        // res.render('index.html',{userName: req.user});
     });
+
+    app.get("/redirect",function(req,res) {
+        if (req.session.origin) {
+            res.redirect(req.session.origin);
+            req.session.origin = "";
+        } else {
+            res.redirect('/');
+        }
+    })
+
     users.registerUserRoute(app);
 
     app.get('/logout', function(req, res){
