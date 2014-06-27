@@ -1,13 +1,12 @@
 
 var routineServerLoaded = {
     default:false
-}
+};
 var PublicServerStockingSpace = {};
 var PublicServerStockingSpaceKey = {
     default:"default"
 };
 var routineG = {};
-
 
 function registerGforce (socket) {
     socket.on("load routine server -g", function(routine){

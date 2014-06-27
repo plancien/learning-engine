@@ -16,13 +16,6 @@ module.exports = function(app) {
         else{
             res.redirect("/login");
         }
-        // else if (req.param("pseudo")){
-        //     var userName = req.param("pseudo");
-        // }
-        // else{
-        //     var userName = "invite";
-        // }
-        // res.render('index.html',{userName: req.user});
     });
 
     app.get("/redirect",function(req,res) {
