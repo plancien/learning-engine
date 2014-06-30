@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Serious Game</title>
+
+    <link type="text/css" rel="stylesheet" href="/css/image-picker.css">
+    <link type="text/css" rel="stylesheet" href="/css/main.css">
+
+    <script type="text/javascript" src="/scripts/ext_libs/jquery.js"></script>
+    <script type="text/javascript" src="/scripts/ext_libs/image-picker.js"></script>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  </head>
+
+  <body>
+    <div id="user">
+      <% include structure/header %>
+    </div>
+    
+    <div id="main">
+      <%
+        if (page == "login"){
+          %><% include login %><%
+        } 
+        else{
+          %><% include home %><%
+        }
+      %>
+    </div>
+
+    <footer>
+      <% include structure/footer %>
+    </footer>
+
+
+    <script>
+      window.userName = "<%- userName %>";
+    </script>
+  </body>
+</html>

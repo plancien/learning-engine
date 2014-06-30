@@ -79,7 +79,7 @@ function addSessionGame(userName, gameName){
     fs.readFile(getPathUser(userName), 'utf8', function (err, data) {
         var file = JSON.parse(data);
         file.game.push(gameName);
-        fs.writeFile(pathUser, JSON.stringify(file, null, 4), function(){});
+        fs.writeFile(getPathUser(userName), JSON.stringify(file, null, 4), function(){});
     });
 
 }

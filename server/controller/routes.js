@@ -14,10 +14,10 @@ module.exports = function(app) {
     });
 
     app.get('/login',function(req,res) {
-        res.render("login.html");
+        display(req, res, "login");
     });
     app.post('/login', function (req, res){
-        checkLog(req, res);
+        checkLog(req, res, "login");
     });
     app.post('/signup',function(req,res) {
         checkSignUp(req, res);
@@ -33,12 +33,20 @@ module.exports = function(app) {
     });
 };
 
+function display(req, res, page){
+    var data = {
+        page : page || "home",
+        userName : req.session.userName || false
+    };
+    res.render("index.html", data);
+}
+
 function redirectAccordingToSession(req, res){
     if (req.session.userName) {
-        res.render('index.html',{userName: req.session.userName});
+        display(req, res);
     }
     else if (req.query.session){
-        res.render('index.html',{userName: "gest"});
+        display(req, res);
     }
     else{
         res.redirect("/login");
@@ -52,7 +60,7 @@ function checkLog(req, res){
             res.redirect("/");
         }
         else{
-            res.render("login.html");
+            display(req, res);
         }
     });
 }

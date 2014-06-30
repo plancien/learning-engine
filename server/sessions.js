@@ -19,13 +19,43 @@ c> on("join game"), launch the game
 var sessions = {};
 var fs = require('fs');
 var mime = require("mime");
-var user = require(__dirname+"/../server/model/users.js");
+var user = require(__path.model + "/users");
 
 var acceptedType = ["application/json"];
 var refDefaultGame = [];
 
 module.exports.createUserSession = function(){
     
+};
+
+module.exports.create = function (params, userName) {
+    var name = generateUrl();
+    params.name = name;
+        
+    user.addSessionGame(userName, name);
+    launchSession(params);
+
+    saveSessionToFile(sessions[name]);
+};
+
+module.exports.connectToGame = function (gameName, callback) {
+    if (sessions[gameName]) {
+        var sessions = sessions[gameName];
+        session.players.push(socket.name);
+        callback(false, session);
+    }
+    else{
+        callback("Ce jeu n'existe pas");
+    }
+};
+
+module.exports.getSession = function(name, callback){
+    if (sessions[name]){
+        callback(false, sessions[name])
+    }
+    else{
+        callback("La session n'existe pas");
+    }
 }
 
 function loadAllSessionGame() {
@@ -54,18 +84,6 @@ function loadAllSessionGame() {
             });
         })();
     }
-}
-
-
-function createSession (params, userName) {
-    var name = generateUrl();
-    params.name = name;
-        
-    user.addSessionGame(userName, name);
-    launchSession(params);
-
-    saveSessionToFile(sessions[name])
-    // return name;
 }
 
 function mergeSession(old,newObject) {
@@ -109,52 +127,59 @@ function deleteSession(name) {
     fs.unlink(pathGameSession,function(err) {});
 }
 
+
+
+
+
+
+
+
+
 function register(socket,io) {
-    socket.on("create game",function(gameInfo) {
-        createSession(gameInfo, socket.name);
-        socket.emit("redirect game", gameInfo)
-    });
+    // socket.on("create game",function(gameInfo) {
+    //     createSession(gameInfo, socket.name);
+    //     socket.emit("redirect game", gameInfo)
+    // });
 
-    socket.on("connect to game",function(gameName) {
-        if (sessions[gameName]) {
-            var session = sessions[gameName]
-            session.players.push(socket.name);
-            socket.on("disconnect",function() {
-                session.players.splice(session.players.indexOf(socket.name),1);
-            });
-            socket.emit("join game",session);
-        };
-    });
+    // socket.on("connect to game",function(gameName) {
+    //     if (sessions[gameName]) {
+    //         var session = sessions[gameName]
+    //         session.players.push(socket.name);
+    //         socket.on("disconnect",function() {
+    //             session.players.splice(session.players.indexOf(socket.name),1);
+    //         });
+    //         socket.emit("join game",session);
+    //     };
+    // });
 
-    socket.on("want session info", function(name) {
-        if (sessions[name]) {
-            socket.emit("session info", sessions[name]);
-        };
-    });
+    // socket.on("want session info", function(name) {
+    //     if (sessions[name]) {
+    //         socket.emit("session info", sessions[name]);
+    //     };
+    // });
 
-    socket.on("want all sessions", function() {
-        user.getSessionGame(socket.name, function(tabSessionName){
+    // socket.on("want all sessions", function() {
+    //     user.getSessionGame(socket.name, function(tabSessionName){
                 
-            var refWantedSession = {};
-            for (var i = tabSessionName.length - 1 ; i >= 0 ; i--){
-                refWantedSession[tabSessionName[i]] = sessions[tabSessionName[i]];
-            }
-            for (var i = refDefaultGame.length - 1 ; i >= 0 ; i--){
-                refWantedSession[refDefaultGame[i]] = sessions[refDefaultGame[i]];   
-            }
-            socket.emit("live sessions", refWantedSession);
-        });
-    });
+    //         var refWantedSession = {};
+    //         for (var i = tabSessionName.length - 1 ; i >= 0 ; i--){
+    //             refWantedSession[tabSessionName[i]] = sessions[tabSessionName[i]];
+    //         }
+    //         for (var i = refDefaultGame.length - 1 ; i >= 0 ; i--){
+    //             refWantedSession[refDefaultGame[i]] = sessions[refDefaultGame[i]];   
+    //         }
+    //         socket.emit("live sessions", refWantedSession);
+    //     });
+    // });
 
-    socket.on("update game", function(game) {
-        updateSession(game);
-        socket.emit("redirect game",game)
-    });
+    // socket.on("update game", function(game) {
+    //     updateSession(game);
+    //     socket.emit("redirect game",game)
+    // });
 
-    socket.on("delete session", deleteSession);
+    // socket.on("delete session", deleteSession);
 }
 
-module.exports.createSession = createSession;
 module.exports.deleteSession = deleteSession;
 module.exports.register = register;
 module.exports.loadAllSessionGame = loadAllSessionGame;
