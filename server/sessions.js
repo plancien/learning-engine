@@ -19,13 +19,17 @@ c> on("join game"), launch the game
 var sessions = {};
 var fs = require('fs');
 var mime = require("mime");
-var user = require(__dirname+"/../server/users.js");
+var user = require(__dirname+"/../server/model/users.js");
 
 var acceptedType = ["application/json"];
 var refDefaultGame = [];
 
+module.exports.createUserSession = function(){
+    
+}
+
 function loadAllSessionGame() {
-    var folder = [__dirname+"/../bdd/default_game/", __dirname+"/../bdd/session_game/"];
+    var folder = [__path.bdd + "/default_game/", __path.bdd + "/session_game/"];
     for (j = folder.length -1 ; j >= 0 ; j--){
         (function(){    //Create a private scope
             var currentFolder = folder[j]; // <-- for this 

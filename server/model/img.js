@@ -6,8 +6,8 @@ var acceptedType = ["image/png","image/jpeg","image/gif","image/bmp"]
 
 function getGameImagesList(userImgs,callback) {
     var readDir = Promise.denodeify(fs.readdir);
-    var defaultImgPromise = readDir(__dirname+"/../public/images/games_images/");
-    var uploadedImgPromise = readDir(__dirname+"/../public/images/uploaded_images/");
+    var defaultImgPromise = readDir(__dirname+"/../../public/images/games_images/");
+    var uploadedImgPromise = readDir(__dirname+"/../../public/images/uploaded_images/");
     var allImagesPromise = Promise.all([defaultImgPromise,uploadedImgPromise]);
     allImagesPromise.then(function(result) {
         var defaultImg = result[0];
@@ -62,7 +62,7 @@ function saveImage(file,callback) {
                 return;
             }
             var newPath = "/images/uploaded_images/"+file.name;
-            fs.writeFile(__dirname+"/../public"+newPath, data, function (err) {
+            fs.writeFile(__dirname+"/../../public"+newPath, data, function (err) {
                 if(err) {
                     callback(err);
                     return;

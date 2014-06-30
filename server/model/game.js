@@ -1,7 +1,7 @@
 var fs = require("fs");
 
 function getGamesList(path) {
-    path = path || __dirname +"/../public/scripts/game_types/"
+    path = path || __dirname +"/../../public/scripts/game_types/"
     var dir = fs.readdirSync(path);
     var games = [];
 

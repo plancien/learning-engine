@@ -1,9 +1,21 @@
-var games = require(__dirname+"/game");
 var fs = require("fs");
-var img = require(__dirname+"/img");
-var user = require(__dirname+"/users");
+var games = require(__dirname+"/model/game");
+var img = require(__dirname+"/model/img");
+var user = require(__dirname+"/model/users");
 
 module.exports.register = function register (socket,io) {
+
+    socket.on("name", function(name) {
+        socket.name = name;
+        socket.emit("autentificated");
+    });
+
+    socket.on("disconnect", function() {
+        socket.broadcast.emit('player disconnected', {
+            id: socket.id
+        });
+    });
+
 
     socket.on("want games info", function() {
         socket.emit('games info',games.getGamesList());
