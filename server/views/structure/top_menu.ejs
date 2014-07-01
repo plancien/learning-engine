@@ -1,6 +1,12 @@
 
-<li>bonjour</li>
-<li>je</li>
-<li>suis</li>
-<li>le</li>
-<li>menu</li>
+<% if (page == "login") { %>
+	<li>Presentation</li>
+	<li>Essayer un jeu</li>
+	<li>Inscription</li>
+	<li>Connexion</li>
+<% } else { %>
+	<li onclick="loadPage(createGame)">Créer un jeu</li>
+	<li>Mes jeux</li>
+	<li>Mes images</li>
+	<li>Déconnexion</li>
+<% } %>

@@ -14,16 +14,34 @@ body{
 #top_menu {
 	width: 900px;
 	margin : auto;
-	font-size: 1.5em;
-	color : white;
-	background-color: blue;
+	font-size: 1.3em;
+	color : black;
+	background-color: #73C8E9;
 	top : 0px;
 	text-align: center;
 }
 
+#form_text {
+	text-align: left;
+	margin-left : 25%;
+}
+.large_input {
+	width : 70%;
+}
+
+#main {
+	width : 900px;
+	margin : auto;
+	text-align: center;
+}
+
 #top_menu li{
-	padding : 3px;
+	margin : 1em;
 	display : inline;
+}
+#top_menu li:hover{
+	color : white;
+	cursor : pointer;
 }
 #top_menu ul{
 	list-style-type: none;

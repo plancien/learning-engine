@@ -1,0 +1,28 @@
+
+<h2>Créateur de jeux</h2>
+<form class="createGame">
+
+  <span class="form_text">
+     Choisissez votre question :
+  </span> <br />
+  <input class="question"> <br />
+
+  <span class="form_text">
+     Choisissez les images bonus :
+  </span> <br />
+  <select class="bonusImg large_input" multiple="multiple"></select><br>
+
+  <span class="form_text">
+     Choisissez les images malus :
+  </span> <br />
+  <select class="malusImg large_input"  multiple="multiple"></select><br>
+  
+  <div hidden>
+    Game Model : 
+    <select class="modelList"></select>
+    <div class="modelDescription">Model description.</div>
+  </div>        
+  <div class="modelParams"></div>
+  <input type="submit" value="Create !">
+
+</form>

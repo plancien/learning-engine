@@ -16,6 +16,10 @@ module.exports = function(app) {
     app.get('/login',function(req,res) {
         display(req, res, "login");
     });
+    app.get('/create_game', function(req, res){
+        display(req, res, "create_game");
+    });
+
     app.post('/login', function (req, res){
         checkLog(req, res, "login");
     });

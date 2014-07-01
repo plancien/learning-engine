@@ -23,7 +23,10 @@
     <div id="main">
       <%
         if (page == "login"){
-          %><% include login %><%
+          %><% include page/login %><%
+        } 
+        else if (page == "create_game"){
+          %><% include page/create_game %><%
         } 
         else{
           %><% include home %><%
