@@ -11,7 +11,7 @@ function(cameraRender, collisionEngine, config, soundList){
 		this.animateFly = false;
 
 		this.image = new Image();
-		this.image.src = "./images/frogAdventure/star_icon.png";
+		this.image.src = "./images/games_library/flat/star_icon.png";
 
 		window.content = this.content;
 	}

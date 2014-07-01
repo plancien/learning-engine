@@ -26,18 +26,18 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
 
         game.cameraRender = cameraRender;
         game.cameraRender.init(game.canvas, true);
-        game.cameraRender.backgroundParralax("./images/frogAdventure/background.png", 20, 1, "botAlign");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 14, 0.5, "unique");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 16, 0.5, "unique");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 8, 0.5, "unique");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 4, 0.5, "unique");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud1.png", 10, 0.5, "unique");
-        game.cameraRender.backgroundParralax("./images/frogAdventure/cloud2.png", 12, 0.5, "unique");
-        game.cameraRender.addSprite("hero", "./images/frogAdventure/cube_platform.png", config.heroSprite);
-        game.cameraRender.addSprite("collectible", "./images/frogAdventure/star.png", config.collectibleSprite);
-        game.cameraRender.addImage("fly", "./images/frogAdventure/fly.png");
-        game.cameraRender.addImage("ending1", "./images/frogAdventure/portal_end0.png");
-        game.cameraRender.addImage("ending0", "./images/frogAdventure/portal_end1.png");
+        game.cameraRender.backgroundParralax("./images/games_library/landscape/background.png", 20, 1, "botAlign");
+        game.cameraRender.backgroundParralax("./images/games_library/landscape/cloud1.png", 14, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/games_library/landscape/cloud2.png", 16, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/games_library/landscape/cloud1.png", 8, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/games_library/landscape/cloud2.png", 4, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/games_library/landscape/cloud1.png", 10, 0.5, "unique");
+        game.cameraRender.backgroundParralax("./images/games_library/landscape/cloud2.png", 12, 0.5, "unique");
+        game.cameraRender.addSprite("hero", "./images/games_library/sprite_sheet/cube_platform.png", config.heroSprite);
+        game.cameraRender.addSprite("collectible", "./images/games_library/sprite_sheet/star.png", config.collectibleSprite);
+        game.cameraRender.addImage("fly", "./images/games_library/flat/fly.png");
+        game.cameraRender.addImage("ending1", "./images/games_library/flat/portal_end0.png");
+        game.cameraRender.addImage("ending0", "./images/games_library/flat/portal_end1.png");
 
         console.log(config.collectibleSprite);
             

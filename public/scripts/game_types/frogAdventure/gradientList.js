@@ -37,7 +37,7 @@ define([], function(){
         list.wallPattern = "green";
 
         var wallTile = new Image();
-        wallTile.src = './images/frogAdventure/tile.png';
+        wallTile.src = './images/games_library/tileset/tile.png';
         wallTile.onload = function() {
             list.wallPattern = context.createPattern(wallTile, 'repeat');
             callback("wallPattern", list.wallPattern);
@@ -46,7 +46,7 @@ define([], function(){
         list.topWall = "black"
 
         var topTile = new Image();
-        topTile.src = './images/frogAdventure/borderup.png';
+        topTile.src = './images/games_library/tileset/borderup.png';
         topTile.onload = function() {
             list.topWall = context.createPattern(topTile, 'repeat');
             callback("topWall", list.topWall);
@@ -55,7 +55,7 @@ define([], function(){
         list.botWall = "black"
 
         var botTile = new Image();
-        botTile.src = './images/frogAdventure/borderdown.png';
+        botTile.src = './images/games_library/tileset/borderdown.png';
         botTile.onload = function() {
             list.botWall = context.createPattern(botTile, 'repeat');
             callback("botWall", list.botWall);
