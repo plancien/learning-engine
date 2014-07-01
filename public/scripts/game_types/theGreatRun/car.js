@@ -18,7 +18,7 @@ define(['event_bus', 'modules/imageLoader'], function(eventBus, imageLoader){
                 y: 0,
                 width: 48,
                 height: 48,
-                img: imageLoader("cars.png")
+                img: imageLoader("cars.png", "tileset")
             },
             rotating: true
         });

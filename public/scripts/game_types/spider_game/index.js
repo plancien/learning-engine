@@ -55,7 +55,7 @@ define([
         var player = new Player();
         var scrolling = 0;
 
-        var imgs = imgLoad({cube:"/images/sprites/cube.png",cloud:"/images/sprites/cloud1.png"},function() {
+        var imgs = imgLoad({cube:"/images/games_library/sprite_sheet/cube.png",cloud:"/images/games_library/landscape/cloud1.png"},function() {
             var randomColorOption = {};
             for (var i = bonusImgName.length - 1; i >= 0; i--) {
                 imgs[bonusImgName[i]] = resizeImg(imgs[bonusImgName[i]],config.size_img,config.size_img,"crop", true, randomColor(randomColorOption));

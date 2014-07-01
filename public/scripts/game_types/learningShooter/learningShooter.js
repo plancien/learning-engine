@@ -99,7 +99,7 @@ define([
 
                 particles();
                 canvas = canvasCreate.create(paramsCanvas);
-                canvas.canvas.style.backgroundImage = "url(images/sprites/pikachuParallax.png)";
+                canvas.canvas.style.backgroundImage = "url(images/games_library/landscape/pikachuParallax.png)";
                 
                 initGauge();
                 

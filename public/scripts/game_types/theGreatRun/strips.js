@@ -15,7 +15,7 @@ define(['event_bus', 'modules/imageLoader'], function(eventBus, imageLoader){
                 y: 0,
                 width: 32,
                 height: 32,
-                img: imageLoader(this.type+".png")
+                img: imageLoader(this.type+".png", "tileset")
             },
             patternRepeat: "repeat"
         });

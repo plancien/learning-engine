@@ -1,14 +1,14 @@
 define([], function() {
 	var getImage = function(name, files, getUrl){
-		var files = files || "sprites";
+		var files = files || "sprite_sheet";
 		files += '/';
 
 		if (getUrl){
-			return "./images/"+files+name;
+			return "./images/games_library/"+files+name;
 		}
 		else{
 			var image = new Image();
-			image.src = "./images/"+files+name;
+			image.src = "./images/games_library/"+files+name;
 			return image;
 		}
 	}
