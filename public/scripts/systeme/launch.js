@@ -6,11 +6,8 @@ define(["connector"], function(socket){
     function createGame(e) {
         e && e.preventDefault && e.preventDefault();
         var selected = $(".modelList").val();
-        if (!games[selected]) {
-            return false;
-        }
         
-        socket.emit("create game", getGameOption());
+        socket.emit("create game",getGameOption());
         socket.on("redirect game",function(gameInfo) {
             window.location.href = "/?info="+gameInfo.name;
         });

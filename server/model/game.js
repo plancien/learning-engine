@@ -32,6 +32,8 @@ module.exports.exportListGame = function(list, callback){
 };
 
 module.exports.addGame = function(data, callback) {  //add a game in bdd and callback the name
+    console.log(data);
+        
     var name = generateRandomName();
     data.name = name;
     var gameFile = JSON.stringify(data);
@@ -40,18 +42,16 @@ module.exports.addGame = function(data, callback) {  //add a game in bdd and cal
 };
 
 module.exports.getGamesList = function() {
-    path = __path.gameTypes;
-    var dir = fs.readdirSync(path);
+    path = __path.bdd + "/game_types/";
+    
+    var allFiles = fs.readdirSync(path);
     var games = [];
-
-    for (var i = 0; i < dir.length; i++) {
-        if (fs.lstatSync(path+dir[i]).isDirectory()) {
-            if (fs.existsSync(path+dir[i]+"/game.json")) {
-                games.push(getGameInfo(path+dir[i]));
-            }
-        }
+    
+    for (var i = 0; i < allFiles.length; i++) {
+        var game = JSON.parse( fs.readFileSync(path+allFiles[i]) );
+        game.id = allFiles[i].replace(".json", "");
+        games.push(game);
     }
-
     return games;
 };
 
@@ -73,7 +73,7 @@ module.exports.get = function(name, callback){
 };
 
 function addUrl(gameData, callback){
-    fs.readFile(__path.bdd + "/game_types/" + gameData.id + ".json", function(err, files){
+    fs.readFile(__path.bdd + "/game_types/" + gameData.game + ".json", function(err, files){
         if (err) throw err;
         gameData.url = JSON.parse(files).url;
         callback(gameData);

@@ -23,12 +23,12 @@ define([], function(){
 
 
     function createGameSelection(infos) {
-        console.log(infos)
+        console.log(infos);
         var $gamelist = $(".modelList");
         $gamelist.empty();
         for (var i = 0; i < infos.length; i++) {(function(i) {
             console.log($gamelist)
-            var $game = $('<option value="'+infos[i].name+'">'+infos[i].name+'</option>');
+            var $game = $('<option value="'+infos[i].id+'">'+infos[i].name+'</option>');
             $gamelist.change(function() {
                 if ($gamelist.val()===infos[i].name) {
                     showGameInfo(infos[i])
