@@ -8,7 +8,7 @@ define([
         function replay() {
             location.reload();
         }
-        var csswin = "width:" + window.innerWidth + "px;height:" + window.innerHeight + "px;position:absolute;cursor:pointer;z-index:15;background:#00CCFF url('../images/sprites/win.png') no-repeat center;";
+        var csswin = "width:" + window.innerWidth + "px;height:" + window.innerHeight + "px;position:absolute;cursor:pointer;z-index:15;background:#00CCFF url('../images/games_library/text/win.png') no-repeat center;";
         eventBus.emit("createElement", {
             elem: "div",
             stylesheet: csswin,

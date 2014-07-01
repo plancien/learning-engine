@@ -14,8 +14,6 @@
             $("#educatorView").hide();
 
             if(query["session"]) {
-                console.log("Je me fou de ta gueule");
-                    
                 $("#mainMenu").hide();
 
                 // socket.on("games info", function(game) {
