@@ -60,7 +60,7 @@ function checkLog(req, res){
             res.redirect("/");
         }
         else{
-            display(req, res);
+            display(req, res, "login");
         }
     });
 }
