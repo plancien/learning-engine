@@ -1,7 +1,7 @@
 define(["connector"], function(socket){
     "use strict";
 
-    var games = []
+    var games = [];
 
     function createGame(e) {
         e && e.preventDefault && e.preventDefault();
@@ -18,15 +18,12 @@ define(["connector"], function(socket){
         var options = getGameOption("#gameUpdate");
         options.name = game.name;
         socket.emit("update game",options);
-        console.log("yeah")
         socket.on("redirect game",function(gameInfo) {
             window.location.href = "/?info="+gameInfo.name;
         });
     }
     
     function joinGame(gameInfo) {
-        console.log(gameInfo);
-        console.log(games);
             
         require(['game', "game_types/"+gameInfo.url], function(game, setGame) {
             $("#mainMenu").hide();
