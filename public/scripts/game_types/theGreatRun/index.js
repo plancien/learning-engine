@@ -45,11 +45,11 @@ define([
     randomColor) {
     return function(globalParams) {
         var die = new Howl({
-            urls: ['sounds/TGR_die.wav']
+            urls: ['sounds/effects/crash_explode/TGR_die.wav']
         });
 
         var music = new Howl({
-            urls: ['sounds/TGR_notFree_POL-snowy-hill-short.wav'],
+            urls: ['sounds/musics/TGR_notFree_POL-snowy-hill-short.wav'],
             loop: true
         });
 

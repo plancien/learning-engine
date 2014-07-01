@@ -1,11 +1,11 @@
 define(['event_bus', 'game_types/theGreatRun/config', 'modules/particle_generator', 'game_types/theGreatRun/gridOccuped','ext_libs/howler.min'], 
 function(eventBus, config, particleGenerator, grid){
     var malusSound = new Howl({
-        urls: ['sounds/TGR_malus.wav']
+        urls: ['sounds/effects/malus/TGR_malus.wav']
     });
 
     var bonusSound = new Howl({
-        urls: ['sounds/TGR_bonus.wav']
+        urls: ['sounds/effects/bonus/TGR_bonus.wav']
     });
 
     particleGenerator();
