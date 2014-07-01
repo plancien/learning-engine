@@ -1,5 +1,34 @@
 define([], function(){
     "use strict";
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     function createImageChooser(data) {
         var display = "";

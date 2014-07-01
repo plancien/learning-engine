@@ -11,6 +11,24 @@ body{
     font-size: 13px;
 }
 
+#top_menu {
+	width: 900px;
+	margin : auto;
+	font-size: 1.5em;
+	color : white;
+	background-color: blue;
+	top : 0px;
+	text-align: center;
+}
+
+#top_menu li{
+	padding : 3px;
+	display : inline;
+}
+#top_menu ul{
+	list-style-type: none;
+}
+
 #user {
 	margin: auto;
 	margin-top: 150px;

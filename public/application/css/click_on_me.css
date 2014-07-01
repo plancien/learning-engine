@@ -1,9 +1,0 @@
-.bad, .good{
-  display: block;
-  position: absolute;
-  width: 80px;
-}
-
-#game_container {
-    margin-top: 20px;
-}
