@@ -23,11 +23,9 @@ define([], function(){
 
 
     function createGameSelection(infos) {
-        console.log(infos);
         var $gamelist = $(".modelList");
         $gamelist.empty();
         for (var i = 0; i < infos.length; i++) {(function(i) {
-            console.log($gamelist)
             var $game = $('<option value="'+infos[i].id+'">'+infos[i].name+'</option>');
             $gamelist.change(function() {
                 if ($gamelist.val()===infos[i].name) {
@@ -69,16 +67,12 @@ define([], function(){
             }
         });
         $("#educatorView button.delete").on("click",function() {
-            console.log("ok")
             that.emit("delete session",game.name);
         });
 
         var $images = $("#educatorView div.images");
-        console.log(game.bonus,$images);
         for (var i = game.bonus.length - 1; i >= 0; i--) {
-            console.log($img,"fff");
             var $img = $("<img src='"+game.bonus[i]+"' class='selected-image good-image'>");
-            console.log($img);
             $images.append($img)
 
         };
