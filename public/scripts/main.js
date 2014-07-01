@@ -1,4 +1,4 @@
-﻿require(['connector',"systeme/ui","systeme/launch","systeme/query"], function(socket,ui,launch,query) {
+﻿require(['connector',"application/dom_manipulator","application/launch","application/query"], function(socket,ui,launch,query) {
 
     socket.emit("name",window.userName);
 

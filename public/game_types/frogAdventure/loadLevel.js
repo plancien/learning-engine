@@ -75,7 +75,7 @@ function(eventBus, simpleElement, wall, httpGet, BonusMalus, getGradientList, co
         shuffle(randomLevel);
             
         for (var i = 0; i < load.nbLevel; i++) {
-            var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+randomLevel[i]+".json");
+            var level = httpGet.json("game_types/frogAdventure/level/level"+randomLevel[i]+".json");
             // var level = httpGet.json("scripts/game_types/frogAdventure/level/level"+4+".json");
 
 

@@ -24,7 +24,6 @@ define(["connector"], function(socket){
     }
     
     function joinGame(gameInfo) {
-            
         require(['game', "game_types/"+gameInfo.url], function(game, setGame) {
             $("#mainMenu").hide();
             setGame(gameInfo);
@@ -62,21 +61,3 @@ define(["connector"], function(socket){
     }
 
 });
-
-/*
-
-
-$("#gameSelect button").click(function(e) {
-            $("#mainMenu").hide();
-
-            var gameSelectedName = $("#gameList option:selected").data("fileName");
-            var gameSelectedPath = "games/" + gameSelectedName;
-
-            socket.emit('ask css', gameSelectedName);
-
-
-            require(['game', gameSelectedPath], function(game) {
-                game.init();
-            });
-        });
-        */
