@@ -1,2 +1,2 @@
 var app = require('express')();
-require('./config/init')(app);
+require('./server/config/init')(app);

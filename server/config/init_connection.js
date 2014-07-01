@@ -1,8 +1,7 @@
 
 var fs = require('fs');
-// var img = require("../server/img.js");
 
-var gforce = require(__dirname + "/../server/gforce");
+var gforce = require(__dirname + "/../gforce");
 var systeme = require(__path.controller + "/socket");
 
 module.exports = function(io) {
