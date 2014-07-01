@@ -14,13 +14,22 @@
             $("#educatorView").hide();
 
             if(query["session"]) {
+                console.log("Je me fou de ta gueule");
+                    
                 $("#mainMenu").hide();
-                socket.on("games info", function() {
-                    socket.emit("connect to game",query["session"]);
-                    socket.on("join game", launch.joinGame);
+
+                // socket.on("games info", function(game) {
+                //     socket.emit("connect to game",query["session"]);
+                //     socket.on("join game", launch.joinGame);
+                // });
+                // socket.emit("want games info");
+
+                socket.emit("want session info", query['session']);
+
+                socket.on("session info", function(game){
+                    launch.joinGame(game);
                 });
-                socket.emit("want games info");
-            } 
+            }
             else if(query["info"]) {
 
                 $("#mainMenu").hide();

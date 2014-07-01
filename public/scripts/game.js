@@ -8,7 +8,7 @@ define(['event_bus'], function(eventBus) {
         $('#container').append(container);
         $('</br><button id="retour" class="button">Retour</button>').appendTo("body");
         $("#retour").click(function(e) {
-        	location.reload();           
+        	location.reload();
         });
         eventBus.emit('init', container);
     };

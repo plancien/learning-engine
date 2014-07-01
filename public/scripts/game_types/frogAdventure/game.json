@@ -1,6 +1,7 @@
 {
     "name": "Cube Adventure",
+    "id" : "frogAdventure",
     "version": "0.8",
     "description": "move with arrows, take bonuses to progress, and try take a maximum of fly",
-    "url": "game_types/frogAdventure/frogAdventure"
+    "url": "frogAdventure/frogAdventure"
 }

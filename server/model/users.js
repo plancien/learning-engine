@@ -43,6 +43,24 @@ module.exports.save = function(name,password,callback) {
     }); 
 };
 
+module.exports.getListGame = function(userName, callback){
+    fs.readFile(getPathUser(userName), 'utf8', function (err, data) {
+        if (err) throw err;  
+        var file = JSON.parse(data);
+        callback(file.game);
+    });    
+};
+
+module.exports.addGame = function(userName, gameName, callback){
+    fs.readFile(getPathUser(userName), function(err, files){
+        if (err) throw err;
+        var files = JSON.parse(files);
+        files.game.push(gameName);
+
+        fs.writeFile(getPathUser(userName), JSON.stringify(files), callback);
+    });
+}
+
 function findUser(name, callback){
 	var file = __path.bdd + "/userList.json";
 	fs.readFile(file, 'utf8', function (err, data) {
@@ -83,13 +101,6 @@ function addSessionGame(userName, gameName){
     });
 
 }
-function getSessionGame(userName, callback){
-    fs.readFile(getPathUser(userName), 'utf8', function (err, data) {
-        var file = JSON.parse(data);
-            
-        callback(file.game);
-    });    
-}
 
 function getPathUser (userName){
     return __path.bdd + "/user/"+userName+".json";
@@ -97,5 +108,4 @@ function getPathUser (userName){
 
 module.exports.addImage = addImage;
 module.exports.getUserImageSync = getUserImageSync;
-module.exports.getSessionGame = getSessionGame;
 module.exports.addSessionGame = addSessionGame;

@@ -4,16 +4,13 @@ define(["connector"], function(socket){
     var games = []
 
     function createGame(e) {
-        console.log(e)
-        debugger;
         e && e.preventDefault && e.preventDefault();
         var selected = $(".modelList").val();
-        console.log("hehehe")
         if (!games[selected]) {
             return false;
         }
         
-        socket.emit("create game",getGameOption());
+        socket.emit("create game", getGameOption());
         socket.on("redirect game",function(gameInfo) {
             window.location.href = "/?info="+gameInfo.name;
         });
@@ -31,8 +28,10 @@ define(["connector"], function(socket){
     }
     
     function joinGame(gameInfo) {
-        console.log("yeahaaaaa");
-        require(['game', games[gameInfo.game].url], function(game, setGame) {
+        console.log(gameInfo);
+        console.log(games);
+            
+        require(['game', "game_types/"+gameInfo.url], function(game, setGame) {
             $("#mainMenu").hide();
             setGame(gameInfo);
             game.init(gameInfo.question);

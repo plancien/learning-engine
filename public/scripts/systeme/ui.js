@@ -46,7 +46,7 @@ define([], function(){
     function createSessionsButtons(sessions) {
         var display = "";
         $.each(sessions,function(name,value) {
-            display += '<li><a href="/?info=' + name + '" >' + value.game + ' : '+ value.question +'</a></li>';
+            display += '<li><a href="/?info=' + value.name + '" >' + value.game + ' : '+ value.question +'</a></li>';
         });
         $("#gameSessions ul").html(display);
     }

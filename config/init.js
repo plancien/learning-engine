@@ -26,4 +26,3 @@ module.exports = function(app) {
     registerRoutes(app);
 };
 
-require(__dirname + "/../server/sessions.js").loadAllSessionGame();

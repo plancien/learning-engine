@@ -2,5 +2,5 @@
     "name": "The Great Run",
     "version": "0.8",
     "description": "move with arrows, collect as many bonuses as possible, avoid maluses and go as far as you can",
-    "url": "game_types/theGreatRun/index"
+    "url": "theGreatRun/index"
 }
