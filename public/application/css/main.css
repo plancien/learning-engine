@@ -35,16 +35,26 @@ body{
 	text-align: center;
 }
 
-#top_menu li{
-	margin : 1em;
-	display : inline;
+ul#top_menu {  
+	width : 900px;
+	height : 35px;
+	list-style-type : none; 
 }
-#top_menu li:hover{
+ul#top_menu li {
+	padding : 0 1em; 
+}
+ul#top_menu li a {
+	color : black;
+	text-decoration: none;
+}
+ul#top_menu li a:hover {
 	color : white;
-	cursor : pointer;
 }
-#top_menu ul{
-	list-style-type: none;
+li.onLeft {
+	float : left;
+}
+li.onRight {
+	float : right;
 }
 
 #user {

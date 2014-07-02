@@ -1,0 +1,41 @@
+<link rel="stylesheet" type="text/css" href="application/css/my_game.css">
+
+<TABLE id="my_game">
+    <tr>
+        <th>Jeux et question</th>
+        <th>Images bonus</th>
+        <th>Images malus</th>
+        <th>Action</th>
+    </tr>
+
+    <% 
+        for (var i = spec.length - 1; i >= 0; i--) {
+            var color = (i % 2 == 0) ? "pair" : "impair";
+            %>
+                <tr class="<%= color %>">
+                    <th class="name">      <span class="scrollContainer">   <%= spec[i].name %><br /> <%= spec[i].question %></span></th>
+                    <th class="bonusMalus"><span class="scrollContainer">   <% displayTabImg(spec[i].bonus); %>              </span></th>
+                    <th class="bonusMalus"><span class="scrollContainer">   <% displayTabImg(spec[i].malus); %>              </span></th>
+                    <th class="action">    <span class="scrollContainer">   <% displayAction(spec[i].name);%>                </span></th>
+                </tr>
+            <%
+        }; 
+    %>
+
+</TABLE>
+
+<%
+    function displayTabImg(tab){
+        for (var j = tab.length - 1; j >= 0; j--) {
+            %><img src="<%=tab[j]%>"><%
+        };
+    }
+    function displayAction(linkName){
+        %>
+        <a href="">Editer</a>
+        <a href="">Jouer</a>
+        <a href="">Supprimer</a>
+        <%
+    }
+%>
+

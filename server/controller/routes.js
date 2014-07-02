@@ -1,6 +1,7 @@
 
 var img = require(__path.model + "/img.js");
 var users = require(__path.model + "/users.js");
+var mamm = require(__path.model + "/multiple_action_model_manageur.js");
 var fs = require('fs');
 
 module.exports = function(app) {
@@ -19,7 +20,9 @@ module.exports = function(app) {
     app.get('/create_game', function(req, res){
         display(req, res, "create_game");
     });
-
+    app.get('/my_game', function(req, res){
+        sendGame(req, res, "my_game");
+    });
     app.post('/login', function (req, res){
         checkLog(req, res, "login");
     });
@@ -37,11 +40,15 @@ module.exports = function(app) {
     });
 };
 
-function display(req, res, page){
+function display(req, res, page, spec){
     var data = {
-        page : page || "home",
+        page : page || "welcome",
         userName : req.session.userName || false
     };
+
+    if (spec){
+        data.spec = spec;
+    }
     res.render("index.html", data);
 }
 
@@ -83,5 +90,11 @@ function addImage(req, res){
     img.save(req.files.uploadedImage, function(err, data) {
         users.addImage(data.url, req.user);
         res.redirect("/");
+    });
+}
+
+function sendGame(req, res){
+    mamm.getDefaultAndUserGame(req.session.userName, function(spec){
+        display(req, res, "my_game", spec);
     });
 }

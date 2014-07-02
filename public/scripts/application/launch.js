@@ -56,7 +56,7 @@ define(["connector"], function(socket){
         createGame: createGame,
         registerGames: registerGames,
         joinGame: joinGame,
-        gameUpdate: gameUpdate,
+        // gameUpdate: gameUpdate,
         updateGame: updateGame
     }
 

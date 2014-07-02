@@ -1,0 +1,44 @@
+
+#my_game{
+	max-width: 100%;
+}
+
+#my_game tr{
+	background-color:  rgba(200,0,200,0.2);;
+}
+#my_game .pair{
+	background-color: rgba(0,0,200,0.2);
+}
+#my_game .impair{
+	background-color: rgba(0,200,0,0.2);
+}
+#my_game th{
+	word-wrap : break-word;
+	max-height : 204px;
+	overflow: auto;
+	/*display: table-column-group;*/
+}
+#my_game img{
+	max-width: 90px;
+	max-height: 90px;
+	padding : 2px;
+}
+#my_game th.bonusMalus {
+	width : 300px;
+	/*display : inline;*/
+}
+#my_game th .name{
+	
+}
+#my_game th .question{
+	
+}
+.scrollContainer{
+	width : 100%;
+	max-height : 200px;
+	overflow: hidden;
+	display : block;
+}
+.scrollContainer:hover{
+	overflow: auto;
+}
