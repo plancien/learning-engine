@@ -1,4 +1,6 @@
-require(["application/dom_manipulator","application/launch","application/query_controller"], function(ui,launch,query) {
+require(["application/dom_manipulator","application/launch","application/query_controller"], 
+function(ui,launch,query){
+
     var socket = io.connect();
     socket.emit("name",window.userName);
 
@@ -9,15 +11,9 @@ require(["application/dom_manipulator","application/launch","application/query_c
         socket.on("games info", launch.registerGames);
 
         query.applyCurrentPage();
-    }
-
-
-
-
-
-
-
-        /*
+    });
+});
+         /*
         $("#mainMenu").fadeIn('normal');
 
         $(function() {
@@ -67,5 +63,3 @@ require(["application/dom_manipulator","application/launch","application/query_c
         });
     });
     */
-
-});        

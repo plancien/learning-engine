@@ -1,15 +1,36 @@
 
 var PageManager = function(){
     this.page = {};
+    this.defaultPage = "home";
 }
-PageManager.prototype.request = function(pathName, method, req, res){
-    var pageName = pathName.split("/")[1];
-    if (this.page[pageName] && this.page[pageName][method]){
-        this.page[pageName][method](req, res);
+PageManager.prototype.request = function(pageName, method, req, res){
+    if (!pageName[0])
+        pageName[0] = this.defaultPage;
+    var parsed = this.findTarget(pageName);
+    if (parsed.target && parsed.target[method]){
+        parsed.target[method](req, res, parsed.rest);
     }
     else{
         res.send("404");
     }
+};
+PageManager.prototype.findTarget = function(tabPath){   //Vient parcourir l'arborescence de this.page 
+    var target = this.page;
+    for (var i = 0; i < tabPath.length; i++) {          //Pour toutes l'arborescence demande 
+        if (target[tabPath[i]]){                        //Si la cible chercheuse contient la suite de l'arbo
+            target = target[tabPath[i]];                //On la stock
+        }
+        else{
+            return {
+                "target" : target,
+                "rest" : tabPath.splice(i, tabPath.length)
+            };
+        }
+    };
+    return {
+        "target" : target,
+        "rest" : false
+    };
 }
 PageManager.prototype.add = function(pathName, getAction, postAction){
     if (this.page[pathName]){
@@ -19,8 +40,14 @@ PageManager.prototype.add = function(pathName, getAction, postAction){
         this.page[pathName] = new Page(getAction, postAction);
         return this.page[pathName];
     }
+};
+PageManager.prototype.addOn = function(who, name, getAction, postAction){
+    if (this.page[who]){
+        this.page[who][name] = new Page(getAction, postAction);
+    }
+    else
+        console.error("Impossible de rajouter '" + name + "' sur '" + who + "'");
 }
-
 
 
 function Page(getAction, postAction){
@@ -41,7 +68,7 @@ Page.prototype.display = function(req, res, page, spec){
         data.spec = spec;
     }
     res.render("index.html", data);
-}
+};
 
 module.exports = new PageManager();
 
