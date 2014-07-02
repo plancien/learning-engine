@@ -20,8 +20,11 @@ define([], function(){
 	function applyCurrentPage(){
 		var page = getPageName();
 
-		if (page === "create_game"){
-			
+		if (page === "game"){
+			require(['game', "game_types/"+gameInfos.url], function(game, setGame) {
+            	setGame(gameInfos);
+            	game.init(gameInfos.question);
+	        });	
 		}
 	}
 
