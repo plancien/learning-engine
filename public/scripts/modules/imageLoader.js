@@ -4,11 +4,11 @@ define([], function() {
 		files += '/';
 
 		if (getUrl){
-			return "./images/games_library/"+files+name;
+			return "/images/games_library/"+files+name;
 		}
 		else{
 			var image = new Image();
-			image.src = "./images/games_library/"+files+name;
+			image.src = "/images/games_library/"+files+name;
 			return image;
 		}
 	}
