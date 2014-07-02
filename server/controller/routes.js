@@ -1,90 +1,38 @@
 
-var img = require(__path.model + "/img.js");
-var users = require(__path.model + "/users.js");
-var mamm = require(__path.model + "/multiple_action_model_manageur.js");
+var pageManager = require(__dirname + "/pageManager")
+// var querystring = require('querystring');
+
 var fs = require('fs');
+var url  =require('url');
 
 module.exports = function(app) {
 
     app.get('/', function(req, res) {
-        redirectAccordingToSession(req, res);
+        res.redirect("/home")
+        // redirectAccordingToSession(req, res);
     });
 
-    app.get("/redirect", function(req, res) {
-        res.redirect('/');
-    });
-
-    app.get('/login',function(req,res) {
-        display(req, res, "login");
-    });
-    app.get('/create_game', function(req, res){
-        display(req, res, "create_game");
-    });
-    app.get('/my_game', function(req, res){
-        sendGame(req, res, "my_game");
-    });
-    app.post('/login', function (req, res){
-        checkLog(req, res, "login");
-    });
-    app.post('/signup',function(req,res) {
-        checkSignUp(req, res);
-    });
-
-    app.get('/logout', function(req, res) {
-        req.logout();
-        res.redirect('/');
-    });
+    // app.get('/logout', function(req, res) {
+    //     req.logout();
+    //     res.redirect('/');
+    // });
 
     app.post("/upload", function(req, res) {
         addImage(req, res);
     });
+    
+    app.get('/:page', function(req, res){
+        var pathName = url.parse(req.url).pathname;
+        pageManager.request(pathName, "get", req, res);
+    });
+    app.post('/:page', function(req, res){
+        var pathName = url.parse(req.url).pathname;
+        pageManager.request(pathName, "post", req, res);
+    });
+
+
+
 };
-
-function display(req, res, page, spec){
-    var data = {
-        page : page || "welcome",
-        userName : req.session.userName || false
-    };
-
-    if (spec){
-        data.spec = spec;
-    }
-    res.render("index.html", data);
-}
-
-function redirectAccordingToSession(req, res){
-    if (req.session.userName) {
-        display(req, res);
-    }
-    else if (req.query.session){
-        display(req, res);
-    }
-    else{
-        res.redirect("/login");
-    }
-}
-
-function checkLog(req, res){
-    users.log(req, function(successful){
-        if (successful){
-            req.session.userName = req.body.username;
-            res.redirect("/");
-        }
-        else{
-            display(req, res, "login");
-        }
-    });
-}
-
-function checkSignUp(req, res){
-    users.save(req.body.username,req.body.password,function(err) {
-        if (err) {
-            res.send("Error : " + err.message);
-        } else {
-            res.redirect("/login");
-        }
-    });
-}
 
 function addImage(req, res){
     img.save(req.files.uploadedImage, function(err, data) {
@@ -94,7 +42,5 @@ function addImage(req, res){
 }
 
 function sendGame(req, res){
-    mamm.getDefaultAndUserGame(req.session.userName, function(spec){
-        display(req, res, "my_game", spec);
-    });
+
 }
