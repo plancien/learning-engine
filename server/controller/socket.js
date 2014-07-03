@@ -43,10 +43,6 @@ module.exports.register = function register (socket,io) {
     });
 
     socket.on("create game",function(gameInfo) {
-        console.log("Bonjour je suis bien appele");
-            
-        console.log(gameInfo);
-            
         games.addGame(gameInfo, function(gameData){
             user.addGame(socket.name, gameData.name, function(){
                 socket.emit("redirect game", gameInfo);

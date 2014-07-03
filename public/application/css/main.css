@@ -49,6 +49,7 @@ ul#top_menu li a {
 }
 ul#top_menu li a:hover {
 	color : white;
+	cursor : pointer;
 }
 li.onLeft {
 	float : left;

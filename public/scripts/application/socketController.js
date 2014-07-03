@@ -1,5 +1,7 @@
-require(["application/dom_manipulator","application/launch","application/query_controller"], 
-function(ui,launch,query){
+// require(["application/dom_manipulator","application/launch","application/query_controller"], 
+// function(ui,launch,query){
+require(["application/query_controller"], 
+function(query){
     var socket = io.connect();
     socket.emit("name",window.userName);
 

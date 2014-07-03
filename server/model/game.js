@@ -32,10 +32,14 @@ module.exports.exportListGame = function(list, callback){
 };
 
 module.exports.addGame = function(data, callback) {  //add a game in bdd and callback the name
-    console.log(data);
-        
     var name = generateRandomName();
     data.name = name;
+
+    if (typeof(data.bonus) === "string")
+        data.bonus = [data.bonus]
+    if (typeof(data.malus) === "string")
+        data.malus = [data.malus]
+
     var gameFile = JSON.stringify(data);
     var path = __path.bdd+"/session_game/"+name+".json";
     fs.writeFile(path, gameFile, callback(data));

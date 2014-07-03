@@ -1,6 +1,6 @@
 
 <h2>Créateur de jeux</h2>
-<form class="createGame">
+<form class="createGame" method="post">
 
   <span class="form_text">
      Choisissez votre question :
@@ -11,7 +11,7 @@
   <span class="form_text">
      Choisissez les images bonus :
   </span> <br />
-  <select class="bonusImg" name="tabBonusImg" multiple="multiple">
+  <select class="bonusImg" name="bonus" multiple="multiple">
     <% addOptionImage() %>
   </select><br>
 
@@ -19,21 +19,27 @@
   <span class="form_text">
      Choisissez les images malus :
   </span> <br />
-  <select class="malusImg" name="tabMalusImg"  multiple="multiple">
+  <select class="malusImg" name="malus"  multiple="multiple">
     <% addOptionImage() %>
   </select><br>
   
 
-  <div hidden>
-    Game Model : 
-    <select class="modelList"></select>
-    <div class="modelDescription">Model description.</div>
-  </div>        
-  <div class="modelParams"></div>
-  <input type="submit" value="Create !">
+    Choisissez un model de jeux : 
+    <select class="modelList" name="game">
+      <%
+        for (var i = spec.gameList.length - 1; i >= 0; i--) {
+          %> <option value="<%=spec.gameList[i].id%>"> <%=spec.gameList[i].name%> </option><%
+        };
+      %>
+    </select>
+    <div class="modelDescription"></div>
+  <input type="submit" value="Créer !">
 
 </form>
-
+<br />
+<br />
+<br />
+<br />
 
 <script>
   $(".bonusImg").imagepicker();
@@ -41,6 +47,9 @@
 </script>
 
 <% 
+  console.log(spec.gameList[0]);
+    
+
   function addOptionImage(){
     for (var i = spec.imagesList.length - 1; i >= 0; i--) {
       %>

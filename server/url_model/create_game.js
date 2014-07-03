@@ -11,10 +11,13 @@ module.exports = function(){
 	function(req, res){				//get
 		var that = this;
 		if (userName = req.session.userName){
+
 			var spec = {}
 			spec.gameList = games.getGamesList();
+
 	        images.getDefaultUrl(function(err,imgs) {
 	            spec.imagesList = imgs;
+	            spec.gameList = games.getGamesList()
 				that.display(req, res, "create_game", spec);
 	        });
 	    }
@@ -22,8 +25,36 @@ module.exports = function(){
 	    	res.redirect("/login");
 	    }
 	},
-
 	function(req, res){				//post
-		console.log(req.body);
+		if (userName = req.session.userName){
+			checkPostValue(req.body, function(err){
+				if (err.length > 0) res.send(err)
+				else{
+			        games.addGame(req.body, function(gameData){
+			        	users.addGame(userName, gameData.name, function(){
+			        		res.redirect("/game/"+gameData.name);
+			        	});
+			        });
+				}	
+			})
+		}
+		else{
+	    	res.redirect("/login");
+		}
 	}
 )};
+
+
+function checkPostValue(post, callback){
+	var error = [];
+	if (!post.question)
+		error.push("Vous n'avez pas entré de question");
+	if (!post.bonus)
+		error.push("Vous n'avez pas selectionné d'image bonus");
+	if (!post.malus)
+		error.push("Vous n'avez pas selectionné d'image malus");
+	if (!post.game)
+		error.push("Vous n'avez pas selectionné de jeu");
+	callback(error);
+};
+
