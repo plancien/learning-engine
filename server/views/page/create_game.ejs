@@ -5,18 +5,25 @@
   <span class="form_text">
      Choisissez votre question :
   </span> <br />
-  <input class="question"> <br />
+  <input class="question" name="question"> <br />
+
 
   <span class="form_text">
      Choisissez les images bonus :
   </span> <br />
-  <select class="bonusImg" multiple="multiple"></select><br>
+  <select class="bonusImg" name="tabBonusImg" multiple="multiple">
+    <% addOptionImage() %>
+  </select><br>
+
 
   <span class="form_text">
      Choisissez les images malus :
   </span> <br />
-  <select class="malusImg"  multiple="multiple"></select><br>
+  <select class="malusImg" name="tabMalusImg"  multiple="multiple">
+    <% addOptionImage() %>
+  </select><br>
   
+
   <div hidden>
     Game Model : 
     <select class="modelList"></select>
@@ -26,3 +33,21 @@
   <input type="submit" value="Create !">
 
 </form>
+
+
+<script>
+  $(".bonusImg").imagepicker();
+  $(".malusImg").imagepicker();
+</script>
+
+<% 
+  function addOptionImage(){
+    for (var i = spec.imagesList.length - 1; i >= 0; i--) {
+      %>
+        spec.imagesList[i]
+        <option data-img-src="<%=spec.imagesList[i]%>" value="<%=spec.imagesList[i]%>"></option>
+      <%
+    };
+  }
+%>
+  

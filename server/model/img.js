@@ -4,6 +4,16 @@ var mime = require("mime");
 var path = require("path");
 var acceptedType = ["image/png","image/jpeg","image/gif","image/bmp"]
 
+
+module.exports.getDefaultUrl = function(callback){
+    fs.readdir(__path.root+"/public/images/games_images/", function(err, files){
+        for (var i = files.length - 1; i >= 0; i--) {
+            files[i] = "/images/games_images/" + files[i];
+        };
+        callback(err, files);
+    });
+}
+
 function getGameImagesList(userImgs,callback) {
     var readDir = Promise.denodeify(fs.readdir);
     var defaultImgPromise = readDir(__dirname+"/../../public/images/games_images/");
