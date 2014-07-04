@@ -35,14 +35,18 @@ module.exports.addGame = function(data, callback) {  //add a game in bdd and cal
     var name = generateRandomName();
     data.name = name;
 
-    if (typeof(data.bonus) === "string")
-        data.bonus = [data.bonus]
-    if (typeof(data.malus) === "string")
-        data.malus = [data.malus]
+    getTitleOf(data.game, function(title){
+        data.title = title;
+    
+        if (typeof(data.bonus) === "string")
+            data.bonus = [data.bonus]
+        if (typeof(data.malus) === "string")
+            data.malus = [data.malus]
 
-    var gameFile = JSON.stringify(data);
-    var path = __path.bdd+"/session_game/"+name+".json";
-    fs.writeFile(path, gameFile, callback(data));
+        var gameFile = JSON.stringify(data);
+        var path = __path.bdd+"/session_game/"+name+".json";
+        fs.writeFile(path, gameFile, callback(data));
+    });
 };
 
 module.exports.getGamesList = function() {
@@ -95,3 +99,21 @@ function getGameInfo (directoryPath) {
     return JSON.parse(fs.readFileSync(directoryPath+"/game.json"));
 };
 
+function getDataGame (directoryPath) {
+    return JSON.parse(fs.readFileSync(directoryPath));
+};
+
+function getTitleOf(name, callback){
+    var dataPath = __path.bdd + "/game_types/"+name+".json";
+    console.log("Valeur de data path : " + dataPath);
+        
+    fs.exists(dataPath, function(exists){
+        if (exists){
+            var dataGame = getDataGame(dataPath);
+            callback(dataGame.name);
+        }
+        else{
+            callback("not found");
+        }
+    });
+}

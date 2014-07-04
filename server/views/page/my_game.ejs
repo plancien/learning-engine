@@ -13,7 +13,7 @@
             var color = (i % 2 == 0) ? "pair" : "impair";
             %>
                 <tr class="<%= color %>">
-                    <th class="name">      <span class="scrollContainer">   <%= spec[i].name %><br /> <%= spec[i].question %></span></th>
+                    <th class="name">      <span class="scrollContainer">   <%= spec[i].title %><br /><br /><%= spec[i].question %></span></th>
                     <th class="bonusMalus"><span class="scrollContainer">   <% displayTabImg(spec[i].bonus); %>              </span></th>
                     <th class="bonusMalus"><span class="scrollContainer">   <% displayTabImg(spec[i].malus); %>              </span></th>
                     <th class="action">    <span class="scrollContainer">   <% displayAction(spec[i].name);%>                </span></th>
@@ -32,8 +32,8 @@
     }
     function displayAction(linkName){
         %>
-        <a href="game/<%=linkName%>/edit">Editer</a>
-        <a href="game/<%=linkName%>">Jouer</a>
+        <a href="game/<%=linkName%>/edit">Editer</a><br />
+        <a href="game/<%=linkName%>">Jouer</a><br />
         <a href="game/<%=linkName%>/delete">Supprimer</a>
         <%
     }
