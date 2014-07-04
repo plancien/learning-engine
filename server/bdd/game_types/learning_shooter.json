@@ -3,5 +3,6 @@
 	"version": "0.1",
 	"description": "Click on the bad  images before they hit the floor ! The good images give you point if they hit the floor, or if you clicked on them ! Have fun while learning !",
 	"presImage" : "/images/games_library/flat/learning_shoter_pres.png",
+    "exempleUrl": "/game/learning_shoter",
 	"url": "learningShooter/learningShooter"
 }

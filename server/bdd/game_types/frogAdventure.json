@@ -3,5 +3,6 @@
     "version": "0.1",
     "description": "move with arrows, take bonuses to progress, and try take a maximum of fly",
     "url": "frogAdventure/frogAdventure",
+    "exempleUrl": "/game/cube_adventure",
 	"presImage" : "/images/games_library/flat/cube_adventure_pres.png"
 }

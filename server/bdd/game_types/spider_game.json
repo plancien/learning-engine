@@ -3,5 +3,6 @@
     "version": "0.1",
     "description": "WALK !",
 	"presImage" : "/images/games_library/flat/spider_game_pres.png",
+    "exempleUrl": "/game/spider_game",
     "url": "spider_game/index"
 }

@@ -34,7 +34,8 @@
               %> <option value="<%=spec.gameList[i].id%>"> <%=spec.gameList[i].name%> </option><%
             };
           %>
-        </select>
+        </select><br />
+        <a id="exempleLink" href="">Essayer l'exemple</a>
       </div>
       <div class="modelDescription"></div>
       <input type="submit" value="Créer !">
@@ -45,10 +46,6 @@
   </form>
 </div>
 
-<br />
-<br />
-<br />
-<br />
 
 <script>
   var dataStock = {};
@@ -58,7 +55,8 @@
       %>
         dataStock["<%=spec.gameList[i].id%>"] = {
           presImage : "<%=spec.gameList[i].presImage%>",
-          description : "<%=spec.gameList[i].description%>"
+          description : "<%=spec.gameList[i].description%>",
+          exempleLink : "<%=spec.gameList[i].exempleUrl%>"
         }
       <%
     };
@@ -70,6 +68,8 @@
   $(".modelList").change(function(event) {      //Changement de jeux type
     $(".modelDescription").text(dataStock[this.value].description); // Applique le texte de description
     $("#presImage").attr("src", dataStock[this.value].presImage);   //L'image de présentation
+    $("#exempleLink").attr("href", dataStock[this.value].exempleLink);   //L'image de présentation
+
   });
 </script>
 

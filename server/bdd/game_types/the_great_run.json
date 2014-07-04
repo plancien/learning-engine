@@ -3,5 +3,6 @@
 	"version": "0.1",
 	"description": "move with arrows, collect as many bonuses as possible, avoid maluses and go as far as you can",
 	"presImage" : "/images/games_library/flat/the_great_run_pres.png",
+    "exempleUrl": "/game/the_great_run",
 	"url": "theGreatRun/index"
 }
