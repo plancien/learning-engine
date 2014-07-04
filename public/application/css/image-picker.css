@@ -13,7 +13,6 @@ ul.thumbnails.image_picker_selector{
     height : 120px;
     display : block;
     margin : 6px;
-    border : 1px solid red;
   }
     .thumbnail{
       width : 100%;
