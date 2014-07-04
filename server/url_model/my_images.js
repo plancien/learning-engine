@@ -3,7 +3,7 @@ var users = require(__path.model+"/users");
 var img = require(__path.model+"/img");
 
 module.exports = function(){
-    pageManager.add("my_images",
+    var my_images = pageManager.add("my_images",
     function(req, res){         //get
         if (userName = req.session.userName){
         	var imagesList = users.getUserImageSync(userName);
@@ -23,6 +23,22 @@ module.exports = function(){
         }
         else{
             res;redirect("login");
+        }
+    });
+
+    my_images.addChildren("delete",
+    function (req, res, pathFollow){
+        if (userName = req.session.userName){
+            var imageNamePath = "/" + pathFollow.join("/");
+            img.removeImage(imageNamePath, function(err){
+                users.removeImage(userName, imageNamePath, function(err){
+                    res.redirect("/my_images");
+                });
+            });
+
+        }
+        else{
+            res.redirect("login");
         }
     });
 };

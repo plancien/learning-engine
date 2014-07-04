@@ -17,6 +17,22 @@ module.exports.log = function (req, callback){
     };
 };
 
+module.exports.removeImage = function(userName, imageName, callback){
+    getDataUser(userName, function(err, data){
+        if (err){
+            callback();
+        }
+        else{
+            for (var i = data.img.length - 1; i >= 0; i--) {
+                if (data.img[i] == imageName){
+                    data.img.splice(i, 1);
+                }
+            };
+            fs.writeFile(getPathUser(userName), JSON.stringify(data, null, 4), callback);
+        }
+    });
+};
+
 module.exports.save = function(name,password,callback) {
     var file = __path.bdd + "/userList.json";
     fs.readFile(file, 'utf8', function (err, data) {
@@ -107,6 +123,22 @@ function addSessionGame(userName, gameName){
         fs.writeFile(getPathUser(userName), JSON.stringify(file, null, 4), function(){});
     });
 
+}
+
+
+function getDataUser(userName, callback){
+    var userPath = getPathUser(userName);
+    fs.exists(userPath, function(exists){
+        if (exists){
+            fs.readFile(getPathUser(userName), 'utf8', function (err, data) {
+                if (err) return callback(err);
+                callback(null, JSON.parse(data));
+            });
+        }
+        else{
+            callback(true, null);
+        }
+    });
 }
 
 function getPathUser (userName){

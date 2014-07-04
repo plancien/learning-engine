@@ -55,6 +55,10 @@ function Page(getAction, postAction){
     if (postAction)
         this.post = postAction;
 }
+Page.prototype.addChildren = function(pathName, getAction, postAction){
+    this[pathName] = new Page(getAction, postAction);
+        return this[pathName];
+}
 Page.prototype.post = function(req, res){
     res.send("Pas de methode post");
 }

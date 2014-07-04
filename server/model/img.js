@@ -14,6 +14,19 @@ module.exports.getDefaultUrl = function(callback){
     });
 };
 
+module.exports.removeImage = function(pathName, callback){
+    pathName = __path.root + "/public/" + pathName;
+    fs.exists(pathName, function (exists) {
+
+        if (exists){
+            fs.unlink(pathName, function (err) {
+                if (err) throw err;
+                callback(err);
+            });
+        }
+    });
+};
+
 function getGameImagesList(userImgs,callback) {
     var readDir = Promise.denodeify(fs.readdir);
     var defaultImgPromise = readDir(__dirname+"/../../public/images/games_images/");
