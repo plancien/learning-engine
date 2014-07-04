@@ -9,3 +9,40 @@
 #create_game ul.thumbnails.image_picker_selector:hover{
 	overflow: auto;
 }
+
+#create_game{
+	margin-bottom: 100px;
+	height: 1000px;
+}
+
+#gameSelection{
+	float : left;
+	width : 100%;
+	margin : 10px;
+}
+
+#gameSelection #selectGame{
+	width : 50%;
+	float : left;
+	display : inline-block;
+}
+
+#gameSelection .prevu{
+	width : 50%;
+	float : left;
+	display : inline-block;
+}
+#gameSelection .prevu img{
+	max-width : 100%;
+}
+
+#gameSelection .modelDescription{
+	width : 50%;
+	float : right;
+	display : inline-block;
+}
+.backToLine{
+	float : left;
+	width : 100%;
+	height: 1px;
+}

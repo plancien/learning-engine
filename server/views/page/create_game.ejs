@@ -1,3 +1,4 @@
+
 <link rel="stylesheet" type="text/css" href="/application/css/create_game.css">
 
 <div id="create_game">
@@ -23,17 +24,23 @@
       <% addOptionImage() %>
     </select><br>
     
-
-      Choisissez un model de jeux : 
-      <select class="modelList" name="game">
-        <%
-          for (var i = spec.gameList.length - 1; i >= 0; i--) {
-            %> <option value="<%=spec.gameList[i].id%>"> <%=spec.gameList[i].name%> </option><%
-          };
-        %>
-      </select>
+    <div id="gameSelection">
+  
+      <div id="selectGame">
+        Choisissez un model de jeux<br /> 
+        <select class="modelList" name="game">
+          <%
+            for (var i = spec.gameList.length - 1; i >= 0; i--) {
+              %> <option value="<%=spec.gameList[i].id%>"> <%=spec.gameList[i].name%> </option><%
+            };
+          %>
+        </select>
+      </div>
       <div class="modelDescription"></div>
-    <input type="submit" value="Créer !">
+      <input type="submit" value="Créer !">
+      <div class="backToLine"></div>
+      <div class="prevu"><img id="presImage" src="" /></div>
+    </div>
 
   </form>
 </div>
@@ -44,8 +51,26 @@
 <br />
 
 <script>
-  $(".bonusImg").imagepicker();
+  var dataStock = {};
+
+  <%
+    for (var i = spec.gameList.length - 1; i >= 0; i--) { //Vient stocker côté client les informations du jeu pour l'affichage de la page
+      %>
+        dataStock["<%=spec.gameList[i].id%>"] = {
+          presImage : "<%=spec.gameList[i].presImage%>",
+          description : "<%=spec.gameList[i].description%>"
+        }
+      <%
+    };
+  %>
+
+  $(".bonusImg").imagepicker(); //Applique le plugin image picker pour les bonus et malus
   $(".malusImg").imagepicker();
+
+  $(".modelList").change(function(event) {      //Changement de jeux type
+    $(".modelDescription").text(dataStock[this.value].description); // Applique le texte de description
+    $("#presImage").attr("src", dataStock[this.value].presImage);   //L'image de présentation
+  });
 </script>
 
 <% 
@@ -54,7 +79,7 @@
     writeOptionsOf(spec.userImagesList);
     writeOptionsOf(spec.imagesList);
   }
-  function writeOptionsOf(tabImages){
+  function writeOptionsOf(tabImages){   //Insère un tableau de source d'image en option  pour image picker
       for (var i = tabImages.length - 1; i >= 0; i--) {
       %>
         <option data-img-src="<%=tabImages[i]%>" value="<%=tabImages[i]%>"></option>

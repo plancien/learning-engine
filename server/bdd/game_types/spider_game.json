@@ -2,5 +2,6 @@
     "name": "Spider Game",
     "version": "0.1",
     "description": "WALK !",
+	"presImage" : "/images/games_library/flat/spider_game_pres.png",
     "url": "spider_game/index"
 }

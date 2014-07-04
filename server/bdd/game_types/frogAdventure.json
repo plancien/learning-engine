@@ -2,5 +2,6 @@
     "name": "Cube Adventure",
     "version": "0.1",
     "description": "move with arrows, take bonuses to progress, and try take a maximum of fly",
-    "url": "frogAdventure/frogAdventure"
+    "url": "frogAdventure/frogAdventure",
+	"presImage" : "/images/games_library/flat/cube_adventure_pres.png"
 }
