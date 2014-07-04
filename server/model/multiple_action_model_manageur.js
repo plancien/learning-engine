@@ -14,3 +14,11 @@ module.exports.getDefaultAndUserGame = function(userName, callback){
     });
 };
 
+module.exports.getUserGame = function(userName, callback){
+    users.getListGame(userName, function(list){
+        games.exportListGame(list, function(userFiles){
+            callback(userFiles);
+        });
+    });
+}
+
