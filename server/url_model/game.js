@@ -9,7 +9,6 @@ module.exports = function(){
 			if (!pathRest[1]){	//Et qu'on ne veut rien lui faire
 				//aller chercher le jeu en fonctiojn du nom
 				games.get(pathRest[0], function(data){
-					console.log(data);
 					that.display(req, res, "game", data);
 				});
 			}

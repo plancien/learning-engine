@@ -6,11 +6,6 @@ var url = require('url');
 module.exports = function(app) {
 
 
-
-    // app.get('/', function(req, res) {
-    //     res.redirect("/home");
-    // }); 
-
     app.use(function(req, res, next){
         if (req){
             var tabPath = url.parse(req.url).pathname;

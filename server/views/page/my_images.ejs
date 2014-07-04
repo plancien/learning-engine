@@ -1,0 +1,22 @@
+
+<link rel="stylesheet" type="text/css" href="/application/css/my_images.css">
+
+Envoyer vos images
+<form action="/my_images" method="post" enctype="multipart/form-data">
+  <input type="file" name="uploadedImage"/>
+  <input type="submit"/>
+</form>
+
+<div id="my_images_list">
+	<%
+		for (var i = spec.length - 1; i >= 0; i--) {
+			%>
+				<div class="img_container">
+					<img src="<%=spec[i]%>"> <br />
+					<button class="delete_button">Supprimer</button>
+				</div>
+			<%
+		};
+	%>
+</div>
+

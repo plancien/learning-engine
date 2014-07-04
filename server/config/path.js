@@ -6,8 +6,6 @@
 
 
 var rootPath = require('path').join(__dirname, '../../');
-console.log(rootPath);
-
 
 module.exports = {
 	"root" : rootPath,

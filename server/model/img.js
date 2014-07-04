@@ -12,7 +12,7 @@ module.exports.getDefaultUrl = function(callback){
         };
         callback(err, files);
     });
-}
+};
 
 function getGameImagesList(userImgs,callback) {
     var readDir = Promise.denodeify(fs.readdir);
@@ -42,7 +42,7 @@ function getGameImagesList(userImgs,callback) {
 function belongToUser(userImgs) {
     return function(img) {
         return userImgs.indexOf(img)>=0;
-    }
+    };
 }
 
 function isImage(fileName) {
@@ -60,7 +60,7 @@ function createDataFromPath(pathName) {
         url: pathName,
         fileName: path.basename(pathName),
         name: path.basename(pathName,path.extname(pathName))
-    }
+    };
 }
 
 
@@ -77,7 +77,7 @@ function saveImage(file,callback) {
                     callback(err);
                     return;
                 }
-                callback(null,createDataFromPath(newPath))
+                callback(null,createDataFromPath(newPath));
             });
         });
     }

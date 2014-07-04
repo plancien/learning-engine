@@ -2,6 +2,7 @@ var pageManager = require(__path.controller+"/pageManager");
 var users = require(__path.model+"/users");
 
 module.exports = function(){
+    var that = this;
     pageManager.add("login",
     function(req, res){         //get
         if (req.session.userName)
@@ -16,7 +17,7 @@ module.exports = function(){
                 res.redirect("/home");
             }
             else{
-                this.display(req, res, "login");
+                res.redirect("/login");
             }
         });
     });

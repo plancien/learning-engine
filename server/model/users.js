@@ -62,20 +62,27 @@ module.exports.addGame = function(userName, gameName, callback){
 }
 
 function findUser(name, callback){
-	var file = __path.bdd + "/userList.json";
-	fs.readFile(file, 'utf8', function (err, data) {
-		if (err) {
-			return;
-		}
-	 
-		data = JSON.parse(data);
-		if (data[name]){
-			return callback(data[name]);
-		}
-		else{
-			return callback(false);
-		}
-	});		
+    var file = __path.bdd + "/userList.json";
+    fs.exists(file, function (exists) {
+        if (exists){
+            fs.readFile(file, 'utf8', function (err, data) {
+                if (err) {
+                    return;
+                }
+             
+                data = JSON.parse(data);
+                if (data[name]){
+                    return callback(data[name]);
+                }
+                else{
+                    return callback(false);
+                }
+            });
+        }
+        else{
+            return callback(false);
+        }
+    });
 }
 
 function getUserImageSync(name) {
@@ -89,7 +96,7 @@ function addImage(imageName, userName){
     fs.readFile(getPathUser(userName), 'utf8', function (err, data) {
         var file = JSON.parse(data);
         file.img.push(imageName);
-        fs.writeFile(pathUser, JSON.stringify(file, null, 4), function(){});
+        fs.writeFile(getPathUser(userName), JSON.stringify(file, null, 4), function(){});
     });
 }
 function addSessionGame(userName, gameName){
