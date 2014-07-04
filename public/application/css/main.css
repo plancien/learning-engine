@@ -187,7 +187,7 @@ body > footer {
 	border-radius: 6px;
 }
 
-ul.thumbnails.image_picker_selector > li {
+/*ul.thumbnails.image_picker_selector > li {
 	width: 100px;
 	height: 100px;
 }
@@ -206,4 +206,4 @@ ul.thumbnails.image_picker_selector img,
 }
 #educatorView .wrong-image {
 	border: 1px solid red;
-}
+}*/
