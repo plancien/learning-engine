@@ -49,10 +49,14 @@
 <% 
 
   function addOptionImage(){
-    for (var i = spec.imagesList.length - 1; i >= 0; i--) {
+    writeOptionsOf(spec.userImagesList);
+    writeOptionsOf(spec.imagesList);
+  }
+  function writeOptionsOf(tabImages){
+      for (var i = tabImages.length - 1; i >= 0; i--) {
       %>
-        spec.imagesList[i]
-        <option data-img-src="<%=spec.imagesList[i]%>" value="<%=spec.imagesList[i]%>"></option>
+        tabImages[i]
+        <option data-img-src="<%=tabImages[i]%>" value="<%=tabImages[i]%>"></option>
       <%
     };
   }
