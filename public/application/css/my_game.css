@@ -1,11 +1,14 @@
 
 #my_game{
 	max-width: 100%;
+	margin : 10px;
 }
 
 #my_game tr{
-	background-color:  rgba(200,0,200,0.2);;
+	background-color:  rgba(200,0,200,0.2);
+	border : 10px;
 }
+
 #my_game .pair{
 	background-color: rgba(0,0,200,0.2);
 }
@@ -15,8 +18,7 @@
 #my_game th{
 	word-wrap : break-word;
 	max-height : 204px;
-	overflow: auto;
-	/*display: table-column-group;*/
+	overflow: hidden;
 }
 #my_game img{
 	max-width: 90px;
