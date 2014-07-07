@@ -20,5 +20,5 @@ module.exports.getUserGame = function(userName, callback){
             callback(userFiles);
         });
     });
-}
+};
 

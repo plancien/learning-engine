@@ -1,10 +1,10 @@
 define(['event_bus', 'modules/imageLoader', 'modules/collisions', 'game_types/theGreatRun/config', 'game_types/theGreatRun/gridOccuped', 'ext_libs/howler.min'], 
 function(eventBus, imageLoader, collisions, config, grid){
     var jump = new Howl({
-        urls: ['sounds/effects/jump/TGR_jump.wav']
+        urls: ['/sounds/effects/jump/TGR_jump.wav']
     });
     var stopWall = new Howl({
-        urls: ['sounds/effects/hit_hurt/TGR_wallStop.wav']
+        urls: ['/sounds/effects/hit_hurt/TGR_wallStop.wav']
     });
 
 

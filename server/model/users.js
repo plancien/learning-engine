@@ -75,7 +75,29 @@ module.exports.addGame = function(userName, gameName, callback){
 
         fs.writeFile(getPathUser(userName), JSON.stringify(files), callback);
     });
-}
+};
+
+module.exports.haveGame = function(userName, gameName, callback){
+    this.getListGame(userName, function(data){
+        for (var i = data.length - 1; i >= 0; i--) {
+            if (data[i] == gameName){
+                return callback(true);
+            }
+        };
+        return callback(false);
+    });
+};
+
+module.exports.deleteGame = function(userName, gameName){
+    getDataUser(userName, function(err, data){
+        for (var i = data.game.length - 1; i >= 0; i--) {
+            if (data.game[i] == gameName){
+                data.game.splice(i,1);
+            }
+        };
+        saveDataUser(userName, JSON.stringify(data));
+    });
+};
 
 function findUser(name, callback){
     var file = __path.bdd + "/userList.json";
@@ -120,7 +142,7 @@ function addSessionGame(userName, gameName){
     fs.readFile(getPathUser(userName), 'utf8', function (err, data) {
         var file = JSON.parse(data);
         file.game.push(gameName);
-        fs.writeFile(getPathUser(userName), JSON.stringify(file, null, 4), function(){});
+        this.saveDataUser(userName, JSON.stringify(file, null, 4));
     });
 
 }
@@ -136,9 +158,16 @@ function getDataUser(userName, callback){
             });
         }
         else{
+            console.log("ce joueur n'existe pas...");
+            console.log(getPathUser(userName));
+                
             callback(true, null);
         }
     });
+}
+
+function saveDataUser(userName, data, callback){
+    fs.writeFile(getPathUser(userName), data, callback);
 }
 
 function getPathUser (userName){
