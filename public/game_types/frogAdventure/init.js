@@ -19,9 +19,9 @@ function(eventBus, collisionEngine, wall, gravityEngine, cameraRender, Canvas, l
         game.gravityEngine.acceleration = config.gravity.acceleration;
         game.gravityEngine.maxSpeed = config.gravity.maxSpeed;
 
-        game.canvas = Canvas.create({"width" : 800, "height" : 600});
-        game.canvas.width = 800;
-        game.canvas.height = 600;
+        game.canvas = Canvas.create({"width" : 1280, "height" : 720});
+        game.canvas.width = 1280;
+        game.canvas.height = 720;
         game.canvas.context.fillStyle = "rgba(30,30,30,0.8)";
 
         game.cameraRender = cameraRender;

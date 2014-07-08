@@ -13,7 +13,7 @@ define(['event_bus'], function(eventBus) {
         var width = params.width || this.defaultWidth;
         var height = params.height || this.defaultHeight;
 
-        var canvas = $('<canvas id=' + id + ' width=' + width + ' height=' + height + '></canvas>');
+        var canvas = $('<canvas id="'+id+'" width='+width+' height='+height+' style="max-width : 100%; max-height : 100%"></canvas>');
 
         if (params.container) params.container.append(canvas);
         else $('#container').append(canvas);

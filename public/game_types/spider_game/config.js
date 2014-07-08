@@ -3,13 +3,13 @@ define([], function(){
     
     return {
         size_img: 66,
-        canvasWidth: 400,
-        canvasHeight: 600,
+        canvasWidth: 600,
+        canvasHeight: 800,
         maxRopeDistance: 300,
         gravity: 0.001,
         scrollingSpeed : 0.1,
-        playerScroll : 400,
-        stepBetweenAnchors: 100,
+        playerScroll : 500,
+        stepBetweenAnchors: 48,
         draw : {
             ropeStroke : "#FF0000",  
             ropeWidth : 3,

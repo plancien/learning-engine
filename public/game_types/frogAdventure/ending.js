@@ -37,7 +37,7 @@ function(eventBus, cameraRender, collisionEngine, config, flyManageur){
 
 		context.globalAlpha = this.globalAlpha || 0.5;
 		context.fillStyle = "black";
-		context.fillRect(0, 0, 800, 600);
+		context.fillRect(0, 0, 1280, 720);
 
 		var x = 400 - context.measureText(text).width/2;
 		var x2 = 400 - context.measureText(text2).width/2;

@@ -10,16 +10,18 @@ define(["game_types/spider_game/config", "modules/collisions"], function(config,
     Level.prototype.createAnchor = function(y, good, imgs) {
         var table = good ? this.bonusImgName : this.malusImgName;
         var anchor = {
-            x:Math.random()*300+50,
+            x:Math.random()*(config.canvasWidth-config.size_img)+config.size_img/2,
             y:y || Math.random()*600,
             radius: config.size_img*0.5,
             good: good,
             img: imgs[table[(table.length*Math.random())|0]]
         };
-        if(this.anchors.length > 0 && collisions.circles(anchor, this.anchors[this.anchors.length - 1])){
-            this.createAnchor(y, good, imgs);
-            return false;
-        }
+        for (var i = this.anchors.length - 1; i >= 0; i--) {
+            if (collisions.circles(anchor, this.anchors[i])){
+                this.createAnchor(y, good, imgs);
+                return false;
+            }
+        };
         this.anchors.push(anchor);
         return anchor;
     };

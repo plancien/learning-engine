@@ -28,7 +28,7 @@ define(["game_types/spider_game/config"], function(config){
     function drawSky(ctx,scrolling,imgs,player) {
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, config.canvasWidth, config.canvasHeight);
-        ctx.drawImage(background, 0, 100*101-600+scrolling,1,600,0,0,400,600);
+        ctx.drawImage(background, 0, 100*101-600+scrolling,1,600,0,0,config.canvasWidth,config.canvasHeight);
     }
 
     function drawCloud(ctx,scrolling,imgs,player) {
