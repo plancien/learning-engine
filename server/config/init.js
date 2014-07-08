@@ -14,7 +14,6 @@ module.exports = function(app) {
         secret: 'klyiltdtomerqtsdylyz'
     }));
     app.use(express.static(__path.root + '/public'));
-
     app.use(express.bodyParser());
     var server = http.createServer(app);
     server.listen(8075);

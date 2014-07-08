@@ -17,12 +17,17 @@ module.exports = function(){
     function(req, res){         //post
         if (req.session.userName){
             img.save(req.files.uploadedImage, function(err, data) {
-                users.addImage(data.url, req.session.userName);
-                res.redirect("/my_images");
+                if (err){
+                    res.send(err);
+                }
+                else{
+                    users.addImage(data.url, req.session.userName);
+                    res.redirect("/my_images");
+                }
             });
         }
         else{
-            res;redirect("login");
+            res.redirect("login");
         }
     });
 

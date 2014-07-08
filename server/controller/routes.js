@@ -17,23 +17,6 @@ module.exports = function(app) {
             next();
     });
 
-
-
-    app.post("/upload", function(req, res) {
-        addImage(req, res);
-    });
-
-    app.get('/:page', function(req, res){
-        var pathName = url.parse(req.url).pathname;
-        pageManager.request(pathName, "get", req, res);
-    });
-    app.post('/:page', function(req, res){
-        var pathName = url.parse(req.url).pathname;
-        pageManager.request(pathName, "post", req, res);
-    });
-
-
-
 };
 
 function addImage(req, res){

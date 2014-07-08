@@ -27,6 +27,30 @@ module.exports.removeImage = function(pathName, callback){
     });
 };
 
+module.exports.save = function(file,callback) {
+    if (isImage(file.path) && file.size < 50000) {
+        fs.readFile(file.path, function (err, data) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            var newPath = "/images/uploaded_images/"+generateRandomName()+"."+getExtension(file.name);
+            fs.writeFile(__dirname+"/../../public"+newPath, data, function (err) {
+                if(err) {
+                    callback(err);
+                    return;
+                }
+                callback(null,createDataFromPath(newPath));
+            });
+        });
+    }
+    else{
+        callback("Le fichier est trop gros ou n'est pas une image");
+    }
+}
+
+
 function getGameImagesList(userImgs,callback) {
     var readDir = Promise.denodeify(fs.readdir);
     var defaultImgPromise = readDir(__dirname+"/../../public/images/games_images/");
@@ -76,26 +100,16 @@ function createDataFromPath(pathName) {
     };
 }
 
-
-function saveImage(file,callback) {
-    if (isImage(file.path)) {
-        fs.readFile(file.path, function (err, data) {
-            if (err) {
-                callback(err);
-                return;
-            }
-            var newPath = "/images/uploaded_images/"+file.name;
-            fs.writeFile(__dirname+"/../../public"+newPath, data, function (err) {
-                if(err) {
-                    callback(err);
-                    return;
-                }
-                callback(null,createDataFromPath(newPath));
-            });
-        });
-    }
+function generateRandomName() {
+    return ("abcdefghijklmnopqrstuvwxyz123456789").split("").sort(function() {
+        return Math.random()-0.5;
+    }).slice(0,15).join("");
 }
+function getExtension(name){
+    var tabName = name.split(".");
+    return tabName[tabName.length-1];
+}
+
 
 module.exports.getGamesImages = getGameImagesList;
 module.exports.isImage = isImage;
-module.exports.save = saveImage;
