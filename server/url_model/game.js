@@ -16,9 +16,11 @@ module.exports = function(){
                 if (userName = req.session.userName){
                     users.haveGame(userName, gameName, function(have){
                         if (have){
-                            users.deleteGame(userName, gameName);
-                            games.deleteGame(gameName);
-                            res.redirect("/my_game");
+                            users.deleteGame(userName, gameName, function(){
+                                games.deleteGame(gameName, function(){
+                                    res.redirect("/my_game");
+                                });
+                            });
                         }
                         else{
                             res.send("Vous ne possedez pas de jeu de ce nom");
@@ -48,7 +50,6 @@ module.exports = function(){
 
             }
             else if (!actionOnGame){
-                console.log("on rentre dans le chargement de jeu : " + gameName);
                 games.get(gameName, function(data){
 
                     that.display(req, res, "game", data);

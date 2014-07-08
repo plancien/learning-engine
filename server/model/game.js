@@ -46,17 +46,17 @@ module.exports.addGame = function(data, callback) {  //add a game in bdd and cal
     });
 };
 
-module.exports.deleteGame = function(gameName){
+module.exports.deleteGame = function(gameName, callback){
     var pathDir = __path.bdd + "/session_game/";
 
     fs.readdir(pathDir, function(err, files){
         for (var i = files.length - 1; i >= 0; i--) {
-            console.log(files[i]);
             if (files[i] == gameName+".json"){
                 fs.unlink(pathDir+gameName+".json", function (err) {
                     if (err) throw err;
                 });
-            };
+            }
+            callback();
         };
     });
 };

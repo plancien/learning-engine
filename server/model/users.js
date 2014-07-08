@@ -88,14 +88,14 @@ module.exports.haveGame = function(userName, gameName, callback){
     });
 };
 
-module.exports.deleteGame = function(userName, gameName){
+module.exports.deleteGame = function(userName, gameName, callback){
     getDataUser(userName, function(err, data){
         for (var i = data.game.length - 1; i >= 0; i--) {
             if (data.game[i] == gameName){
                 data.game.splice(i,1);
             }
         };
-        saveDataUser(userName, JSON.stringify(data));
+        saveDataUser(userName, JSON.stringify(data), callback);
     });
 };
 
