@@ -50,13 +50,6 @@ module.exports.register = function register (socket,io) {
         });
     });
 
-    socket.on("update game", function(game) {
-        console.log("On veut update un jeu");
-            
-        // updateSession(game);
-        // socket.emit("redirect game", game); 
-    });
-
     socket.on("want session info", function(name) {
         games.get(name, function(game){
             socket.emit("session info", game);

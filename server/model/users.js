@@ -158,9 +158,6 @@ function getDataUser(userName, callback){
             });
         }
         else{
-            console.log("ce joueur n'existe pas...");
-            console.log(getPathUser(userName));
-                
             callback(true, null);
         }
     });

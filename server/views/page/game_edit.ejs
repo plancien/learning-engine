@@ -32,7 +32,7 @@
         <select class="modelList" name="game">
           <%
             for (var i = spec.gameList.length - 1; i >= 0; i--) {
-            	var selected = (spec.gameList[i].id != spec.gameInfos.game) ? "" : "select='selected'";
+            	var selected = (spec.gameList[i].id != spec.gameInfos.game) ? "" : "selected";
               %> <option value="<%=spec.gameList[i].id%>" <%=selected%>> <%=spec.gameList[i].name%> </option><%
             };
           %>

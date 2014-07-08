@@ -135,8 +135,6 @@ function getDataGame (directoryPath) {
 
 function getTitleOf(name, callback){
     var dataPath = __path.bdd + "/game_types/"+name+".json";
-    console.log("Valeur de data path : " + dataPath);
-        
     fs.exists(dataPath, function(exists){
         if (exists){
             var dataGame = getDataGame(dataPath);
