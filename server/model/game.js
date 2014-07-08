@@ -38,10 +38,7 @@ module.exports.addGame = function(data, callback) {  //add a game in bdd and cal
     getTitleOf(data.game, function(title){
         data.title = title;
     
-        if (typeof(data.bonus) === "string")
-            data.bonus = [data.bonus];
-        if (typeof(data.malus) === "string")
-            data.malus = [data.malus];
+        convertBonusMalusToTab(data);
 
         var gameFile = JSON.stringify(data);
         var path = __path.bdd+"/session_game/"+name+".json";
@@ -95,6 +92,24 @@ module.exports.get = function(name, callback){
     });
 };
 
+module.exports.modify = function(gameName, data, callback){
+    var path = __path.bdd + "/session_game/"+gameName+".json";
+    fs.readFile(path, function(err, files){
+        files = JSON.parse(files);
+        files.question = data.question;
+        files.bonus = data.bonus;
+        files.malus = data.malus;
+        files.game = data.game;
+        convertBonusMalusToTab(files);
+
+        if (files.bonus)
+        getTitleOf(files.game, function(title){
+            files.title = title;
+            fs.writeFile(path, JSON.stringify(files), callback(data));
+        });
+    });
+};
+
 function addUrl(gameData, callback){
     fs.readFile(__path.bdd + "/game_types/" + gameData.game + ".json", function(err, files){
         if (err) throw err;
@@ -131,4 +146,11 @@ function getTitleOf(name, callback){
             callback("not found");
         }
     });
+}
+
+function convertBonusMalusToTab(data){
+    if (typeof(data.bonus) === "string")
+        data.bonus = [data.bonus];
+    if (typeof(data.malus) === "string")
+        data.malus = [data.malus];
 }

@@ -22,3 +22,13 @@ module.exports.getUserGame = function(userName, callback){
     });
 };
 
+module.exports.getCreateGameInfos = function(userNamen, callback){
+    img.getDefaultUrl(function(err,imgs) {
+        var spec = {};
+        spec.imagesList = imgs;
+        spec.userImagesList = users.getUserImageSync(userName);
+        spec.gameList = games.getGamesList();
+        callback(spec)
+    });
+}
+

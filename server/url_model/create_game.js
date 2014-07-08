@@ -3,7 +3,7 @@ var pageManager = require(__path.controller+"/pageManager");
 var images = require(__path.model + "/img");
 var games = require(__path.model+"/game");
 var users = require(__path.model + "/users");
-
+var mamm = require(__path.model + "/multiple_action_model_manageur");
 
 
 module.exports = function(){
@@ -11,12 +11,7 @@ module.exports = function(){
     function(req, res){             //get
         var that = this;
         if (userName = req.session.userName){
-
-            var spec = {};
-            images.getDefaultUrl(function(err,imgs) {
-                spec.imagesList = imgs;
-                spec.userImagesList = users.getUserImageSync(userName);
-                spec.gameList = games.getGamesList();
+            mamm.getCreateGameInfos(userName, function(spec){
                 that.display(req, res, "create_game", spec);
             });
         }

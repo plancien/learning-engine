@@ -1,0 +1,98 @@
+
+
+<link rel="stylesheet" type="text/css" href="/application/css/create_game.css">
+
+<div id="create_game">
+  <h2>Editer un jeu</h2>
+  <form class="createGame" method="post">
+
+    <span class="form_text">
+       Votre question :
+    </span>
+    <input class="question" name="question" value="<%=spec.gameInfos.question%>"> <br />
+
+
+    <span class="form_text">
+       Choisissez les images bonus :
+    </span> <br />
+    <select class="bonusImg imageDisplayer" name="bonus" multiple="multiple">
+      <% addOptionImage("bonus") %>
+    </select><br />
+    <span class="form_text">
+       Choisissez les images malus :
+    </span> <br />
+    <select class="malusImg imageDisplayer" name="malus"  multiple="multiple">
+      <% addOptionImage("malus") %>
+    </select><br>
+    
+    <div id="gameSelection">
+  
+      <div id="selectGame">
+        Choisissez un model de jeux<br /> 
+        <select class="modelList" name="game">
+          <%
+            for (var i = spec.gameList.length - 1; i >= 0; i--) {
+            	var selected = (spec.gameList[i].id != spec.gameInfos.game) ? "" : "select='selected'";
+              %> <option value="<%=spec.gameList[i].id%>" <%=selected%>> <%=spec.gameList[i].name%> </option><%
+            };
+          %>
+        </select><br />
+        <a id="exempleLink" href="">Essayer l'exemple</a>
+      </div>
+      <div class="modelDescription"></div>
+      <input type="submit" value="Modifier !">
+      <div class="backToLine"></div>
+      <div class="prevu"><img id="presImage" src="" /></div>
+    </div>
+
+  </form>
+</div>
+
+
+<script>
+  var dataStock = {};
+
+  <%
+    for (var i = spec.gameList.length - 1; i >= 0; i--) { //Vient stocker côté client les informations du jeu pour l'affichage de la page
+      %>
+        dataStock["<%=spec.gameList[i].id%>"] = {
+          presImage : "<%=spec.gameList[i].presImage%>",
+          description : "<%=spec.gameList[i].description%>",
+          exempleLink : "<%=spec.gameList[i].exempleUrl%>"
+        }
+      <%
+    };
+  %>
+
+  $(".bonusImg").imagepicker(); //Applique le plugin image picker pour les bonus et malus
+  $(".malusImg").imagepicker();
+
+  $(".modelList").change(function(event) {      //Changement de jeux type
+    $(".modelDescription").text(dataStock[this.value].description); // Applique le texte de description
+    $("#presImage").attr("src", dataStock[this.value].presImage);   //L'image de présentation
+    $("#exempleLink").attr("href", dataStock[this.value].exempleLink);   //L'image de présentation
+  });
+</script>
+
+<% 
+
+  function addOptionImage(type){
+    writeOptionsOf(spec.userImagesList, type);
+    writeOptionsOf(spec.imagesList, type);
+  }
+  function writeOptionsOf(tabImages, type){   //Insère un tableau de source d'image en option  pour image picker
+      for (var i = tabImages.length - 1; i >= 0; i--) {
+      	var selected = "";
+      	for (var j = spec.gameInfos[type].length - 1; j >= 0; j--) {
+      		if (spec.gameInfos[type][j] == tabImages[i]){
+      			selected = "selected='selected'";
+      		}
+      	};
+      %>
+        <option data-img-src="<%=tabImages[i]%>" value="<%=tabImages[i]%>" <%=selected%>></option>
+      <%
+    };
+  }
+%>
+  
+
