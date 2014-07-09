@@ -3,7 +3,7 @@ global.__path = require(__dirname + "/path.js");
 
 var express = require('express');
 var http = require('http');
-var registerRoutes = require(__path.controller+'/routes');
+var registerRoutes = require(__dirname+'/routes');
 var initConnection = require('./init_connection');
 
 module.exports = function(app) {

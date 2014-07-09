@@ -10,10 +10,12 @@ Envoyer vos images
 <div id="my_images_list">
 	<%
 		for (var i = spec.length - 1; i >= 0; i--) {
+			var imageName = spec[i].split("/");
+			imageName = imageName[imageName.length - 1];
 			%>
 				<div class="img_container">
 					<img src="<%=spec[i]%>"> <br />
-					<a href="/my_images/delete<%=spec[i]%>"><button class="delete_button">Supprimer</button></a>
+					<a href="/my_images/delete/<%=imageName%>"><button class="delete_button">Supprimer</button></a>
 				</div>
 			<%
 		};

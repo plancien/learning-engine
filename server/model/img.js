@@ -2,30 +2,23 @@ var fs = require("fs");
 var Promise = require("promise");
 var mime = require("mime");
 var path = require("path");
-var acceptedType = ["image/png","image/jpeg","image/gif","image/bmp"]
+var acceptedType = ["image/png","image/jpeg","image/gif","image/bmp"];
 
 
 module.exports.getDefaultUrl = function(callback){
     fs.readdir(__path.root+"/public/images/games_images/", function(err, files){
         for (var i = files.length - 1; i >= 0; i--) {
             files[i] = "/images/games_images/" + files[i];
-        };
+        }
         callback(err, files);
     });
 };
 
-module.exports.removeImage = function(pathName, callback){
-    pathName = __path.root + "/public/" + pathName;
-    fs.exists(pathName, function (exists) {
-
-        if (exists){
-            fs.unlink(pathName, function (err) {
-                if (err) throw err;
-                callback(err);
-            });
-        }
-    });
+module.exports.removeUploadedImage = function(imageName, callback){
+    var path = __path.root + "/public/images/uploaded_images/" + imageName;
+    removeImage(path, callback);
 };
+
 
 module.exports.save = function(file,callback) {
     if (isImage(file.path) && file.size < 50000) {
@@ -48,7 +41,7 @@ module.exports.save = function(file,callback) {
     else{
         callback("Le fichier est trop gros ou n'est pas une image");
     }
-}
+};
 
 
 function getGameImagesList(userImgs,callback) {
@@ -89,7 +82,7 @@ function isImage(fileName) {
 function appendPath(pathName) {
     return function(fileName) {
         return pathName+fileName;
-    }
+    };
 }
 
 function createDataFromPath(pathName) {
@@ -105,11 +98,23 @@ function generateRandomName() {
         return Math.random()-0.5;
     }).slice(0,15).join("");
 }
+
 function getExtension(name){
     var tabName = name.split(".");
     return tabName[tabName.length-1];
 }
 
+function removeImage(pathName, callback){
+    fs.exists(pathName, function (exists) {
+
+        if (exists){
+            fs.unlink(pathName, function (err) {
+                if (err) throw err;
+                callback(err);
+            });
+        }
+    });
+};
 
 module.exports.getGamesImages = getGameImagesList;
 module.exports.isImage = isImage;

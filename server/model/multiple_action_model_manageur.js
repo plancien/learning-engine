@@ -22,7 +22,7 @@ module.exports.getUserGame = function(userName, callback){
     });
 };
 
-module.exports.getCreateGameInfos = function(userNamen, callback){
+module.exports.getCreateGameInfos = function(userName, callback){
     img.getDefaultUrl(function(err,imgs) {
         var spec = {};
         spec.imagesList = imgs;

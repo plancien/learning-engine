@@ -12,8 +12,7 @@ module.exports = {
 	"bdd" : rootPath + "/server/bdd",
 	"model" : rootPath + "/server/model",
 	"controller" : rootPath + "/server/controller",
-	"gameTypes" : rootPath + "/public/scripts/game_types/",
-	"url_model" : rootPath + "/server/url_model"
+	"gameTypes" : rootPath + "/public/scripts/game_types/"
 };
 
 module.exports.initViews = function(app){
