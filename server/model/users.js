@@ -130,11 +130,11 @@ function getUserImageSync(name) {
     return user.img;
 }
 
-function addImage(imageName, userName){
+function addImage(imageName, userName, callback){
     fs.readFile(getPathUser(userName), 'utf8', function (err, data) {
         var file = JSON.parse(data);
         file.img.push(imageName);
-        fs.writeFile(getPathUser(userName), JSON.stringify(file, null, 4), function(){});
+        fs.writeFile(getPathUser(userName), JSON.stringify(file, null, 4), callback);
     });
 }
 function addSessionGame(userName, gameName){

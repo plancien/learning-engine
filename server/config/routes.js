@@ -27,10 +27,10 @@ module.exports = function(app) {
 
     app.get("/my_images",       controller.my_images.get);
     app.post("/my_images",      controller.my_images.post);
+    app.get("/my_images/delete/:imageName", controller.my_images.removed);
 
     app.get("/my_game",         controller.my_game);
 
-    app.get("/my_images/delete/:imageName", controller.delete_image);
 
     app.get("/game/:gameName",              controller.game);
     app.get("/game/delete/:gameName",       controller.game_delete);

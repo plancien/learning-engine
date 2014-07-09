@@ -30,5 +30,17 @@ module.exports.getCreateGameInfos = function(userName, callback){
         spec.gameList = games.getGamesList();
         callback(spec)
     });
+};
+
+module.exports.userHasImage = function(userName, imageName, callback){
+    var imageWithPath = "/images/uploaded_images/"+imageName;
+    var userImages = users.getUserImageSync(userName);
+        
+    for (var i = userImages.length - 1; i >= 0; i--) {
+        if (userImages[i] == imageWithPath){
+            return callback(true);
+        }
+    };
+    callback(false);
 }
 
