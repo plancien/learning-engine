@@ -3,11 +3,20 @@ var display = require(__dirname + "/../controller/defaultDisplay.js");
 var users = require(__path.model+"/users");
 var img = require(__path.model+"/img");
 
+
+function createSpec(imagesList, error){
+    return {
+        "imagesList" : imagesList,
+        "error" : error
+    }
+}
+
+
 module.exports = {
     "get" : function(req, res){
         if (userName = req.session.userName){
             var imagesList = users.getUserImageSync(userName);
-            display(req, res, "my_images", imagesList);
+            display(req, res, "my_images", createSpec(imagesList, ""));
         }
         else{
             res.redirect("login");
@@ -18,7 +27,8 @@ module.exports = {
         if (req.session.userName){
             img.save(req.files.uploadedImage, function(err, data) {
                 if (err){
-                    res.send(err);
+                    var imagesList = users.getUserImageSync(userName);
+                    display(req, res, "my_images", createSpec(imagesList, err));
                 }
                 else{
                     users.addImage(data.url, req.session.userName);

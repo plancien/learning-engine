@@ -2,6 +2,9 @@
 <link rel="stylesheet" type="text/css" href="/application/css/my_images.css">
 
 Envoyer vos images
+<div id="error">
+	<%-spec.error%>
+</div>
 <form action="/my_images" method="post" enctype="multipart/form-data">
   <input type="file" name="uploadedImage"/>
   <input type="submit"/>
@@ -9,12 +12,12 @@ Envoyer vos images
 
 <div id="my_images_list">
 	<%
-		for (var i = spec.length - 1; i >= 0; i--) {
-			var imageName = spec[i].split("/");
+		for (var i = spec.imagesList.length - 1; i >= 0; i--) {
+			var imageName = spec.imagesList[i].split("/");
 			imageName = imageName[imageName.length - 1];
 			%>
 				<div class="img_container">
-					<img src="<%=spec[i]%>"> <br />
+					<img src="<%=spec.imagesList[i]%>"> <br />
 					<a href="/my_images/delete/<%=imageName%>"><button class="delete_button">Supprimer</button></a>
 				</div>
 			<%
