@@ -38,7 +38,8 @@ module.exports = function(app) {
     app.get("/game/edit/:gameName",       controller.game_edit.get);
     app.post("/game/edit/:gameName",      controller.game_edit.post);
 
-
     app.get("/logout",          controller.logout);
+
+    app.get("/*", controller.does_not_exist);
 };
 

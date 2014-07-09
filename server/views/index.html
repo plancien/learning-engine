@@ -45,8 +45,11 @@
         else if (page == "game_edit"){
           %><% include page/game_edit %><%
         }
+        else if (page == "does_not_exist"){
+          %><% include page/does_not_exist %><%
+        }
         else{
-          %><% include home %><%
+          %><% include page/welcome %><%
         }
       %>
     </div>
