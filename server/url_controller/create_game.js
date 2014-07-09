@@ -18,14 +18,23 @@ function checkPostValue(post, callback){
     callback(error);
 };
 
+function parseError(errorTab){
+    return errorTab.join("<br />");
+}
+
+function createGameInfosDisplay(req, res, err){
+    mamm.getCreateGameInfos(userName, function(spec){
+        spec.error = parseError(err);
+        display(req, res, "create_game", spec);
+    });
+}
+
 
 module.exports = {
     "get" : function(req, res){
         var that = this;
         if (userName = req.session.userName){
-            mamm.getCreateGameInfos(userName, function(spec){
-                display(req, res, "create_game", spec);
-            });
+            createGameInfosDisplay(req, res, []);
         }
         else{
             res.redirect("/login");
@@ -35,7 +44,10 @@ module.exports = {
     "post" : function(req, res){
         if (userName = req.session.userName){
             checkPostValue(req.body, function(err){
-                if (err.length > 0) res.send(err);
+                if (err.length > 0){
+                    err.splice(0,0,"Erreur :");
+                    createGameInfosDisplay(req, res, err);
+                }
                 else{
                     games.addGame(req.body, function(gameData){
                         users.addGame(userName, gameData.name, function(){
