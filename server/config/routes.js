@@ -20,9 +20,7 @@ module.exports = function(app) {
 
     app.get("/login",           controller.login.get);
     app.post("/login",          controller.login.post);
-
-    app.get("/signup",          controller.signup.get);
-    app.post("/signup",         controller.signup.post);
+    app.post("/signup",         controller.login.signup);
 
     app.get("/create_game",     controller.create_game.get);
     app.post("/create_game",    controller.create_game.post);

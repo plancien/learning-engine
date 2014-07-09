@@ -1,4 +1,7 @@
-<form action="/login" method="post">
+
+<link rel="stylesheet" type="text/css" href="/application/css/login.css">
+
+<form class="bloc" action="/login" method="post">
 	<h5>Login</h5>
     <div>
         <label>Username:</label>
@@ -11,8 +14,14 @@
     <div>
         <input type="submit" value="Log In"/>
     </div>
+<div id="loginMessage">
+    <%=message.login%>
+</div>
+
 </form>
-<form action="/signup" method="post">
+
+
+<form class="bloc" action="/signup" method="post">
 	<h5>Inscription</h5>
     <div>
         <label>Username:</label>
@@ -25,6 +34,8 @@
     <div>
         <input type="submit" value="Log In"/>
     </div>
+
+<div id="singupMessage">
+        <%=message.signup%>
+</div>
 </form>
-<br />
-<br />
