@@ -1,5 +1,4 @@
 
-var display = require(__dirname + "/../controller/defaultDisplay.js");
 var games = require(__path.model+"/game");
 var users = require(__path.model+"/users");
 

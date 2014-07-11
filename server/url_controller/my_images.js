@@ -1,5 +1,4 @@
 
-var display = require(__dirname + "/../controller/defaultDisplay.js");
 var mamm = require(__path.model+"/multiple_action_model_manageur");
 var users = require(__path.model+"/users");
 var img = require(__path.model+"/img");
@@ -17,7 +16,7 @@ module.exports = {
     "get" : function(req, res){
         if (userName = req.session.userName){
             var imagesList = users.getUserImageSync(userName);
-            display(req, res, "my_images", createSpec(userName, ""));
+            res.render("page/my_images", {"spec" : createSpec(userName, "")});
         }
         else{
             res.redirect("login");
@@ -28,7 +27,7 @@ module.exports = {
         if (req.session.userName){
             img.save(req.files.uploadedImage, function(err, data) {
                 if (err){
-                    display(req, res, "my_images", createSpec(userName, err));
+                    res.render("page/my_images", {"spec" : createSpec(userName, err)});
                 }
                 else{
                     users.addImage(data.url, req.session.userName);
@@ -56,7 +55,7 @@ module.exports = {
                     });
                 }
                 else{
-                    display(req, res, "my_images", createSpec(userName, "Cette image n'existe pas"));
+                    res.render("page/my_images", {"spec" : createSpec(userName, "Cette image n'existe pas")});
                 }
             });
         }

@@ -1,5 +1,4 @@
 
-var display = require(__dirname + "/../controller/defaultDisplay.js");
 var games = require(__path.model+"/game");
 var mamm = require(__path.model+"/multiple_action_model_manageur");
 var users = require(__path.model+"/users");
@@ -16,7 +15,7 @@ module.exports = {
                     mamm.getCreateGameInfos(userName, function(spec){
                         games.get(gameName, function(gameInfo){
                             spec.gameInfos = gameInfo;
-                            display(req, res, "game_edit", spec);
+                            res.render("page/game_edit", {"spec" : spec});
                         });
                     });
                 }

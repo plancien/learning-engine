@@ -19,6 +19,7 @@
     "promise": "*",
     "socket.io": "1.0.*",
     "passport": "^0.2.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "ejs-locals": "^1.0.2"
   }
 }

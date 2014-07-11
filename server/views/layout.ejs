@@ -20,38 +20,9 @@
 
     <ul id="top_menu">
       <% include structure/top_menu %>
-    </ul>
-    
+    </ul>    
     <div id="main">
-      <%
-        if (page == "login"){
-          %><% include page/login %><%
-        } 
-        else if (page == "create_game"){
-          %><% include page/create_game %><%
-        } 
-        else if (page == "welcome"){
-          %><% include page/welcome %><%
-        }
-        else if (page == "my_game"){
-          %><% include page/my_game %><%
-        }
-        else if (page == "game"){
-          %><% include page/game %><%
-        }
-        else if (page == "my_images"){
-          %><% include page/my_images %><%
-        }
-        else if (page == "game_edit"){
-          %><% include page/game_edit %><%
-        }
-        else if (page == "does_not_exist"){
-          %><% include page/does_not_exist %><%
-        }
-        else{
-          %><% include page/welcome %><%
-        }
-      %>
+      <%-body -%>
     </div>
 
     <div style="height : 100px; width : 100%">
@@ -61,9 +32,5 @@
       <% include structure/footer %>
     </footer>
 
-
-    <script>
-      window.userName = "<%- userName %>";
-    </script>
   </body>
 </html>

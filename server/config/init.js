@@ -5,6 +5,7 @@ var express = require('express');
 var http = require('http');
 var registerRoutes = require(__dirname+'/routes');
 var initConnection = require('./init_connection');
+require("ejs-locals");
 
 module.exports = function(app) {
      __path.initViews(app);

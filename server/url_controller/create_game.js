@@ -1,5 +1,4 @@
 
-var display = require(__dirname + "/../controller/defaultDisplay.js");
 var images = require(__path.model + "/img");
 var games = require(__path.model+"/game");
 var users = require(__path.model + "/users");
@@ -25,7 +24,7 @@ function parseError(errorTab){
 function createGameInfosDisplay(req, res, err){
     mamm.getCreateGameInfos(userName, function(spec){
         spec.error = parseError(err);
-        display(req, res, "create_game", spec);
+        res.render("page/create_game", {"spec" : spec});
     });
 }
 
