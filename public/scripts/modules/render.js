@@ -48,14 +48,29 @@ define(['event_bus'], function(eventBus) {
                 if (this.patternRepeat !== undefined) {
                     context.save();
                     context.translate(this.x - this.width / 2, this.y - this.height / 2);
-                    context.fillStyle = context.createPattern(this.defaultSprite.img, this.patternRepeat);
+                    try {
+                        context.fillStyle = context.createPattern(this.defaultSprite.img, this.patternRepeat);
+                    }
+                    catch (e){
+                        alert("Ce jeu ne fonctionne pas sur votre navigateur");
+                    }
                     context.fillRect(0, 0, this.width, this.height);
                     context.fillStyle = "rgb(0,0,0)";
                     context.restore();
                 } else if (this.animation !== undefined) {
                     context.drawImage(this.defaultSprite.img, this.animation.currentAnim.sprites[this.animation.currentFrame].x, this.animation.currentAnim.sprites[this.animation.currentFrame].y, this.animation.currentAnim.sprites[this.animation.currentFrame].width, this.animation.currentAnim.sprites[this.animation.currentFrame].height, this.x - (this.width / 2), this.y - (this.height / 2), this.width, this.height);
                 } else {
-                    context.drawImage(this.defaultSprite.img, this.defaultSprite.x, this.defaultSprite.y, this.defaultSprite.width, this.defaultSprite.height, this.x - (this.width / 2), this.y - (this.height / 2), this.width, this.height);
+                    if (this.height >= 0){      //Debug firefox
+                        context.drawImage(this.defaultSprite.img,
+                        this.defaultSprite.x,
+                        this.defaultSprite.y,
+                        this.defaultSprite.width,
+                        this.defaultSprite.height,
+                        this.x - (this.width / 2),
+                        this.y - (this.height / 2),
+                        this.width,
+                        this.height);
+                    }
                 }
             }
         };
