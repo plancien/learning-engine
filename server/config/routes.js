@@ -21,21 +21,21 @@ module.exports = function(app) {
     app.post("/login",          controller.login.checkForm);
     // app.post("/signup",         controller.login.signup);
 
-    app.get("/create_game",     controller.create_game.get);
-    app.post("/create_game",    controller.create_game.post);
+    app.get("/games/create",     controller.create_game.newForm);
+    app.post("/games/create",    controller.create_game.newGame);
 
-    app.get("/my_images",       controller.my_images.get);
-    app.post("/my_images",      controller.my_images.post);
+    app.get("/my_images",       controller.my_images.displayUserImages);
+    app.post("/my_images",      controller.my_images.add);
     app.get("/my_images/delete/:imageName", controller.my_images.removed);
 
-    app.get("/my_game",         controller.my_game);
+    app.get("/games",         controller.my_game);
 
 
-    app.get("/game/:gameName",              controller.game);
-    app.get("/game/delete/:gameName",       controller.game_delete);
+    app.get("/games/:gameName",              controller.game);
+    app.get("/games/delete/:gameName",       controller.game_delete);
 
-    app.get("/game/edit/:gameName",       controller.game_edit.get);
-    app.post("/game/edit/:gameName",      controller.game_edit.post);
+    app.get("/games/edit/:gameName",       controller.game_edit.gameForm);
+    app.post("/games/edit/:gameName",      controller.game_edit.updateGame);
 
     app.get("/logout",          controller.logout);
 

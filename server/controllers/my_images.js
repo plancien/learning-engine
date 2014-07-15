@@ -13,7 +13,7 @@ function createSpec(userName, error){
 
 
 module.exports = {
-    "get" : function(req, res){
+    "displayUserImages" : function(req, res){
         if (userName = req.session.userName){
             var imagesList = users.getUserImageSync(userName);
             res.render("page/my_images", {"spec" : createSpec(userName, "")});
@@ -23,7 +23,7 @@ module.exports = {
         }
     },
     
-    "post" : function(req, res){
+    "add" : function(req, res){
         if (req.session.userName){
             img.save(req.files.uploadedImage, function(err, data) {
                 if (err){

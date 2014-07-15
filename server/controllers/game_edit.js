@@ -5,7 +5,7 @@ var users = require(__path.model+"/users");
 
 
 module.exports = {
-    "get" : function(req, res){
+    "gameForm" : function(req, res){
         var gameName = req.params.gameName;
         var userName = req.session.userName;
 
@@ -20,7 +20,7 @@ module.exports = {
                     });
                 }
                 else{
-                    res.redirect("/my_game");
+                    res.redirect("/games");
                 }
             });
         }
@@ -29,7 +29,7 @@ module.exports = {
         }
     },
 
-    "post" : function(req, res){
+    "updateGame" : function(req, res){
         var gameName = req.params.gameName;
         var userName = req.session.userName;
         if (userName){

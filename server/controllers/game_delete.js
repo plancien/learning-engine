@@ -10,7 +10,7 @@ module.exports = function (req, res) {
             if (have){
                 users.deleteGame(userName, gameName, function(){
                     games.deleteGame(gameName, function(){
-                        res.redirect("/my_game");
+                        res.redirect("/games");
                     });
                 });
             }

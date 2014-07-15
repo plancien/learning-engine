@@ -30,7 +30,7 @@ function createGameInfosDisplay(req, res, err){
 
 
 module.exports = {
-    "get" : function(req, res){
+    "newForm" : function(req, res){
         var that = this;
         if (userName = req.session.userName){
             createGameInfosDisplay(req, res, []);
@@ -40,7 +40,7 @@ module.exports = {
         }
     },
 
-    "post" : function(req, res){
+    "newGame" : function(req, res){
         if (userName = req.session.userName){
             checkPostValue(req.body, function(err){
                 if (err.length > 0){
