@@ -50,7 +50,7 @@ module.exports = {
                 else{
                     games.addGame(req.body, function(gameData){
                         users.addGame(userName, gameData.name, function(){
-                            res.redirect("/game/"+gameData.name);
+                            res.redirect("/games/"+gameData.name);
                         });
                     });
                 }

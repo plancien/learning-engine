@@ -22,12 +22,14 @@ module.exports.exportListGame = function(list, callback){
     var response = [];
     for (var i = list.length - 1; i >= 0; i--) {
         var path = __path.bdd + "/session_game/" + list[i] + ".json";
-        response.push(
-            JSON.parse(
-                fs.readFileSync(path)
-            )
-        );
-    };
+        if (fs.existsSync(path)){
+            response.push(
+                JSON.parse(
+                    fs.readFileSync(path)
+                )
+            );
+        }
+    }
     callback(response);
 };
 
