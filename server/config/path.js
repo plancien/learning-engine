@@ -10,10 +10,10 @@ var engine = require("ejs-locals");
 
 module.exports = {
 	"root" : rootPath,
-	"bdd" : rootPath + "/server/bdd",
-	"model" : rootPath + "/server/model",
-	"controller" : rootPath + "/server/controller",
-	"gameTypes" : rootPath + "/public/scripts/game_types/"
+	"bdd" : rootPath + "server/bdd",
+	"model" : rootPath + "server/model",
+	"controller" : rootPath + "server/controller",
+	"gameTypes" : rootPath + "public/scripts/game_types/"
 };
 
 module.exports.initViews = function(app){
