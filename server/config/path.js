@@ -12,7 +12,7 @@ module.exports = {
 	"root" : rootPath,
 	"bdd" : rootPath + "server/bdd",
 	"model" : rootPath + "server/model",
-	"controller" : rootPath + "server/controller",
+	"controller" : rootPath + "server/connection",
 	"gameTypes" : rootPath + "public/scripts/game_types/"
 };
 

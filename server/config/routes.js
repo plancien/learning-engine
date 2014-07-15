@@ -3,10 +3,10 @@ var fs = require('fs');
 var url = require('url');
 
 var controller = {};
-var pathUrlController = __dirname + "/../url_controller/";
+var pathUrlController = __dirname + "/../controllers/";
 var files = fs.readdirSync(pathUrlController);
 
-    //var controller.nomFichier = require("Lefichier"); Pour tous le dossier url_controller
+    //var controller.nomFichier = require("Lefichier"); Pour tous le dossier controllers
 for (var i = files.length - 1; i >= 0; i--) {
     var name = files[i].split(".")[0];
     controller[name] = require(pathUrlController+"/"+files[i]);
@@ -14,14 +14,12 @@ for (var i = files.length - 1; i >= 0; i--) {
 
 module.exports = function(app) {
 
-
-    app.get("/hello",           controller.helloWorld);
     app.get("/",                controller.home);
     app.get("/home",            controller.home);
 
-    app.get("/login",           controller.login.get);
-    app.post("/login",          controller.login.post);
-    app.post("/signup",         controller.login.signup);
+    app.get("/login",           controller.login.newForm);
+    app.post("/login",          controller.login.checkForm);
+    // app.post("/signup",         controller.login.signup);
 
     app.get("/create_game",     controller.create_game.get);
     app.post("/create_game",    controller.create_game.post);
